@@ -55,6 +55,220 @@ export function renderBattleBarsOpen(ctx, progress) {
 }
 
 /**
+ * Gen 3 Wild Grass Encounter transition (distinct from Trainer cinema bars):
+ * Quick bright flash followed by alternating left/right horizontal black stripes wiping shut.
+ */
+export function renderWildEncounterWipe(ctx, progress) {
+  if (progress < 0.38) {
+    const idx = Math.floor((progress / 0.38) * 6);
+    ctx.fillStyle = idx % 2 === 0 ? 'rgba(244, 255, 232, 0.86)' : 'rgba(18, 44, 26, 0.68)';
+    ctx.fillRect(0, 0, W, H);
+    return;
+  }
+
+  const t = Math.min(1, (progress - 0.38) / 0.62);
+  const ease = t * t * (3 - 2 * t);
+  const bands = 10;
+  const bandH = Math.ceil(H / bands);
+
+  ctx.fillStyle = '#090C12';
+  for (let i = 0; i < bands; i++) {
+    const bw = Math.ceil(W * ease);
+    const y = i * bandH;
+    if (i % 2 === 0) {
+      ctx.fillRect(0, y, bw, bandH + 1);
+    } else {
+      ctx.fillRect(W - bw, y, bw, bandH + 1);
+    }
+  }
+}
+
+/** Draw a crisp tilted/spinning Poké Ball centered at (x, y). */
+function drawMiniPokeBall(ctx, x, y, angle = 0, radius = 7, caughtDark = false) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+
+  ctx.fillStyle = '#1C1E2A';
+  ctx.beginPath();
+  ctx.arc(0, 0, radius, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = caughtDark ? '#B83430' : '#E84840';
+  ctx.beginPath();
+  ctx.arc(0, 0, radius - 1.5, Math.PI, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = caughtDark ? '#D0D8E4' : '#F6F8FC';
+  ctx.beginPath();
+  ctx.arc(0, 0, radius - 1.5, 0, Math.PI);
+  ctx.fill();
+
+  ctx.fillStyle = '#1C1E2A';
+  ctx.fillRect(-(radius - 1), -1, (radius - 1) * 2, 2);
+  ctx.fillStyle = caughtDark ? '#9AA8BC' : '#FFFFFF';
+  ctx.beginPath();
+  ctx.arc(0, 0, Math.max(1.8, radius * 0.32), 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+/**
+ * Full Poké Ball Catch Sequence VFX renderer:
+ * Stages: 'arc' -> 'absorb' -> 'drop' -> 'shakePause' / 'shake' -> 'caught' | 'breakFree'
+ */
+export function renderCatchSequence(ctx, catchAnim, enemyPlatform) {
+  if (!catchAnim) return;
+  const { stage, frame, duration } = catchAnim;
+  const u = Math.min(1, frame / Math.max(1, duration));
+  const ex = enemyPlatform.x;
+  const ey = enemyPlatform.y;
+
+  ctx.save();
+
+  if (stage === 'arc') {
+    const sx = 96;
+    const sy = 166;
+    const tx = ex;
+    const ty = ey - 32;
+    const bx = sx + (tx - sx) * u;
+    const by = sy + (ty - sy) * u - Math.sin(u * Math.PI) * 88;
+    drawMiniPokeBall(ctx, bx, by, u * Math.PI * 6, 7);
+  } else if (stage === 'absorb') {
+    const bx = ex;
+    const by = ey - 38;
+    // Red capture beam pulsing between ball and wild Pokémon
+    const pulse = Math.sin(u * Math.PI);
+    const grad = ctx.createRadialGradient(ex, ey - 22, 2, ex, ey - 22, 34 * (1 - u * 0.5) + 6);
+    grad.addColorStop(0, `rgba(255, 110, 100, ${(pulse * 0.85).toFixed(3)})`);
+    grad.addColorStop(0.6, `rgba(232, 48, 48, ${(pulse * 0.45).toFixed(3)})`);
+    grad.addColorStop(1, 'rgba(232, 48, 48, 0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(ex, ey - 22, 40, 0, Math.PI * 2);
+    ctx.fill();
+    drawMiniPokeBall(ctx, bx, by, 0, 7);
+  } else if (stage === 'drop') {
+    // Drop with two diminishing bounces onto platform
+    let yOff = 0;
+    if (u < 0.45) {
+      const k = u / 0.45;
+      yOff = -38 * (1 - k * k);
+    } else if (u < 0.75) {
+      const k = (u - 0.45) / 0.3;
+      yOff = -Math.sin(k * Math.PI) * 16;
+    } else {
+      const k = (u - 0.75) / 0.25;
+      yOff = -Math.sin(k * Math.PI) * 6;
+    }
+    ctx.fillStyle = 'rgba(18, 26, 40, 0.28)';
+    ctx.beginPath();
+    ctx.ellipse(ex, ey + 2, 8, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    drawMiniPokeBall(ctx, ex, ey - 5 + yOff, 0, 7);
+  } else if (stage === 'shakePause' || stage === 'caughtWait') {
+    ctx.fillStyle = 'rgba(18, 26, 40, 0.28)';
+    ctx.beginPath();
+    ctx.ellipse(ex, ey + 2, 8, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    drawMiniPokeBall(ctx, ex, ey - 5, 0, 7, stage === 'caughtWait');
+  } else if (stage === 'shake') {
+    const tilt = Math.sin(u * Math.PI * 2) * 0.52;
+    const shiftX = Math.sin(u * Math.PI * 2) * 4;
+    ctx.fillStyle = 'rgba(18, 26, 40, 0.28)';
+    ctx.beginPath();
+    ctx.ellipse(ex + shiftX * 0.5, ey + 2, 8, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    drawMiniPokeBall(ctx, ex + shiftX, ey - 5, tilt, 7);
+
+    // Classic little motion ticks beside shaking ball
+    ctx.fillStyle = '#FFFFFF';
+    if (u < 0.5) {
+      ctx.fillRect(Math.round(ex - 14), Math.round(ey - 12), 4, 2);
+      ctx.fillRect(Math.round(ex - 12), Math.round(ey - 7), 3, 2);
+    } else {
+      ctx.fillRect(Math.round(ex + 10), Math.round(ey - 12), 4, 2);
+      ctx.fillRect(Math.round(ex + 9), Math.round(ey - 7), 3, 2);
+    }
+  } else if (stage === 'caught') {
+    ctx.fillStyle = 'rgba(18, 26, 40, 0.28)';
+    ctx.beginPath();
+    ctx.ellipse(ex, ey + 2, 8, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    drawMiniPokeBall(ctx, ex, ey - 5, 0, 7, true);
+
+    // Three golden stars bursting upward on catch click!
+    const alpha = Math.max(0, 1 - u * 0.85);
+    const stars = [
+      { dx: -16, dy: -14 },
+      { dx: 0, dy: -22 },
+      { dx: 16, dy: -14 },
+    ];
+    for (let i = 0; i < stars.length; i++) {
+      const sx = Math.round(ex + stars[i].dx * (0.4 + u * 0.9));
+      const sy = Math.round(ey - 10 + stars[i].dy * (0.3 + u * 1.1));
+      ctx.fillStyle = `rgba(255, 224, 72, ${alpha.toFixed(3)})`;
+      ctx.fillRect(sx - 3, sy, 7, 1);
+      ctx.fillRect(sx, sy - 3, 1, 7);
+      ctx.fillStyle = `rgba(255, 255, 232, ${alpha.toFixed(3)})`;
+      ctx.fillRect(sx - 1, sy - 1, 3, 3);
+    }
+  } else if (stage === 'breakFree') {
+    const alpha = Math.max(0, 1 - u);
+    const r = 8 + u * 44;
+    const grad = ctx.createRadialGradient(ex, ey - 18, 2, ex, ey - 18, r);
+    grad.addColorStop(0, `rgba(255, 255, 255, ${alpha.toFixed(3)})`);
+    grad.addColorStop(0.55, `rgba(255, 110, 96, ${(alpha * 0.72).toFixed(3)})`);
+    grad.addColorStop(1, 'rgba(255, 110, 96, 0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(ex, ey - 18, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+/** Gleaming ring of golden stars for 1/4096 Shiny Pokémon encounter! */
+export function renderShinySparkle(ctx, cx, cy, u) {
+  const alpha = Math.sin(Math.min(1, u) * Math.PI);
+  ctx.save();
+  for (let i = 0; i < 8; i++) {
+    const ang = (i / 8) * Math.PI * 2 + u * 2.4;
+    const r = 10 + Math.sin(u * Math.PI) * 34;
+    const sx = Math.round(cx + Math.cos(ang) * r);
+    const sy = Math.round(cy - 28 + Math.sin(ang) * r * 0.75);
+    ctx.fillStyle =
+      i % 2 === 0
+        ? `rgba(255, 232, 92, ${alpha.toFixed(3)})`
+        : `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
+    ctx.fillRect(sx - 4, sy, 9, 1);
+    ctx.fillRect(sx, sy - 4, 1, 9);
+    ctx.fillRect(sx - 1, sy - 1, 3, 3);
+  }
+  ctx.restore();
+}
+
+/** Rising purple toxic bubbles for end-of-turn Poison (PSN) damage. */
+export function renderPoisonBubbles(ctx, cx, cy, u) {
+  const alpha = Math.max(0, 1 - u * 0.85);
+  ctx.save();
+  for (let i = 0; i < 9; i++) {
+    const ox = ((i % 3) - 1) * 18 + Math.sin(i * 2.1 + u * 6) * 5;
+    const oy = -10 - u * 44 - (i % 4) * 8;
+    const r = 3 + (i % 3) * 1.6;
+    ctx.fillStyle = `rgba(176, 80, 212, ${(alpha * 0.75).toFixed(3)})`;
+    ctx.strokeStyle = `rgba(232, 176, 255, ${alpha.toFixed(3)})`;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(cx + ox, cy + oy, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/**
  * Spinning Poké Ball throw arc (0..0.68) followed by bright white release burst
  * and radial golden/white sparkle particles (0.68..1.0).
  */
@@ -288,6 +502,36 @@ export function renderMoveOverlay(ctx, overlay, actorPos, targetPos) {
         ctx.fillStyle = `rgba(42, 128, 48, ${alpha.toFixed(3)})`;
         ctx.fillRect(-3, 0, 6, 1);
         ctx.restore();
+      }
+    } else if (moveType === 'ELECTRIC') {
+      // Crackling electric yellow-white sparks
+      for (let i = 0; i < 8; i++) {
+        const ang = (i / 8) * Math.PI * 2 + u * 1.5;
+        const dist = 6 + u * 34;
+        const sx = Math.round(cx + Math.cos(ang) * dist);
+        const sy = Math.round(cy + Math.sin(ang) * dist * 0.75);
+        ctx.strokeStyle = i % 2 === 0 ? `rgba(255, 224, 56, ${alpha.toFixed(3)})` : `rgba(255, 255, 220, ${alpha.toFixed(3)})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(sx - 5, sy - 4);
+        ctx.lineTo(sx, sy);
+        ctx.lineTo(sx - 2, sy + 2);
+        ctx.lineTo(sx + 5, sy + 6);
+        ctx.stroke();
+      }
+    } else if (moveType === 'POISON') {
+      // Toxic purple bubbles splashing outward
+      for (let i = 0; i < 10; i++) {
+        const ang = (i / 10) * Math.PI * 2;
+        const px = cx + Math.cos(ang) * (8 + u * 28);
+        const py = cy + Math.sin(ang) * (6 + u * 20) - u * 12;
+        const r = 3 + (i % 3) * 1.5;
+        ctx.fillStyle = `rgba(170, 68, 208, ${(alpha * 0.85).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(px, py, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = `rgba(240, 192, 255, ${alpha.toFixed(3)})`;
+        ctx.fillRect(Math.round(px - 1), Math.round(py - 1), 2, 2);
       }
     } else {
       // NORMAL: crisp white impact burst + radiating pixel stars

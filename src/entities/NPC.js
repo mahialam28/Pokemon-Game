@@ -53,6 +53,7 @@ export class NPC {
     this.moveTimer = 0;
     this.stepParity = 0;
     this.blinkTimer = 120 + Math.floor(Math.random() * 160);
+    this.bowY = 0;
 
     this.showAlert = false;
   }
@@ -190,6 +191,7 @@ export class NPC {
     drawCharacter(ctx, this.sprite, this.facing, this.getAnimFrame(), this.px, this.py, {
       idle: !this.moving,
       blinking: this.blinkTimer <= 0,
+      bowY: this.bowY || 0,
     });
     if (this.showAlert) {
       drawAlertBubble(ctx, this.px, this.py);

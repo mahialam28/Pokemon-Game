@@ -121,6 +121,81 @@ const TRACKS = {
     leadVol: 0.036,
     bassVol: 0.048,
   },
+
+  // Upbeat adventurous Route 1 march (~144 BPM, G major)
+  route1: {
+    stepSec: 0.205,
+    lead: [
+      79, 83, 86, 0, 83, 86, 88, 0,
+      86, 83, 81, 79, 81, 0, 78, 0,
+      79, 83, 86, 91, 88, 86, 83, 81,
+      79, 81, 83, 81, 79, 0, 0, 0,
+    ],
+    bass: [
+      55, 0, 62, 0, 55, 0, 60, 0,
+      59, 0, 57, 0, 50, 0, 57, 0,
+      55, 0, 62, 0, 60, 0, 55, 0,
+      57, 0, 50, 50, 55, 0, 62, 0,
+    ],
+    drums: [
+      1, 0, 2, 2, 1, 0, 3, 0,
+      1, 0, 2, 2, 1, 2, 3, 0,
+      1, 0, 2, 2, 1, 0, 3, 0,
+      1, 2, 3, 2, 1, 0, 2, 0,
+    ],
+    leadVol: 0.032,
+    bassVol: 0.04,
+  },
+
+  // Bright bustling Verdant City theme (~126 BPM, F major)
+  city: {
+    stepSec: 0.235,
+    lead: [
+      77, 81, 84, 81, 86, 0, 84, 0,
+      82, 81, 79, 77, 79, 81, 79, 0,
+      77, 81, 84, 89, 86, 84, 82, 81,
+      79, 82, 81, 79, 77, 0, 0, 0,
+    ],
+    bass: [
+      53, 0, 60, 0, 58, 0, 60, 0,
+      55, 0, 60, 0, 53, 0, 55, 0,
+      53, 0, 57, 0, 58, 0, 53, 0,
+      55, 0, 60, 58, 53, 0, 60, 0,
+    ],
+    drums: [
+      1, 0, 2, 0, 1, 2, 2, 0,
+      1, 0, 2, 0, 1, 0, 3, 0,
+      1, 0, 2, 0, 1, 2, 2, 0,
+      1, 0, 3, 2, 1, 0, 2, 0,
+    ],
+    leadVol: 0.03,
+    bassVol: 0.04,
+  },
+
+  // Fast urgent Wild Pokémon Battle loop (~172 BPM, D minor)
+  wildBattle: {
+    stepSec: 0.155,
+    lead: [
+      74, 77, 81, 74, 82, 81, 77, 74,
+      72, 76, 79, 72, 81, 79, 76, 0,
+      74, 77, 81, 86, 84, 81, 79, 77,
+      76, 79, 81, 79, 74, 0, 81, 0,
+    ],
+    bass: [
+      50, 50, 57, 50, 46, 46, 53, 46,
+      48, 48, 55, 48, 45, 45, 52, 45,
+      50, 50, 57, 50, 46, 46, 53, 46,
+      48, 48, 45, 45, 50, 50, 57, 45,
+    ],
+    drums: [
+      1, 2, 3, 2, 1, 2, 3, 2,
+      1, 2, 3, 2, 1, 2, 3, 3,
+      1, 2, 3, 2, 1, 2, 3, 2,
+      1, 2, 3, 1, 1, 3, 3, 2,
+    ],
+    leadVol: 0.035,
+    bassVol: 0.045,
+  },
 };
 
 class AudioManager {
@@ -491,6 +566,49 @@ class AudioManager {
   coin() {
     this._tone({ freq: 987.77, duration: 0.07, delay: 0, type: 'square', volume: 0.075 });
     this._tone({ freq: 1318.5, duration: 0.22, delay: 0.075, type: 'square', volume: 0.075 });
+  }
+
+  /** Wild grass encounter intro jingle (distinct from trainer battleStart). */
+  wildEncounter() {
+    const seq = [
+      { f: 587, d: 0.05, t: 0.00 },
+      { f: 659, d: 0.05, t: 0.05 },
+      { f: 784, d: 0.05, t: 0.10 },
+      { f: 880, d: 0.05, t: 0.15 },
+      { f: 784, d: 0.05, t: 0.20 },
+      { f: 988, d: 0.06, t: 0.25 },
+      { f: 1175, d: 0.18, t: 0.32 },
+    ];
+    for (const n of seq) {
+      this._tone({ freq: n.f, duration: n.d, delay: n.t, type: 'square', volume: 0.07 });
+    }
+  }
+
+  /** Poké Ball wobble shake tick during catching. */
+  ballShake() {
+    this._tone({ freq: 340, endFreq: 210, duration: 0.07, delay: 0, type: 'triangle', volume: 0.1 });
+    this._tone({ freq: 420, endFreq: 280, duration: 0.06, delay: 0.08, type: 'triangle', volume: 0.07 });
+  }
+
+  /** Click + celebratory catch jingle! */
+  catchSuccess() {
+    this._tone({ freq: 1100, duration: 0.04, delay: 0.0, type: 'square', volume: 0.07 });
+    const notes = [
+      { f: 523.25, d: 0.09, t: 0.10 },
+      { f: 659.25, d: 0.09, t: 0.20 },
+      { f: 783.99, d: 0.09, t: 0.30 },
+      { f: 1046.5, d: 0.28, t: 0.40 },
+    ];
+    for (const n of notes) {
+      this._tone({ freq: n.f, duration: n.d, delay: n.t, type: 'square', volume: 0.08 });
+      this._tone({ freq: n.f * 0.5, duration: n.d, delay: n.t, type: 'triangle', volume: 0.07 });
+    }
+  }
+
+  /** Bubbly tick when Poison status deals end-of-turn damage. */
+  poisonTick() {
+    this._tone({ freq: 240, endFreq: 160, duration: 0.07, delay: 0, type: 'sawtooth', volume: 0.06 });
+    this._tone({ freq: 200, endFreq: 130, duration: 0.09, delay: 0.08, type: 'sawtooth', volume: 0.06 });
   }
 
   fanfare() {

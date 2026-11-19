@@ -1,22 +1,35 @@
 /**
- * HD-2D Layered Overworld Scene (Phase 1 + Phase 2).
- * - 7-layer HD-2D renderer + smooth lerped camera + Zoom setting (Close 3x / Normal 2x)
- * - Esc Pause Menu (POKéMON party view, SAVE, ZOOM toggle, TEXT SPEED toggle)
- * - Phase 2 Rival lab burst-in, counter starter pick, lab exit challenge -> BattleScene
- * - Post-battle Professor heal with sparkle burst + Mom healing anytime at home
- * - Town Neighbour NPC reacting to rival battle + North exit -> End of Phase 2 screen
- * - Debug 'B' key (when CONFIG.DEBUG = true) to launch an instant test battle anywhere
+ * HD-2D / Classic Gen 3 Layered Overworld Scene (Phase 1 + Phase 2 + Phase 3).
+ * - Seamless map connections (Dawnleaf Town <-> Route 1 <-> Verdant City) with Gen 3 area banners
+ * - Phase 3 story unlocks: Mom's 2 Potions on house exit + Professor's 5 Poké Balls & Pokédex at town north exit
+ * - Tall-grass wild encounters (1/10 chance on Route 1), hidden items (Z), Route 1 Mart sample
+ * - Verdant City Pokémon Center (Nurse Joy healing cutscene w/ Poké Balls on glowing machine + PC box count)
+ * - Verdant City Poké Mart shop, enterable Collector's house, resting Old Man north blocker
+ * - Full Gen 3 Start Menu (POKéDEX, POKéMON, BAG, {PLAYER} Trainer Card, SAVE, OPTION, EXIT)
+ * - Debug keys (CONFIG.DEBUG): B (instant battle), G (toggle encounters), H (heal party)
  */
 
 import { audio } from '../audio.js';
-import { renderPartyOverlay } from '../battle/BattleUI.js';
 import { CONFIG, ZOOM_FACTORS } from '../config.js';
-import { createPokemon, getCounterStarterId, healParty } from '../data/pokemon.js';
+import { rollWildEncounter } from '../data/encounters.js';
+import { getItem } from '../data/items.js';
+import {
+  createPokemon,
+  fetchSpeciesFromPokeApi,
+  getCounterStarterId,
+  healParty,
+} from '../data/pokemon.js';
 import { STARTERS } from '../data/starters.js';
 import { NPC } from '../entities/NPC.js';
-import { Player } from '../entities/Player.js';
+import { DIR_VECTORS, Player } from '../entities/Player.js';
 import { drawPokeBall } from '../entities/sprites.js';
-import { gameState, getLeadPokemon, saveGame } from '../state.js';
+import {
+  addItem,
+  gameState,
+  getFirstHealthyPartyIndex,
+  getLeadPokemon,
+  saveGame,
+} from '../state.js';
 import { drawGbaBox, drawText, measureText } from '../ui/font.js';
 import { Menu } from '../ui/Menu.js';
 import { TextBox } from '../ui/TextBox.js';
@@ -44,6 +57,8 @@ const ANIMATED_TILES = new Set([
   TILE.WATER,
   TILE.TV,
   TILE.LAB_MACHINE,
+  TILE.FOUNTAIN,
+  TILE.HEAL_MACHINE,
 ]);
 
 const OVERHEAD_ROOF_TILES = new Set([
@@ -66,7 +81,6 @@ export class OverworldScene {
     this.particles = new ParticleSystem();
     this.groundCache = null;
 
-    // Smooth lerped camera & smooth zoom (Normal 2x by default)
     this.zoom = ZOOM_FACTORS[gameState.settings.zoom] || 2;
     this.camX = 0;
     this.camY = 0;
@@ -77,10 +91,14 @@ export class OverworldScene {
     this.cutsceneDelay = 0;
     this.cutsceneCallback = null;
 
-    // Esc Start Menu, Option Submenu & Party overlay state
+    // Esc Start Menu, Option Submenu & contextual Yes/No prompt (Nurse Joy)
     this.pauseMenu = null;
     this.optionMenu = null;
-    this.showingParty = false;
+    this.yesNoMenu = null;
+
+    // Pokémon Center healing machine visual state
+    this.centerHealBalls = 0;
+    this.centerHealGlow = false;
 
     this.bannerText = '';
     this.bannerTimer = 0;
@@ -106,9 +124,11 @@ export class OverworldScene {
 
     const baseFloorTile = !map.isIndoor
       ? TILE.GRASS
-      : map.id === 'lab'
-        ? TILE.LAB_FLOOR
-        : TILE.WOOD_FLOOR;
+      : map.id === 'pokecenter'
+        ? TILE.CENTER_FLOOR
+        : map.id === 'lab' || map.id === 'pokemart'
+          ? TILE.LAB_FLOOR
+          : TILE.WOOD_FLOOR;
 
     for (let r = 0; r < map.height; r++) {
       for (let col = 0; col < map.width; col++) {
@@ -145,22 +165,25 @@ export class OverworldScene {
   _playMapMusic() {
     if (!this.map) return;
     if (this.map.id === 'town') audio.playTrack('town');
+    else if (this.map.id === 'route1') audio.playTrack('route1');
+    else if (this.map.id === 'city') audio.playTrack('city');
     else if (this.map.id === 'lab') audio.playTrack('lab');
     else audio.playTrack('indoors');
   }
 
-  loadMap(mapId, x, y, facing = 'down') {
+  loadMap(mapId, x, y, facing = 'down', { seamless = false } = {}) {
     this.map = getMap(mapId);
     this.player.setPosition(x, y, facing);
     this.npcs = (this.map.npcs || []).map((cfg) => new NPC(cfg));
     this.textBox.close();
     this.pauseMenu = null;
     this.optionMenu = null;
-    this.showingParty = false;
+    this.yesNoMenu = null;
+    this.centerHealBalls = 0;
+    this.centerHealGlow = false;
 
     this._playMapMusic();
 
-    // If loading lab while Rival is waiting to challenge the player, spawn Rival cleanly
     if (
       this.map.id === 'lab' &&
       gameState.flags.rivalPickedStarter &&
@@ -184,17 +207,20 @@ export class OverworldScene {
 
     gameState.location = { mapId: this.map.id, x, y, facing };
 
-    if (this.map.id === 'town' || this.map.id === 'lab') {
+    const showBannerMaps = new Set(['town', 'lab', 'route1', 'city', 'pokecenter', 'pokemart']);
+    if (seamless || showBannerMaps.has(this.map.id)) {
       this.bannerText = this.map.name;
       this.bannerTimer = 120;
     } else {
       this.bannerTimer = 0;
     }
 
-    if (this.map.id === 'downstairs' && !gameState.flags.talkedToMom) {
-      this.pendingCutscene = 'momIntro';
-    } else if (this.map.id === 'lab' && !gameState.flags.metProf) {
-      this.pendingCutscene = 'profIntro';
+    if (!seamless) {
+      if (this.map.id === 'downstairs' && !gameState.flags.talkedToMom) {
+        this.pendingCutscene = 'momIntro';
+      } else if (this.map.id === 'lab' && !gameState.flags.metProf) {
+        this.pendingCutscene = 'profIntro';
+      }
     }
   }
 
@@ -231,7 +257,7 @@ export class OverworldScene {
   }
 
   // =========================================================================
-  // PHASE 1 & PHASE 2 STORY CUTSCENES
+  // PHASE 1, PHASE 2 & PHASE 3 STORY CUTSCENES
   // =========================================================================
 
   _startPendingCutscene() {
@@ -322,12 +348,6 @@ export class OverworldScene {
     });
   }
 
-  /**
-   * PHASE 2: Immediately after player picks their starter in the lab:
-   * 1. Rival bursts in through the lab door ("!" bubble over player's head)
-   * 2. Rival walks to the table and picks the type-advantage counter starter
-   * 3. Rival waits in the lab until the player tries to leave!
-   */
   _runPostStarterSequence() {
     this.cutsceneActive = true;
     const prof = this._findNpcById('prof');
@@ -335,7 +355,6 @@ export class OverworldScene {
 
     this.textBox.show('PROF: {STARTER} looks happy to be with you!', {
       onComplete: () => {
-        // Rival bursts through the lab door!
         audio.door();
         const rival = this._spawnRivalNpc(5, 11, 'up');
         this.player.showAlert = true;
@@ -355,20 +374,18 @@ export class OverworldScene {
               ],
               {
                 onComplete: () => {
-                  // Route Rival around the player to the counter starter's Poké Ball on the table
                   const rivalId = gameState.rivalStarter ? gameState.rivalStarter.id : 4;
                   const ballIdx = STARTERS.findIndex((s) => s.id === rivalId);
                   const ball = (this.map.pokeballs || [])[Math.max(0, ballIdx)] || { x: 8, y: 4 };
 
-                  // Walk up to y=6, slide horizontally to ball.x, then step up if unoccupied
-                  const pathToBall = ['up']; // (5,7) -> (5,6)
+                  const pathToBall = ['up'];
                   const dx = ball.x - 5;
                   for (let i = 0; i < Math.abs(dx); i++) {
                     pathToBall.push(dx > 0 ? 'right' : 'left');
                   }
                   const targetStandingFree = !(this.player.x === ball.x && this.player.y === 5);
                   if (targetStandingFree) {
-                    pathToBall.push('up'); // (ball.x, 6) -> (ball.x, 5)
+                    pathToBall.push('up');
                   }
 
                   rival.walkPath(pathToBall, () => {
@@ -383,14 +400,13 @@ export class OverworldScene {
 
                         this.textBox.show('{RIVAL} received {RIVAL_STARTER}!', {
                           onComplete: () => {
-                            // Rival steps back to wait near the center-south aisle
                             const backPath = [];
                             if (rival.y === 5) backPath.push('down');
                             const bx = 5 - rival.x;
                             for (let i = 0; i < Math.abs(bx); i++) {
                               backPath.push(bx > 0 ? 'right' : 'left');
                             }
-                            backPath.push('down'); // -> (5, 7)
+                            backPath.push('down');
 
                             rival.walkPath(backPath, () => {
                               rival.facing = 'up';
@@ -411,9 +427,6 @@ export class OverworldScene {
     });
   }
 
-  /**
-   * PHASE 2: Triggered when the player tries to leave the lab after Rival picked their starter.
-   */
   _runRivalChallengeCutscene() {
     const rival = this._findNpcById('rival') || this._spawnRivalNpc(5, 7, 'down');
     this.cutsceneActive = true;
@@ -425,7 +438,6 @@ export class OverworldScene {
       rival.showAlert = false;
       this.player.facing = 'up';
 
-      // Build clean path from rival to directly above the player (player.x, player.y - 1)
       const path = [];
       const targetX = this.player.x;
       const targetY = Math.max(7, this.player.y - 1);
@@ -456,7 +468,7 @@ export class OverworldScene {
               const rivalSpeciesId = gameState.rivalStarter
                 ? gameState.rivalStarter.id
                 : getCounterStarterId(playerMon.speciesId);
-              const enemyMon = createPokemon(rivalSpeciesId, 5);
+              const enemyMon = createPokemon(rivalSpeciesId, 5, { allowShiny: false });
 
               this.manager.pushScene('battle', {
                 playerMon,
@@ -473,15 +485,12 @@ export class OverworldScene {
     });
   }
 
-  /**
-   * PHASE 2: Post-battle lab resolution (both Win & Lose continue story!).
-   */
   _onRivalBattleEnd({ won }) {
     this._playMapMusic();
     this.cutsceneActive = true;
     gameState.flags.rivalBattleDone = true;
     gameState.flags.rivalBattleWon = Boolean(won);
-    saveGame(); // Auto-save right after rival battle
+    saveGame();
 
     const rival = this._findNpcById('rival');
     const prof = this._findNpcById('prof');
@@ -495,7 +504,6 @@ export class OverworldScene {
             this.player.facing = 'up';
             this.textBox.show('PROF: Your POKéMON looks tired. Let me heal it.', {
               onComplete: () => {
-                // Heal jingle + sparkle burst -> full HP/PP
                 audio.heal();
                 healParty(gameState.party);
                 this.particles.spawnHealSparkles(this.player.px, this.player.py);
@@ -520,12 +528,10 @@ export class OverworldScene {
             return;
           }
 
-          // Rival walks around player if needed and exits through lab door (5, 11)
           const exitPath = [];
           let rx = rival.x;
           let ry = rival.y;
           if (rx === this.player.x && ry < this.player.y) {
-            // Sidestep to avoid walking through player
             const sideDir = rx <= 5 ? 'right' : 'left';
             exitPath.push(sideDir);
             rx += sideDir === 'right' ? 1 : -1;
@@ -549,9 +555,6 @@ export class OverworldScene {
     );
   }
 
-  /**
-   * PHASE 2: Talking to Mom after the Rival battle heals your party anytime!
-   */
   _runMomHealDialogue(mom) {
     this.cutsceneActive = true;
     mom.facePlayer(this.player.facing);
@@ -570,13 +573,14 @@ export class OverworldScene {
         this.manager.fadeAction(() => {
           healParty(gameState.party);
           gameState.flags.healedByMom = true;
+          gameState.respawn = { mapId: 'downstairs', x: 4, y: 5, facing: 'down' };
           saveGame();
         });
         this._waitFrames(24, () => {
           this.particles.spawnHealSparkles(this.player.px, this.player.py);
           this.textBox.show(
             firstTime
-              ? 'MOM: There! You and {STARTER} are looking fresh and full of energy!'
+              ? 'MOM: There! You and {STARTER} are looking fresh and full of energy! Now head north toward ROUTE 1!'
               : 'MOM: All healed up! Come home anytime if you need a rest, sweetie!',
             {
               onComplete: () => {
@@ -589,19 +593,238 @@ export class OverworldScene {
     });
   }
 
-  /** Debug 'B' key: launch an immediate test battle anywhere when CONFIG.DEBUG = true. */
+  /**
+   * PHASE 3 PART 1: Before leaving Dawnleaf Town north onto Route 1,
+   * Professor runs up and gives 5 POKé BALLS + POKéDEX!
+   */
+  _runProfStarterKitCutscene(tx) {
+    this.cutsceneActive = true;
+    this.player.facing = 'down';
+    audio.alert();
+
+    const prof = new NPC({
+      id: 'profTownGift',
+      name: 'PROF',
+      sprite: 'prof',
+      x: tx,
+      y: 6,
+      facing: 'up',
+      idleLook: false,
+      getDialogue: () => ['PROF: Good luck on ROUTE 1!'],
+    });
+    this.npcs.push(prof);
+    prof.showAlert = true;
+
+    this._waitFrames(16, () => {
+      prof.showAlert = false;
+      prof.walkPath(['up', 'up', 'up', 'up'], () => {
+        prof.facing = 'up';
+        this.player.facing = 'down';
+        this.textBox.show(
+          'PROF: Wait, {PLAYER}! Take these POKé BALLS. Weaken wild POKéMON, then throw one to catch them!',
+          {
+            onComplete: () => {
+              addItem('pokeball', 5);
+              gameState.flags.receivedStarterKit = true;
+              saveGame();
+              audio.fanfare();
+              this.textBox.show(
+                [
+                  '{PLAYER} received 5 POKé BALLS!',
+                  '{PLAYER} received the POKéDEX!',
+                  'PROF: Head north through ROUTE 1 to VERDANT CITY. Good luck!',
+                ],
+                {
+                  onComplete: () => {
+                    prof.walkPath(['down', 'down', 'down', 'down'], () => {
+                      this._removeNpcById('profTownGift');
+                      this.cutsceneActive = false;
+                    });
+                  },
+                }
+              );
+            },
+          }
+        );
+      });
+    });
+  }
+
+  /**
+   * PHASE 3 PART 5: Pokémon Center Nurse Joy healing cutscene!
+   * Places balls one-by-one on glowing healing machine + heal jingle + bow + sets respawn.
+   */
+  _runNurseHealCutscene() {
+    const nurse = this._findNpcById('nurse');
+    this.cutsceneActive = true;
+    this.textBox.show(
+      'NURSE: Welcome to our POKéMON CENTER! Shall we heal your POKéMON?',
+      { waitForConfirm: false }
+    );
+
+    this.yesNoMenu = new Menu({
+      options: [
+        { label: 'YES', value: 'yes' },
+        { label: 'NO', value: 'no' },
+      ],
+      x: 374,
+      y: 128,
+      width: 86,
+      scale: 1,
+      cancelable: true,
+      onSelect: (opt) => {
+        this.yesNoMenu = null;
+        if (opt.value === 'no') {
+          this.textBox.show('NURSE: We hope to see you again!', {
+            onComplete: () => {
+              this.cutsceneActive = false;
+            },
+          });
+          return;
+        }
+
+        this.textBox.show("NURSE: Okay, I'll take your POKéMON for a few seconds.", {
+          onComplete: () => {
+            if (nurse) nurse.facing = 'left';
+            const count = Math.max(1, (gameState.party || []).length);
+            let placed = 0;
+
+            const placeNextBall = () => {
+              placed += 1;
+              this.centerHealBalls = placed;
+              audio.blip();
+              if (placed < count) {
+                this._waitFrames(10, placeNextBall);
+              } else {
+                this._waitFrames(8, () => {
+                  this.centerHealGlow = true;
+                  audio.heal();
+                  this.particles.spawnHealSparkles(3 * TILE_SIZE, 1 * TILE_SIZE);
+                  healParty(gameState.party);
+                  gameState.respawn = {
+                    mapId: 'pokecenter',
+                    x: 5,
+                    y: 4,
+                    facing: 'up',
+                  };
+                  saveGame();
+
+                  this._waitFrames(46, () => {
+                    this.centerHealGlow = false;
+                    this.centerHealBalls = 0;
+                    if (nurse) {
+                      nurse.facing = 'down';
+                      nurse.bowY = 2;
+                    }
+                    this._waitFrames(16, () => {
+                      if (nurse) nurse.bowY = 0;
+                      this.textBox.show(
+                        [
+                          "NURSE: Thank you for waiting. We've restored your POKéMON to full health!",
+                          'NURSE: We hope to see you again!',
+                        ],
+                        {
+                          onComplete: () => {
+                            this.cutsceneActive = false;
+                          },
+                        }
+                      );
+                    });
+                  });
+                });
+              }
+            };
+
+            this._waitFrames(8, placeNextBall);
+          },
+        });
+      },
+      onCancel: () => {
+        this.yesNoMenu = null;
+        this.textBox.show('NURSE: We hope to see you again!', {
+          onComplete: () => {
+            this.cutsceneActive = false;
+          },
+        });
+      },
+    });
+  }
+
+  // =========================================================================
+  // WILD ENCOUNTERS & DEBUG KEYS (B, G, H)
+  // =========================================================================
+
+  _startWildEncounter(speciesId, level) {
+    const healthyIdx = getFirstHealthyPartyIndex();
+    const playerMon = healthyIdx >= 0 ? gameState.party[healthyIdx] : getLeadPokemon();
+    if (!playerMon) return;
+
+    this.cutsceneActive = true;
+    const wildMon = createPokemon(speciesId, level, {
+      otName: 'WILD',
+      otId: '00000',
+      allowShiny: true,
+    });
+    // Opportunistically fetch & cache species stats from PokéAPI in background
+    fetchSpeciesFromPokeApi(speciesId).catch(() => {});
+
+    this.manager.pushScene('battle', {
+      playerMon,
+      enemyMon: wildMon,
+      partyIndex: healthyIdx >= 0 ? healthyIdx : 0,
+      location: 'grass',
+      isWild: true,
+      isTrainer: false,
+      onBattleEnd: (res) => {
+        this.cutsceneActive = false;
+        if (res && res.blackout) {
+          const sp = gameState.respawn || { mapId: 'downstairs', x: 4, y: 5, facing: 'down' };
+          this.loadMap(sp.mapId, sp.x, sp.y, sp.facing);
+          saveGame();
+        } else {
+          this._playMapMusic();
+        }
+      },
+    });
+  }
+
+  /** Debug 'B' key: Wild Route 1 battle on Route 1; Rival test battle elsewhere. */
   _startDebugBattle() {
-    let playerMon = getLeadPokemon();
+    const healthyIdx = getFirstHealthyPartyIndex();
+    let playerMon = healthyIdx >= 0 ? gameState.party[healthyIdx] : getLeadPokemon();
     let tempStarter = false;
     if (!playerMon) {
       playerMon = createPokemon(1, 5);
       tempStarter = true;
     } else {
-      // Ensure full HP for quick debug testing
       healParty([playerMon]);
     }
+
+    if (this.map && this.map.id === 'route1') {
+      const sampleIds = [16, 19, 10, 13, 25, 29, 32];
+      const pick = sampleIds[Math.floor(Math.random() * sampleIds.length)];
+      const wildMon = createPokemon(pick, 3 + Math.floor(Math.random() * 3), { allowShiny: true });
+      this.manager.pushScene('battle', {
+        playerMon,
+        enemyMon: wildMon,
+        partyIndex: healthyIdx >= 0 ? healthyIdx : 0,
+        location: 'grass',
+        isWild: true,
+        isTrainer: false,
+        onBattleEnd: (res) => {
+          if (res && res.blackout) {
+            const sp = gameState.respawn || { mapId: 'downstairs', x: 4, y: 5, facing: 'down' };
+            this.loadMap(sp.mapId, sp.x, sp.y, sp.facing);
+          } else {
+            this._playMapMusic();
+          }
+        },
+      });
+      return;
+    }
+
     const enemyId = getCounterStarterId(playerMon.speciesId);
-    const enemyMon = createPokemon(enemyId, 5);
+    const enemyMon = createPokemon(enemyId, 5, { allowShiny: false });
 
     this.manager.pushScene('battle', {
       playerMon,
@@ -648,18 +871,16 @@ export class OverworldScene {
       onSelect: (opt) => {
         if (opt.value === 'pokedex') {
           this.pauseMenu = null;
-          this.textBox.show('POKéDEX is coming soon!');
+          this.manager.pushScene('pokedex');
         } else if (opt.value === 'party') {
           this.pauseMenu = null;
-          this.showingParty = true;
+          this.manager.pushScene('party', { mode: 'overworld' });
         } else if (opt.value === 'bag') {
           this.pauseMenu = null;
-          this.textBox.show('BAG is coming soon!');
+          this.manager.pushScene('bag', { mode: 'overworld' });
         } else if (opt.value === 'trainer') {
           this.pauseMenu = null;
-          this.textBox.show(
-            `${playerLabel} — Money: ₽${gameState.money || 0} | Badges: 0. Full Trainer Card coming soon!`
-          );
+          this.manager.pushScene('trainerCard');
         } else if (opt.value === 'save') {
           this.pauseMenu = null;
           gameState.location = {
@@ -735,7 +956,7 @@ export class OverworldScene {
   }
 
   // =========================================================================
-  // COLLISION, WARPS & INTERACTIONS
+  // COLLISION, SEAMLESS CONNECTIONS, WARPS & INTERACTIONS
   // =========================================================================
 
   isBlocked(tx, ty) {
@@ -754,6 +975,31 @@ export class OverworldScene {
     }
 
     return false;
+  }
+
+  /** Check if walking off the edge of the current map connects seamlessly to an adjacent map. */
+  _trySeamlessEdgeTransition(input) {
+    if (!this.map || !this.map.connections) return false;
+    const dir = input.getHeldDirection();
+    if (!dir || dir !== this.player.facing) return false;
+
+    const v = DIR_VECTORS[dir];
+    const nx = this.player.x + v.dx;
+    const ny = this.player.y + v.dy;
+
+    let conn = null;
+    if (ny < 0 && this.map.connections.north) conn = this.map.connections.north;
+    else if (ny >= this.map.height && this.map.connections.south) conn = this.map.connections.south;
+    if (!conn) return false;
+
+    const nextMap = getMap(conn.targetMap);
+    const targetX = Math.max(0, Math.min(nextMap.width - 1, nx + (conn.targetXOffset || 0)));
+    const targetY = conn.targetY;
+    if (SOLID_TILES.has(nextMap.tiles[targetY][targetX])) return false;
+
+    this.loadMap(conn.targetMap, targetX, targetY, dir, { seamless: true });
+    saveGame();
+    return true;
   }
 
   _onStepStart(fromX, fromY, toX, toY) {
@@ -776,7 +1022,7 @@ export class OverworldScene {
       facing: this.player.facing,
     };
 
-    // PHASE 2: Trying to leave the lab triggers the Rival's challenge!
+    // PHASE 2: Trying to leave the lab triggers the Rival's challenge
     if (
       this.map.id === 'lab' &&
       gameState.flags.rivalPickedStarter &&
@@ -804,6 +1050,45 @@ export class OverworldScene {
         return;
       }
 
+      // PHASE 3 PART 1: Mom gives 2 POTIONS when leaving home after Rival battle & heal!
+      if (
+        this.map.id === 'downstairs' &&
+        warp.targetMap === 'town' &&
+        gameState.flags.rivalBattleDone &&
+        gameState.flags.healedByMom &&
+        !gameState.flags.receivedMomPotions
+      ) {
+        const mom = this._findNpcById('mom');
+        if (mom) {
+          mom.facing = 'down';
+          mom.showAlert = true;
+        }
+        this.cutsceneActive = true;
+        audio.alert();
+        this._waitFrames(14, () => {
+          if (mom) mom.showAlert = false;
+          this.player.facing = 'up';
+          this.textBox.show('MOM: Wait, {PLAYER}! Take these, just in case!', {
+            onComplete: () => {
+              addItem('potion', 2);
+              gameState.flags.receivedMomPotions = true;
+              saveGame();
+              audio.fanfare();
+              this.textBox.show('{PLAYER} received 2 POTIONS!', {
+                onComplete: () => {
+                  audio.door();
+                  this.manager.fadeAction(() => {
+                    this.loadMap(warp.targetMap, warp.targetX, warp.targetY, warp.targetFacing);
+                    saveGame();
+                  });
+                },
+              });
+            },
+          });
+        });
+        return;
+      }
+
       audio.door();
       this.cutsceneActive = true;
       this.manager.fadeAction(() => {
@@ -816,10 +1101,9 @@ export class OverworldScene {
     const trigger = (this.map.triggers || []).find((t) => t.x === tx && t.y === ty);
     if (trigger) {
       if (trigger.type === 'northExit') {
-        this.cutsceneActive = true;
-        audio.alert();
-
         if (!gameState.flags.gotStarter) {
+          this.cutsceneActive = true;
+          audio.alert();
           this.textBox.show("You shouldn't go out without a partner POKéMON!", {
             onComplete: () => {
               this.player.forceStep('down', () => {
@@ -831,6 +1115,8 @@ export class OverworldScene {
         }
 
         if (!gameState.flags.rivalBattleDone) {
+          this.cutsceneActive = true;
+          audio.alert();
           this.textBox.show("You should head back to the PROFESSOR's lab first!", {
             onComplete: () => {
               this.player.forceStep('down', () => {
@@ -841,20 +1127,50 @@ export class OverworldScene {
           return;
         }
 
-        // End of Phase 2 trigger!
-        this.textBox.show('Route 1 is coming soon! (End of Phase 2)', {
+        if (!gameState.flags.healedByMom) {
+          this.cutsceneActive = true;
+          audio.alert();
+          this.textBox.show('Go say hi to your MOM at home before heading out onto ROUTE 1!', {
+            onComplete: () => {
+              this.player.forceStep('down', () => {
+                this.cutsceneActive = false;
+              });
+            },
+          });
+          return;
+        }
+
+        // PHASE 3 PART 1: Professor hands over 5 POKé BALLS + POKéDEX, opening Route 1!
+        if (!gameState.flags.receivedStarterKit) {
+          this._runProfStarterKitCutscene(tx);
+          return;
+        }
+        // Otherwise: OPEN! Let the player continue north seamlessly into Route 1!
+      }
+
+      if (trigger.type === 'oldManBlock') {
+        this.cutsceneActive = true;
+        audio.blip();
+        const oldMan = this._findNpcById('oldManBlocker');
+        if (oldMan) oldMan.facing = 'up';
+        this.textBox.show("OLD MAN: Sorry, I'm resting here. Come back later.", {
           onComplete: () => {
-            gameState.flags.demoCompleted = true;
+            if (oldMan) oldMan.facing = 'down';
             this.player.forceStep('down', () => {
-              gameState.location = {
-                mapId: this.map.id,
-                x: this.player.x,
-                y: this.player.y,
-                facing: 'down',
-              };
-              saveGame();
               this.cutsceneActive = false;
-              this.manager.transitionTo('endOfDemo');
+            });
+          },
+        });
+        return;
+      }
+
+      if (trigger.type === 'cityHouseLocked') {
+        this.cutsceneActive = true;
+        audio.blip();
+        this.textBox.show("The door is locked. Nobody's home right now.", {
+          onComplete: () => {
+            this.player.forceStep('down', () => {
+              this.cutsceneActive = false;
             });
           },
         });
@@ -871,6 +1187,21 @@ export class OverworldScene {
             });
           },
         });
+        return;
+      }
+    }
+
+    // PHASE 3 PART 3: Tall Grass Wild Encounters!
+    if (
+      this.map.tiles[ty][tx] === TILE.TALL_GRASS &&
+      gameState.encountersEnabled &&
+      gameState.party &&
+      gameState.party.length > 0 &&
+      getFirstHealthyPartyIndex() >= 0
+    ) {
+      const hit = rollWildEncounter(this.map.id);
+      if (hit) {
+        this._startWildEncounter(hit.speciesId, hit.level);
       }
     }
   }
@@ -880,16 +1211,60 @@ export class OverworldScene {
 
     const npc = this.npcs.find((n) => n.x === target.x && n.y === target.y && !n.moving);
     if (npc) {
-      // Special Mom healing interaction after Rival battle
       if (npc.id === 'mom' && gameState.flags.rivalBattleDone) {
         audio.blip();
         this._runMomHealDialogue(npc);
         return;
       }
+      if (npc.id === 'martEmployee' && !gameState.flags.receivedMartSample) {
+        npc.facePlayer(this.player.facing);
+        audio.blip();
+        this.textBox.show(
+          [
+            'CLERK: Hi there! I work at the POKé MART in VERDANT CITY!',
+            'CLERK: Here — take this free sample to try out!',
+          ],
+          {
+            onComplete: () => {
+              addItem('potion', 1);
+              gameState.flags.receivedMartSample = true;
+              saveGame();
+              audio.fanfare();
+              this.textBox.show('{PLAYER} received a POTION!');
+            },
+          }
+        );
+        return;
+      }
+      if (npc.id === 'martClerk') {
+        npc.facePlayer(this.player.facing);
+        audio.blip();
+        this.manager.pushScene('shop');
+        return;
+      }
+
       npc.facePlayer(this.player.facing);
       audio.blip();
       const lines = npc.getDialogue ? npc.getDialogue() : ['...'];
       this.textBox.show(lines);
+      return;
+    }
+
+    // Sparkle-free hidden items (Route 1 Potion & Poké Ball)
+    const hidden = (this.map.hiddenItems || []).find(
+      (h) =>
+        h.x === target.x &&
+        h.y === target.y &&
+        !(gameState.pickedItems || []).includes(h.id)
+    );
+    if (hidden) {
+      if (!gameState.pickedItems) gameState.pickedItems = [];
+      gameState.pickedItems.push(hidden.id);
+      addItem(hidden.itemId, hidden.qty || 1);
+      saveGame();
+      const itemDef = getItem(hidden.itemId);
+      audio.fanfare();
+      this.textBox.show(`{PLAYER} found a hidden ${itemDef ? itemDef.name : 'ITEM'}!`);
       return;
     }
 
@@ -927,6 +1302,26 @@ export class OverworldScene {
     const key = `${target.x},${target.y}`;
     const lines = this.map.interactables && this.map.interactables[key];
     if (lines) {
+      if (lines[0] === '__NURSE_COUNTER__') {
+        audio.blip();
+        this._runNurseHealCutscene();
+        return;
+      }
+      if (lines[0] === '__CENTER_PC__') {
+        audio.confirm();
+        const boxCount = (gameState.pcBox || []).length;
+        this.textBox.show([
+          "{PLAYER} booted up the POKéMON CENTER PC.",
+          `Box system coming soon — POKéMON stored in Box: ${boxCount}.`,
+        ]);
+        return;
+      }
+      if (lines[0] === '__MART_SHOP__') {
+        audio.blip();
+        this.manager.pushScene('shop');
+        return;
+      }
+
       audio.blip();
       this.textBox.show(lines);
     }
@@ -988,20 +1383,12 @@ export class OverworldScene {
       this.bannerTimer -= 1;
     }
 
-    // Party view overlay (opened from Esc Pause Menu)
-    if (this.showingParty) {
-      if (
-        input.wasJustPressed('cancel') ||
-        input.wasJustPressed('pause') ||
-        input.wasJustPressed('confirm')
-      ) {
-        audio.cancel();
-        this.showingParty = false;
-      }
+    if (this.yesNoMenu) {
+      this.yesNoMenu.update(input);
+      this._updateCamera();
       return;
     }
 
-    // Option Submenu
     if (this.optionMenu) {
       if (input.wasJustPressed('pause')) {
         audio.cancel();
@@ -1014,7 +1401,6 @@ export class OverworldScene {
       return;
     }
 
-    // Esc Start Menu
     if (this.pauseMenu) {
       if (input.wasJustPressed('pause')) {
         audio.cancel();
@@ -1069,7 +1455,7 @@ export class OverworldScene {
       return;
     }
 
-    // Open Esc Start Menu or Debug 'B' Battle when standing freely
+    // Esc Start Menu & Debug Keys (B = battle, G = toggle encounters, H = heal party)
     if (!locked && !this.player.moving) {
       if (input.wasJustPressed('pause')) {
         this._openPauseMenu();
@@ -1077,6 +1463,32 @@ export class OverworldScene {
       }
       if (CONFIG.DEBUG && input.wasJustPressed('debugBattle')) {
         this._startDebugBattle();
+        return;
+      }
+      if (CONFIG.DEBUG && input.wasJustPressed('debugEncounters')) {
+        gameState.encountersEnabled = !gameState.encountersEnabled;
+        audio.blip();
+        if (this.manager.showToast) {
+          this.manager.showToast(
+            gameState.encountersEnabled ? 'GRASS: ON' : 'GRASS: OFF',
+            gameState.encountersEnabled ? '#90F0A0' : '#FFB070'
+          );
+        }
+        return;
+      }
+      if (CONFIG.DEBUG && input.wasJustPressed('debugHeal')) {
+        healParty(gameState.party);
+        audio.heal();
+        this.particles.spawnHealSparkles(this.player.px, this.player.py);
+        if (this.manager.showToast) {
+          this.manager.showToast('PARTY HEALED', '#90F0A0');
+        }
+        return;
+      }
+
+      // Check seamless edge map transition before stepping!
+      if (this._trySeamlessEdgeTransition(input)) {
+        this._updateCamera();
         return;
       }
     }
@@ -1103,7 +1515,7 @@ export class OverworldScene {
   }
 
   // =========================================================================
-  // 7-LAYER HD-2D RENDER PIPELINE
+  // 7-LAYER RENDER PIPELINE
   // =========================================================================
 
   render(ctx) {
@@ -1125,33 +1537,60 @@ export class OverworldScene {
     const startRow = Math.max(0, Math.floor(camY / TILE_SIZE) - 1);
     const endRow = Math.min(this.map.height - 1, Math.ceil((camY + viewH) / TILE_SIZE) + 1);
 
-    // --- WORLD LAYERS (1..4) AT CRISP PIXEL ZOOM (2x Normal or 3x Close) ---
     ctx.save();
     ctx.imageSmoothingEnabled = false;
     ctx.scale(zoom, zoom);
     ctx.translate(-camX, -camY);
 
-    // LAYER 1: Ground
+    // LAYER 1: Ground + animated tiles
     if (this.groundCache) {
       ctx.drawImage(this.groundCache, 0, 0);
     }
     for (let r = startRow; r <= endRow; r++) {
       const row = this.map.tiles[r];
       for (let c = startCol; c <= endCol; c++) {
-        if (ANIMATED_TILES.has(row[c])) {
-          drawMapTile(ctx, this.map, c, r, c * TILE_SIZE, r * TILE_SIZE, animFrame);
+        const tid = row[c];
+        if (ANIMATED_TILES.has(tid)) {
+          const frame =
+            tid === TILE.HEAL_MACHINE
+              ? this.centerHealGlow
+                ? Math.floor(this.tick / 6) % 2
+                : 0
+              : animFrame;
+          drawMapTile(ctx, this.map, c, r, c * TILE_SIZE, r * TILE_SIZE, frame);
         }
       }
     }
 
-    // LAYER 2: Ground details (character shadows + footstep dust/rustles/heal sparkles)
+    // Poké Balls placed on the Pokémon Center healing machine at (3, 1)
+    if (this.map.id === 'pokecenter' && this.centerHealBalls > 0) {
+      const slots = [
+        [3 * TILE_SIZE + 3, 1 * TILE_SIZE + 5],
+        [3 * TILE_SIZE + 9, 1 * TILE_SIZE + 5],
+        [3 * TILE_SIZE + 3, 1 * TILE_SIZE + 9],
+        [3 * TILE_SIZE + 9, 1 * TILE_SIZE + 9],
+        [3 * TILE_SIZE + 6, 1 * TILE_SIZE + 3],
+        [3 * TILE_SIZE + 6, 1 * TILE_SIZE + 11],
+      ];
+      for (let i = 0; i < Math.min(this.centerHealBalls, slots.length); i++) {
+        const [bx, by] = slots[i];
+        ctx.fillStyle = '#1C1E2A';
+        ctx.fillRect(bx, by, 4, 4);
+        ctx.fillStyle = this.centerHealGlow && Math.floor(this.tick / 5) % 2 === 0 ? '#FFE878' : '#E84840';
+        ctx.fillRect(bx + 1, by, 2, 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(bx + 1, by + 2, 2, 2);
+      }
+    }
+
+    // LAYER 2: Ground details (shadows + dust/rustles/heal sparkles)
     this.player.renderShadow(ctx);
     for (const npc of this.npcs) {
       npc.renderShadow(ctx);
     }
     this.particles.renderGroundFx(ctx);
 
-    // LAYER 3: Y-sorted Objects & 24x36 Entities
+    // LAYER 3: Y-sorted Objects & Entities
     const drawList = [];
 
     for (let r = startRow; r <= endRow; r++) {
@@ -1167,7 +1606,6 @@ export class OverworldScene {
       }
     }
 
-    // Remaining starter Poké Balls on the Lab Table
     const ballPulse = Math.sin(this.tick * 0.1) * 0.5 + 0.5;
     for (const ball of this.map.pokeballs || []) {
       const starter = STARTERS[ball.starterIndex];
@@ -1202,7 +1640,6 @@ export class OverworldScene {
       item.draw();
     }
 
-    // Gen 3 tall-grass foreground blades hiding the lower legs of anyone standing in tall grass
     const checkTallGrassCover = (ent) => {
       if (ent.jumping) return;
       const cx = Math.round(ent.px / TILE_SIZE);
@@ -1222,7 +1659,7 @@ export class OverworldScene {
       checkTallGrassCover(npc);
     }
 
-    // LAYER 4: Overhead layer (32x24 Gen 3 tree canopies, roof overhangs, chimneys)
+    // LAYER 4: Overhead layer (tree canopies, roofs, chimneys)
     const overStartRow = Math.max(0, startRow - 1);
     const overEndRow = Math.min(this.map.height - 1, endRow + 1);
     for (let r = overStartRow; r <= overEndRow; r++) {
@@ -1242,17 +1679,14 @@ export class OverworldScene {
 
     ctx.restore();
 
-    // --- SCREEN-SPACE LAYERS (5..7) ---
+    // SCREEN-SPACE LAYERS
     const isEnhanced = gameState.settings && gameState.settings.graphicsMode === 'enhanced';
-
-    // Classic mode (default): pure Gen 3 pixel art — no vignette, bloom, grading, or drifting particles.
-    // Enhanced mode: enables HD lighting, sunbeams, vignette & ambient particles/birds.
     if (isEnhanced) {
       this.lighting.render(ctx, this.map, camX, camY, zoom, this.tick);
       this.particles.renderAirborne(ctx, camX, camY, zoom);
     }
 
-    // LAYER 7: UI (Area Nameplate, Dialogue Box, Esc Start Menu, Option Menu, Party Overlay)
+    // Area Nameplate Banner (top-left slide-in)
     if (this.bannerTimer > 0 && !this.textBox.active && !this.pauseMenu && !this.optionMenu) {
       const slide =
         this.bannerTimer > 104
@@ -1278,15 +1712,14 @@ export class OverworldScene {
 
     this.textBox.render(ctx);
 
+    if (this.yesNoMenu) {
+      this.yesNoMenu.render(ctx);
+    }
     if (this.pauseMenu) {
       this.pauseMenu.render(ctx);
     }
     if (this.optionMenu) {
       this.optionMenu.render(ctx);
-    }
-
-    if (this.showingParty) {
-      renderPartyOverlay(ctx, gameState.party);
     }
   }
 }

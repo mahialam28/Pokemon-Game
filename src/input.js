@@ -23,6 +23,8 @@ const KEY_TO_ACTION = {
   KeyM: 'mute',
   KeyF: 'fullscreen',
   KeyB: 'debugBattle',
+  KeyG: 'debugEncounters',
+  KeyH: 'debugHeal',
 };
 
 const DIRECTIONS = ['up', 'down', 'left', 'right'];

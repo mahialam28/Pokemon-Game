@@ -16,7 +16,13 @@ import { EndOfDemoScene } from './scenes/EndOfDemoScene.js';
 import { OverworldScene } from './scenes/OverworldScene.js';
 import { StarterSelectScene } from './scenes/StarterSelectScene.js';
 import { TitleScene } from './scenes/TitleScene.js';
+import { gameState } from './state.js';
+import { BagScene } from './ui/BagScene.js';
 import { drawGbaBox, drawText } from './ui/font.js';
+import { PartyScene } from './ui/PartyScene.js';
+import { PokedexScene } from './ui/PokedexScene.js';
+import { ShopScene } from './ui/ShopScene.js';
+import { TrainerCardScene } from './ui/TrainerCardScene.js';
 
 const NATIVE_W = 480;
 const NATIVE_H = 270;
@@ -294,12 +300,18 @@ function toggleFullscreen() {
 }
 
 const manager = new SceneManager(() => currentCanvasScale);
+manager.showToast = showToast;
 manager.register('loading', (m) => new LoadingScene(m));
 manager.register('title', (m) => new TitleScene(m));
 manager.register('overworld', (m) => new OverworldScene(m));
 manager.register('starterSelect', (m) => new StarterSelectScene(m));
 manager.register('battle', (m) => new BattleScene(m));
 manager.register('endOfDemo', (m) => new EndOfDemoScene(m));
+manager.register('party', (m) => new PartyScene(m));
+manager.register('bag', (m) => new BagScene(m));
+manager.register('pokedex', (m) => new PokedexScene(m));
+manager.register('shop', (m) => new ShopScene(m));
+manager.register('trainerCard', (m) => new TrainerCardScene(m));
 
 manager.setScene('loading');
 
@@ -345,6 +357,16 @@ function tick() {
     toggleFullscreen();
   }
   if (hudToastTimer > 0) hudToastTimer -= 1;
+
+  // Track live play time when in gameplay (outside loading/title screens)
+  const topScene = manager.stack[manager.stack.length - 1];
+  if (
+    topScene &&
+    !(topScene instanceof LoadingScene) &&
+    !(topScene instanceof TitleScene)
+  ) {
+    gameState.playTimeFrames = (gameState.playTimeFrames || 0) + 1;
+  }
 
   manager.update(input);
   input.endFrame();

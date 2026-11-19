@@ -40,6 +40,9 @@ export const TILE = {
   DOOR: 20,
   LAB_DOOR: 21,
   LAB_SIGN: 22,
+  CENTER_SIGN_P: 23,
+  MART_SIGN_M: 24,
+  FOUNTAIN: 25,
 
   // Indoor floors & warps
   WOOD_FLOOR: 30,
@@ -50,6 +53,7 @@ export const TILE = {
   STAIRS_DOWN: 35,
   STAIRS_UP: 36,
   LAB_DOORMAT: 37,
+  CENTER_FLOOR: 38,
 
   // Indoor walls
   WALL_TOP: 40,
@@ -58,6 +62,8 @@ export const TILE = {
   LAB_WALL_TOP: 43,
   LAB_WALL_BOT: 44,
   LAB_WINDOW_IN: 45,
+  CENTER_WALL_TOP: 46,
+  CENTER_WALL_BOT: 47,
 
   // Indoor furniture & decor
   BED_TOP: 50,
@@ -75,6 +81,11 @@ export const TILE = {
   LAB_MACHINE: 62,
   LAB_TABLE: 63,
   CHAIR: 64,
+  COUNTER: 65,
+  HEAL_MACHINE: 66,
+  SOFA_L: 67,
+  SOFA_R: 68,
+  MART_SHELF: 69,
 };
 
 /** Tiles that block standard walking (LEDGE is handled specially for downward hops). */
@@ -96,12 +107,17 @@ export const SOLID_TILES = new Set([
   TILE.HOUSE_WINDOW,
   TILE.LAB_WALL,
   TILE.LAB_WINDOW,
+  TILE.CENTER_SIGN_P,
+  TILE.MART_SIGN_M,
+  TILE.FOUNTAIN,
   TILE.WALL_TOP,
   TILE.WALL_BOT,
   TILE.WALL_WINDOW,
   TILE.LAB_WALL_TOP,
   TILE.LAB_WALL_BOT,
   TILE.LAB_WINDOW_IN,
+  TILE.CENTER_WALL_TOP,
+  TILE.CENTER_WALL_BOT,
   TILE.BED_TOP,
   TILE.BED_BOT,
   TILE.PC_DESK,
@@ -116,6 +132,11 @@ export const SOLID_TILES = new Set([
   TILE.BOOKSHELF,
   TILE.LAB_MACHINE,
   TILE.LAB_TABLE,
+  TILE.COUNTER,
+  TILE.HEAL_MACHINE,
+  TILE.SOFA_L,
+  TILE.SOFA_R,
+  TILE.MART_SHELF,
 ]);
 
 /** Props drawn on the Y-sorted object layer above base ground tiles. */
@@ -131,6 +152,8 @@ export const Y_SORT_TILES = new Set([
   TILE.TABLE_RIGHT,
   TILE.LAB_TABLE,
   TILE.CHAIR,
+  TILE.SOFA_L,
+  TILE.SOFA_R,
 ]);
 
 /** Deterministic hash for subtle 2-variant grass placement. */
@@ -1353,6 +1376,254 @@ const MAP_CHIMNEY = [
   '.00000000.',
 ];
 
+// --- Phase 3 Verdant City, Pokémon Center & Poké Mart pixel maps ---
+const MAP_CENTER_SIGN_P = [
+  '2222222222222222',
+  '3300000000000033',
+  '330RRRRRRRRRR033',
+  '330RwwwwwwRRR033',
+  '330RwRRRRwwRR033',
+  '330RwRRRRwwRR033',
+  '330RwwwwwwRRR033',
+  '330RwRRRRRRRR033',
+  '330RwRRRRRRRR033',
+  '330rrrrrrrrrr033',
+  '3300000000000033',
+  '3333333333333333',
+  '1111111111111111',
+  '1111111111111111',
+  '0000000000000000',
+  '0000000000000000',
+];
+
+const MAP_MART_SIGN_M = [
+  '2222222222222222',
+  '3300000000000033',
+  '330cccccccccc033',
+  '330cwccccccwc033',
+  '330cwwccccwwc033',
+  '330cwcwccwcwc033',
+  '330cwccwwccwc033',
+  '330cwccccccwc033',
+  '330cwccccccwc033',
+  '330bbbbbbbbbb033',
+  '3300000000000033',
+  '3333333333333333',
+  '1111111111111111',
+  '1111111111111111',
+  '0000000000000000',
+  '0000000000000000',
+];
+
+const MAP_FOUNTAIN_0 = [
+  '....ssssssss....',
+  '..ssLLLLLLLLss..',
+  '.sLL22244222LLs.',
+  '.sL2234444322Ls.',
+  'sL223422224322Ls',
+  'sL2322sLLs2232Ls',
+  'sL242sL44Ls242Ls',
+  'sL242sL22Ls242Ls',
+  'sL2322sSSs2232Ls',
+  'sL223222222322Ls',
+  '.sL2234444322Ls.',
+  '.sLL22233222LLs.',
+  '..ssSSSSSSSSss..',
+  '...ssssssssss...',
+  '....ssssssss....',
+  '................',
+];
+
+const MAP_FOUNTAIN_1 = [
+  '....ssssssss....',
+  '..ssLLLLLLLLss..',
+  '.sLL22322322LLs.',
+  '.sL2322442232Ls.',
+  'sL232422224232Ls',
+  'sL2224sLLs4222Ls',
+  'sL223sL22Ls322Ls',
+  'sL223sL44Ls322Ls',
+  'sL2224sSSs4222Ls',
+  'sL232232232232Ls',
+  '.sL2322442232Ls.',
+  '.sLL22244222LLs.',
+  '..ssSSSSSSSSss..',
+  '...ssssssssss...',
+  '....ssssssss....',
+  '................',
+];
+
+const MAP_CENTER_FLOOR = [
+  'wwwwwwwwLLLLLLLL',
+  'wwwwwwwwLLLLLLLL',
+  'wwwwwwwwLLLLLLLL',
+  'wwwwwwwwLLLLLLLL',
+  'wwwwwwwwLLLLLLLL',
+  'wwwwwwwwLLLLLLLL',
+  'wwwwwwwwLLLLLLLL',
+  'WWWWWWWWlllllllw',
+  'LLLLLLLLwwwwwwww',
+  'LLLLLLLLwwwwwwww',
+  'LLLLLLLLwwwwwwww',
+  'LLLLLLLLwwwwwwww',
+  'LLLLLLLLwwwwwwww',
+  'LLLLLLLLwwwwwwww',
+  'LLLLLLLLwwwwwwww',
+  'llllllllWWWWWWWW',
+];
+
+const MAP_CENTER_WALL_TOP = [
+  'rrrrrrrrrrrrrrrr',
+  'RRRRRRRRRRRRRRRR',
+  'wwwwwwwwwwwwwwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'RRRRRRRRRRRRRRRR',
+  'wwwwwwwwwwwwwwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+];
+
+const MAP_CENTER_WALL_BOT = [
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'wwwWWwwwwwwWWwww',
+  'RRRRRRRRRRRRRRRR',
+  'rrrrrrrrrrrrrrrr',
+  'wwwwwwwwwwwwwwww',
+  'WWWWWWWWWWWWWWWW',
+  'SSSSSSSSSSSSSSSS',
+  'ssssssssssssssss',
+];
+
+const MAP_SERVICE_COUNTER = [
+  'ssssssssssssssss',
+  'LLLLLLLLLLLLLLLL',
+  'LLLLLLLLLLLLLLLL',
+  'llllllllllllllll',
+  'RRRRRRRRRRRRRRRR',
+  'rrrrrrrrrrrrrrrr',
+  'wwwwwwwwwwwwwwww',
+  'wwwwwwwwwwwwwwww',
+  'WWWWWWWWWWWWWWWW',
+  'WWWWWWWWWWWWWWWW',
+  'SSSSSSSSSSSSSSSS',
+  'ssssssssssssssss',
+  'ssssssssssssssss',
+  '................',
+  '................',
+  '................',
+];
+
+const MAP_HEAL_MACHINE_0 = [
+  '.ssssssssssssss.',
+  '.sLLLLLLLLLLLLs.',
+  '.sLkkkkkkkkkkLs.',
+  '.sLksskkkksskLs.',
+  '.sLksskkkksskLs.',
+  '.sLkkkkkkkkkkLs.',
+  '.sLksskkkksskLs.',
+  '.sLksskkkksskLs.',
+  '.sLkkkkkkkkkkLs.',
+  '.sSSSSSSSSSSSSs.',
+  '.sSllSllSllSlls.',
+  '.sSllllllllllSs.',
+  '.sSSSSSSSSSSSSs.',
+  '.ssssssssssssss.',
+  '................',
+  '................',
+];
+
+const MAP_HEAL_MACHINE_1 = [
+  '.ssssssssssssss.',
+  '.sLLLLLLLLLLLLs.',
+  '.sLkkkkkkkkkkLs.',
+  '.sLkYYkkkkYYkLs.',
+  '.sLkYYkkkkYYkLs.',
+  '.sLkkkkkkkkkkLs.',
+  '.sLkYYkkkkYYkLs.',
+  '.sLkYYkkkkYYkLs.',
+  '.sLkkkkkkkkkkLs.',
+  '.sSSSSSSSSSSSSs.',
+  '.sSllSEESllSlls.',
+  '.sSllllllllllSs.',
+  '.sSSSSSSSSSSSSs.',
+  '.ssssssssssssss.',
+  '................',
+  '................',
+];
+
+const MAP_SOFA_L = [
+  '................',
+  '.000000000000000',
+  '.0RRRRRRRRRRRRRR',
+  '.0RRRRRRRRRRRRRR',
+  '.0rrrrrrrrrrrrrr',
+  '.0RR000000000000',
+  '.0RR0RRRRRRRRRRR',
+  '.0RR0RRRRRRRRRRR',
+  '.0RR0rrrrrrrrrrr',
+  '.0rr0RRRRRRRRRRR',
+  '.0000rrrrrrrrrrr',
+  '.011000000000000',
+  '.0000...........',
+  '................',
+  '................',
+  '................',
+];
+
+const MAP_SOFA_R = [
+  '................',
+  '000000000000000.',
+  'RRRRRRRRRRRRRR0.',
+  'RRRRRRRRRRRRRR0.',
+  'rrrrrrrrrrrrrr0.',
+  '000000000000RR0.',
+  'RRRRRRRRRRR0RR0.',
+  'RRRRRRRRRRR0RR0.',
+  'rrrrrrrrrrr0RR0.',
+  'RRRRRRRRRRR0rr0.',
+  'rrrrrrrrrrr0000.',
+  '000000000000110.',
+  '...........0000.',
+  '................',
+  '................',
+  '................',
+];
+
+const MAP_MART_SHELF = [
+  'ssssssssssssssss',
+  'sLLLLLLLLLLLLLLs',
+  'sLRRLLCCLLGGLLYs',
+  'sLrrLLccLLggLLys',
+  'sSSSSSSSSSSSSSSs',
+  'sLLLLLLLLLLLLLLs',
+  'sLCCLLYYLLRRLLGs',
+  'sLccLLyyLLrrLLgs',
+  'sSSSSSSSSSSSSSSs',
+  'sLLLLLLLLLLLLLLs',
+  'sLGGLLRRLLCCLLYs',
+  'sLggLLrrLLccLLys',
+  'sSSSSSSSSSSSSSSs',
+  'sccccccccccccccs',
+  'ssssssssssssssss',
+  '................',
+];
+
 // =========================================================================
 // CACHE & COMPILER INIT
 // =========================================================================
@@ -1568,6 +1839,34 @@ export function initTiles() {
   ]);
   tileCache.set(TILE.KITCHEN_COUNTER, [
     compilePixelMap(MAP_COUNTER, PAL_INTERIOR, { underlay: woodFloor }),
+  ]);
+
+  // Phase 3 Verdant City, Pokémon Center & Poké Mart tiles
+  const centerSignPal = { ...PAL_HOUSE_WALL, R: '#E04040', r: '#A82828' };
+  const martSignPal = { ...PAL_LAB_WALL, c: '#3878C8', b: '#224E8C' };
+  const fountainPal = { ...PAL_INTERIOR, '2': '#4898E8', '3': '#78C4F8', '4': '#F0FAFF' };
+  tileCache.set(TILE.CENTER_SIGN_P, [compilePixelMap(MAP_CENTER_SIGN_P, centerSignPal)]);
+  tileCache.set(TILE.MART_SIGN_M, [compilePixelMap(MAP_MART_SIGN_M, martSignPal)]);
+  tileCache.set(TILE.FOUNTAIN, [
+    compilePixelMap(MAP_FOUNTAIN_0, fountainPal, { underlay: pathAutoCache.get(0) }),
+    compilePixelMap(MAP_FOUNTAIN_1, fountainPal, { underlay: pathAutoCache.get(0) }),
+  ]);
+
+  const centerFloor = compilePixelMap(MAP_CENTER_FLOOR, PAL_INTERIOR);
+  tileCache.set(TILE.CENTER_FLOOR, [centerFloor]);
+  tileCache.set(TILE.CENTER_WALL_TOP, [compilePixelMap(MAP_CENTER_WALL_TOP, PAL_INTERIOR)]);
+  tileCache.set(TILE.CENTER_WALL_BOT, [compilePixelMap(MAP_CENTER_WALL_BOT, PAL_INTERIOR)]);
+  tileCache.set(TILE.COUNTER, [
+    compilePixelMap(MAP_SERVICE_COUNTER, PAL_INTERIOR, { underlay: centerFloor }),
+  ]);
+  tileCache.set(TILE.HEAL_MACHINE, [
+    compilePixelMap(MAP_HEAL_MACHINE_0, PAL_INTERIOR, { underlay: centerFloor }),
+    compilePixelMap(MAP_HEAL_MACHINE_1, PAL_INTERIOR, { underlay: centerFloor }),
+  ]);
+  tileCache.set(TILE.SOFA_L, [compilePixelMap(MAP_SOFA_L, PAL_INTERIOR)]);
+  tileCache.set(TILE.SOFA_R, [compilePixelMap(MAP_SOFA_R, PAL_INTERIOR)]);
+  tileCache.set(TILE.MART_SHELF, [
+    compilePixelMap(MAP_MART_SHELF, PAL_INTERIOR, { underlay: labFloor }),
   ]);
 }
 

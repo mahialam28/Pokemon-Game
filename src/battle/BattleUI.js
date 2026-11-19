@@ -9,6 +9,7 @@
  */
 
 import { getMove } from '../data/moves.js';
+import { getPokemonDisplayName } from '../data/pokemon.js';
 import { drawStarterSprite } from '../data/starters.js';
 import { getTypeColor } from '../data/typeChart.js';
 import { drawGbaBox, drawText, measureText } from '../ui/font.js';
@@ -312,6 +313,17 @@ function drawHpBar(ctx, x, y, w, ratio, tick = 0) {
   }
 }
 
+function drawStatusBadge(ctx, status, x, y) {
+  if (!status) return;
+  const bg = status === 'PSN' ? '#9C48B8' : '#707888';
+  const dark = status === 'PSN' ? '#622678' : '#404858';
+  ctx.fillStyle = dark;
+  ctx.fillRect(x, y, 24, 11);
+  ctx.fillStyle = bg;
+  ctx.fillRect(x + 1, y + 1, 22, 9);
+  drawText(ctx, status, x + 12, y + 2, { color: '#FFFFFF', scale: 1, align: 'center' });
+}
+
 /** Foe Info Box (top-left, slides in from left edge). */
 export function renderEnemyHud(ctx, enemyMon, displayHp, offsetX = 0, tick = 0) {
   const x = 16 + offsetX;
@@ -327,11 +339,14 @@ export function renderEnemyHud(ctx, enemyMon, displayHp, offsetX = 0, tick = 0) 
     shadow: '#DCE4EC',
     scale: 1,
   });
-  const nameEnd = x + 14 + measureText(enemyMon.name, 1);
+  let nameEnd = x + 14 + measureText(enemyMon.name, 1);
   drawText(ctx, enemyMon.gender || '♂', nameEnd + 2, y + 8, {
     color: enemyMon.gender === '♀' ? '#E45C88' : '#3E84DC',
     scale: 1,
   });
+  if (enemyMon.isShiny) {
+    drawText(ctx, '★', nameEnd + 11, y + 8, { color: '#E8A820', scale: 1 });
+  }
 
   drawText(ctx, `Lv${enemyMon.level}`, x + w - 10, y + 8, {
     color: '#2A3646',
@@ -339,8 +354,14 @@ export function renderEnemyHud(ctx, enemyMon, displayHp, offsetX = 0, tick = 0) 
     align: 'right',
   });
 
-  drawText(ctx, 'HP', x + 12, y + 24, { color: '#D87A28', scale: 1 });
-  drawHpBar(ctx, x + 28, y + 23, w - 38, displayHp / Math.max(1, enemyMon.maxHp), tick);
+  if (enemyMon.status) {
+    drawStatusBadge(ctx, enemyMon.status, x + 12, y + 22);
+    drawText(ctx, 'HP', x + 40, y + 24, { color: '#D87A28', scale: 1 });
+    drawHpBar(ctx, x + 56, y + 23, w - 66, displayHp / Math.max(1, enemyMon.maxHp), tick);
+  } else {
+    drawText(ctx, 'HP', x + 12, y + 24, { color: '#D87A28', scale: 1 });
+    drawHpBar(ctx, x + 28, y + 23, w - 38, displayHp / Math.max(1, enemyMon.maxHp), tick);
+  }
 }
 
 /** Player Info Box (bottom-right, slides in from right edge + numeric HP + shimmering EXP bar). */
@@ -362,16 +383,20 @@ export function renderPlayerHud(
 
   drawRomHudPanel(ctx, x, y, w, h, lowPulse > 0.5 ? '#E8443C' : '#4C86A8');
 
-  drawText(ctx, playerMon.name, x + 12, y + 8, {
+  const pName = getPokemonDisplayName(playerMon);
+  drawText(ctx, pName, x + 12, y + 8, {
     color: '#1E2634',
     shadow: '#DCE4EC',
     scale: 1,
   });
-  const nameEnd = x + 14 + measureText(playerMon.name, 1);
+  const nameEnd = x + 14 + measureText(pName, 1);
   drawText(ctx, playerMon.gender || '♂', nameEnd + 2, y + 8, {
     color: playerMon.gender === '♀' ? '#E45C88' : '#3E84DC',
     scale: 1,
   });
+  if (playerMon.isShiny) {
+    drawText(ctx, '★', nameEnd + 11, y + 8, { color: '#E8A820', scale: 1 });
+  }
 
   drawText(ctx, `Lv${playerMon.level}`, x + w - 10, y + 8, {
     color: '#2A3646',
@@ -381,6 +406,10 @@ export function renderPlayerHud(
 
   drawText(ctx, 'HP', x + 12, y + 23, { color: '#D87A28', scale: 1 });
   drawHpBar(ctx, x + 28, y + 22, w - 38, hpRatio, tick);
+
+  if (playerMon.status) {
+    drawStatusBadge(ctx, playerMon.status, x + 12, y + 34);
+  }
 
   // Real-time numeric HP count-down
   const shownHp = Math.max(0, Math.round(displayHp));
@@ -434,7 +463,7 @@ export function renderMainActionMenu(ctx, playerMon, cursorIdx, tick = 0) {
     shadow: '#121824',
     scale: 2,
   });
-  drawText(ctx, `${playerMon.name} do?`, 36, 230, {
+  drawText(ctx, `${getPokemonDisplayName(playerMon)} do?`, 36, 230, {
     color: '#FFE078',
     shadow: '#121824',
     scale: 2,
@@ -688,4 +717,168 @@ export function renderLevelUpPanel(ctx, levelUpInfo) {
       align: 'right',
     });
   }
+}
+
+/** Move-Forget Selector Panel (when a Pokémon with 4 moves learns a new move). */
+export function renderForgetMoveMenu(ctx, mon, newMoveId, cursorIdx, tick = 0) {
+  ctx.fillStyle = 'rgba(10, 16, 28, 0.72)';
+  ctx.fillRect(0, 0, W, H);
+
+  drawGbaBox(ctx, 56, 30, 368, 206, {
+    fill: '#FAFBFD',
+    outerBorder: '#1C2432',
+    accentBorder: '#D85848',
+    accentHighlight: '#F49888',
+    innerBorder: '#2C3A4C',
+  });
+
+  const newDef = getMove(newMoveId);
+  drawText(ctx, `SELECT A MOVE TO FORGET FOR ${newDef.name}`, W / 2, 44, {
+    color: '#A83228',
+    scale: 1,
+    align: 'center',
+  });
+
+  const moves = mon.moves || [];
+  const arrowBob = Math.round(Math.sin(tick * 0.2) * 1.5);
+  for (let i = 0; i < 4; i++) {
+    const slot = moves[i];
+    if (!slot) continue;
+    const def = getMove(slot.id);
+    const tc = getTypeColor(def.type);
+    const ry = 68 + i * 28;
+    const sel = i === cursorIdx;
+
+    if (sel) {
+      ctx.fillStyle = '#FFE8DC';
+      ctx.fillRect(72, ry - 4, 336, 22);
+      drawText(ctx, '▶', 76 + arrowBob, ry + 3, { color: '#D84840', scale: 1 });
+    }
+
+    drawText(ctx, def.name, 90, ry + 3, {
+      color: sel ? '#182230' : '#3C4656',
+      scale: 1,
+    });
+
+    ctx.fillStyle = tc.bg;
+    ctx.fillRect(240, ry, 58, 14);
+    drawText(ctx, def.type, 269, ry + 3, {
+      color: '#FFFFFF',
+      shadow: tc.dark,
+      scale: 1,
+      align: 'center',
+    });
+
+    drawText(ctx, `PP ${slot.pp}/${slot.maxPp}`, 396, ry + 3, {
+      color: '#344456',
+      scale: 1,
+      align: 'right',
+    });
+  }
+
+  // Option 4: Don't learn new move (Cancel)
+  const cancelY = 186;
+  const cancelSel = cursorIdx === 4;
+  if (cancelSel) {
+    ctx.fillStyle = '#E4EEF8';
+    ctx.fillRect(72, cancelY - 4, 336, 20);
+    drawText(ctx, '▶', 76 + arrowBob, cancelY + 2, { color: '#3868A8', scale: 1 });
+  }
+  drawText(ctx, `CANCEL (KEEP CURRENT MOVES)`, 90, cancelY + 2, {
+    color: cancelSel ? '#182230' : '#586878',
+    scale: 1,
+  });
+
+  drawText(ctx, 'Z: CONFIRM   X: CANCEL', W / 2, 218, {
+    color: '#607084',
+    scale: 1,
+    align: 'center',
+  });
+}
+
+export const NICKNAME_CHARS = [
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+  'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+  'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-',
+  'DEL', 'OK',
+];
+
+/** Clean GBA-style Nickname Entry Overlay (up to 10 characters). */
+export function renderNicknamePanel(ctx, mon, text, cursorIdx, tick = 0) {
+  ctx.fillStyle = 'rgba(10, 16, 28, 0.78)';
+  ctx.fillRect(0, 0, W, H);
+
+  drawGbaBox(ctx, 56, 24, 368, 222, {
+    fill: '#FAFBFD',
+    outerBorder: '#1C2432',
+    accentBorder: '#4C86A8',
+    accentHighlight: '#82BCE0',
+    innerBorder: '#2C3A4C',
+  });
+
+  drawText(ctx, `NICKNAME FOR ${mon.name}`, W / 2, 38, {
+    color: '#2A4C72',
+    scale: 2,
+    align: 'center',
+  });
+
+  // Current nickname box
+  ctx.fillStyle = '#E6F0F8';
+  ctx.fillRect(120, 62, 240, 24);
+  ctx.strokeStyle = '#4C86A8';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(120, 62, 240, 24);
+
+  const cursorBlink = Math.floor(tick / 20) % 2 === 0 ? '_' : ' ';
+  const shown = text.length < 10 ? `${text}${cursorBlink}` : text;
+  drawText(ctx, shown, W / 2, 68, {
+    color: '#182230',
+    scale: 2,
+    align: 'center',
+  });
+
+  // Letter grid (9 cols x 3 rows + DEL/OK bottom row)
+  const cols = 9;
+  for (let i = 0; i < 27; i++) {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const gx = 92 + col * 34;
+    const gy = 102 + row * 28;
+    const sel = i === cursorIdx;
+
+    if (sel) {
+      ctx.fillStyle = '#4C86A8';
+      ctx.fillRect(gx - 8, gy - 4, 26, 20);
+    }
+    drawText(ctx, NICKNAME_CHARS[i], gx + 5, gy + 2, {
+      color: sel ? '#FFFFFF' : '#243040',
+      scale: 1,
+      align: 'center',
+    });
+  }
+
+  // DEL (index 27) & OK (index 28)
+  const delSel = cursorIdx === 27;
+  ctx.fillStyle = delSel ? '#D85848' : '#E6ECF2';
+  ctx.fillRect(142, 190, 80, 22);
+  drawText(ctx, 'DELETE', 182, 197, {
+    color: delSel ? '#FFFFFF' : '#304050',
+    scale: 1,
+    align: 'center',
+  });
+
+  const okSel = cursorIdx === 28;
+  ctx.fillStyle = okSel ? '#3E9A54' : '#E6ECF2';
+  ctx.fillRect(258, 190, 80, 22);
+  drawText(ctx, 'DONE', 298, 197, {
+    color: okSel ? '#FFFFFF' : '#304050',
+    scale: 1,
+    align: 'center',
+  });
+
+  drawText(ctx, 'ARROWS: MOVE   Z: PICK   X: BACKSPACE', W / 2, 224, {
+    color: '#607084',
+    scale: 1,
+    align: 'center',
+  });
 }

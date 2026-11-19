@@ -1,20 +1,32 @@
 /**
- * Global game state and localStorage persistence (Phase 1 + Phase 2).
- * Persists: playerName, rivalName, starter, rivalStarter, party (full Pokémon objects),
- * money, settings (zoom, textSpeed), story flags, and player map + position.
+ * Global game state and localStorage persistence (Phases 1–3).
+ * Persists: playerName, rivalName, trainerId, playTimeFrames, starter, rivalStarter,
+ * party (up to 6 full Pokémon), pcBox, bag (pokeball/potion/antidote), money,
+ * pokedex (seen/caught), respawn point, picked hidden items, settings, flags & map position.
  */
 
 import { CONFIG } from './config.js';
-import { createPokemon, ensureFullPokemon, getCounterStarterId, getSpecies } from './data/pokemon.js';
+import {
+  createPokemon,
+  ensureFullPokemon,
+  getCounterStarterId,
+  getSpecies,
+} from './data/pokemon.js';
 
 const SAVE_STORAGE_KEY = 'monster_quest_dawn_save_v1';
+
+function randomTrainerId() {
+  return String(1 + Math.floor(Math.random() * 65534)).padStart(5, '0');
+}
 
 function createDefaultState() {
   return {
     playerName: 'RED',
     rivalName: CONFIG.DEFAULT_RIVAL_NAME || 'GARY',
-    starter: null, // Starter metadata object
-    rivalStarter: null, // Counter starter species metadata
+    trainerId: randomTrainerId(),
+    playTimeFrames: 0,
+    starter: null,
+    rivalStarter: null,
     money: 0,
     flags: {
       talkedToMom: false,
@@ -24,12 +36,15 @@ function createDefaultState() {
       rivalBattleDone: false,
       rivalBattleWon: false,
       healedByMom: false,
+      receivedStarterKit: false, // 5 Poké Balls + Pokédex from Professor/Aide
+      receivedMomPotions: false, // 2 Potions from Mom when leaving home
+      receivedMartSample: false, // Free Potion from Route 1 Mart Employee
       demoCompleted: false,
     },
     settings: {
-      graphicsMode: CONFIG.DEFAULT_GRAPHICS_MODE || 'classic', // 'classic' | 'enhanced'
-      zoom: CONFIG.DEFAULT_ZOOM || 'normal', // 'normal' (2x) | 'close' (3x)
-      textSpeed: CONFIG.DEFAULT_TEXT_SPEED || 'normal', // 'slow' | 'normal' | 'fast'
+      graphicsMode: CONFIG.DEFAULT_GRAPHICS_MODE || 'classic',
+      zoom: CONFIG.DEFAULT_ZOOM || 'normal',
+      textSpeed: CONFIG.DEFAULT_TEXT_SPEED || 'normal',
       settingsVersion: 3,
     },
     location: {
@@ -38,21 +53,31 @@ function createDefaultState() {
       y: 4,
       facing: 'down',
     },
-    party: [],
-    bag: {
-      pokeballs: 0,
-      potions: 0,
+    respawn: {
+      mapId: 'downstairs',
+      x: 5,
+      y: 5,
+      facing: 'up',
     },
+    party: [],
+    pcBox: [],
+    bag: {
+      pokeball: 0,
+      potion: 0,
+      antidote: 0,
+    },
+    pickedItems: [],
     pokedex: {
       seen: [],
       caught: [],
     },
+    // Runtime debug toggle (not persisted)
+    encountersEnabled: true,
   };
 }
 
 export const gameState = createDefaultState();
 
-/** Reset in-memory state for a fresh playthrough. */
 export function resetState(playerName = 'RED', rivalName = CONFIG.DEFAULT_RIVAL_NAME || 'GARY') {
   const fresh = createDefaultState();
   fresh.playerName = playerName || 'RED';
@@ -60,10 +85,76 @@ export function resetState(playerName = 'RED', rivalName = CONFIG.DEFAULT_RIVAL_
   Object.assign(gameState, fresh);
 }
 
-/** Set the chosen starter, create a full Gen 3 Lv 5 Pokémon in party, and record rival counter. */
+export function markPokedexSeen(speciesId) {
+  const id = Number(speciesId);
+  if (!id) return false;
+  if (!gameState.pokedex.seen.includes(id)) {
+    gameState.pokedex.seen.push(id);
+    return true;
+  }
+  return false;
+}
+
+export function markPokedexCaught(speciesId) {
+  const id = Number(speciesId);
+  if (!id) return false;
+  markPokedexSeen(id);
+  if (!gameState.pokedex.caught.includes(id)) {
+    gameState.pokedex.caught.push(id);
+    return true; // Newly registered!
+  }
+  return false;
+}
+
+export function addItem(itemId, qty = 1) {
+  if (!gameState.bag) gameState.bag = { pokeball: 0, potion: 0, antidote: 0 };
+  gameState.bag[itemId] = Math.max(0, (gameState.bag[itemId] || 0) + qty);
+}
+
+export function removeItem(itemId, qty = 1) {
+  if (!gameState.bag) return false;
+  const cur = gameState.bag[itemId] || 0;
+  if (cur < qty) return false;
+  gameState.bag[itemId] = cur - qty;
+  return true;
+}
+
+export function getItemCount(itemId) {
+  return (gameState.bag && gameState.bag[itemId]) || 0;
+}
+
+/** Add a caught Pokémon to the party (up to 6) or send it to the PC Box. */
+export function addCaughtPokemon(mon) {
+  mon.otName = gameState.playerName || 'RED';
+  mon.otId = gameState.trainerId || '00001';
+  markPokedexCaught(mon.speciesId || mon.id);
+
+  if (!Array.isArray(gameState.party)) gameState.party = [];
+  if (!Array.isArray(gameState.pcBox)) gameState.pcBox = [];
+
+  if (gameState.party.length < 6) {
+    gameState.party.push(mon);
+    return 'party';
+  }
+  gameState.pcBox.push(mon);
+  return 'pc';
+}
+
+export function getFirstHealthyPartyIndex() {
+  for (let i = 0; i < (gameState.party || []).length; i++) {
+    const mon = gameState.party[i];
+    if (mon && mon.currentHp > 0) return i;
+  }
+  return -1;
+}
+
 export function setStarter(starter) {
   gameState.starter = { ...starter };
-  const mon = createPokemon(starter.id, 5);
+  const mon = createPokemon(starter.id, 5, {
+    otName: gameState.playerName || 'RED',
+    otId: gameState.trainerId || '00001',
+    allowShiny: false,
+  });
   gameState.party = [mon];
   gameState.flags.gotStarter = true;
 
@@ -76,32 +167,41 @@ export function setStarter(starter) {
     type: counterSp.types[0],
   };
 
-  if (!gameState.pokedex.seen.includes(starter.id)) {
-    gameState.pokedex.seen.push(starter.id);
-  }
-  if (!gameState.pokedex.caught.includes(starter.id)) {
-    gameState.pokedex.caught.push(starter.id);
-  }
+  markPokedexCaught(starter.id);
   saveGame();
 }
 
-/** Return the player's lead party Pokémon (ensuring full Phase 2 structure). */
 export function getLeadPokemon() {
   if (!gameState.party || gameState.party.length === 0) {
     if (gameState.starter) {
-      gameState.party = [createPokemon(gameState.starter.id, 5)];
+      gameState.party = [
+        createPokemon(gameState.starter.id, 5, {
+          otName: gameState.playerName || 'RED',
+          otId: gameState.trainerId || '00001',
+          allowShiny: false,
+        }),
+      ];
     } else {
       return null;
     }
   }
-  gameState.party[0] = ensureFullPokemon(gameState.party[0]);
-  return gameState.party[0];
+  gameState.party = gameState.party.map((m) => ensureFullPokemon(m)).filter(Boolean);
+  return gameState.party[0] || null;
 }
 
-/** Persist current state to localStorage. */
+export function formatPlayTime(frames = gameState.playTimeFrames) {
+  const totalSec = Math.floor((frames || 0) / 60);
+  const hrs = Math.floor(totalSec / 3600);
+  const mins = Math.floor((totalSec % 3600) / 60);
+  const secs = totalSec % 60;
+  return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
 export function saveGame() {
   try {
-    localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(gameState));
+    const payload = { ...gameState };
+    delete payload.encountersEnabled;
+    localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(payload));
     return true;
   } catch {
     return false;
@@ -116,7 +216,6 @@ export function hasSave() {
   }
 }
 
-/** Load saved state from localStorage and gracefully migrate Phase 1 saves. */
 export function loadGame() {
   try {
     const raw = localStorage.getItem(SAVE_STORAGE_KEY);
@@ -126,22 +225,40 @@ export function loadGame() {
     Object.assign(gameState, fresh, parsed);
     gameState.flags = { ...fresh.flags, ...(parsed.flags || {}) };
     gameState.settings = { ...fresh.settings, ...(parsed.settings || {}) };
-    // Migrate pre-v3 saves cleanly to Classic Gen 3 + Normal zoom defaults
     if (!parsed.settings || (parsed.settings.settingsVersion || 1) < 3) {
       gameState.settings.graphicsMode = 'classic';
       gameState.settings.zoom = 'normal';
       gameState.settings.settingsVersion = 3;
     }
     gameState.location = { ...fresh.location, ...(parsed.location || {}) };
-    gameState.bag = { ...fresh.bag, ...(parsed.bag || {}) };
-    gameState.pokedex = { ...fresh.pokedex, ...(parsed.pokedex || {}) };
+    gameState.respawn = { ...fresh.respawn, ...(parsed.respawn || {}) };
 
-    // Ensure every party Pokémon has full Gen 3 stats, IVs, moves & EXP
-    if (Array.isArray(gameState.party)) {
-      gameState.party = gameState.party.map((m) => ensureFullPokemon(m)).filter(Boolean);
-    }
+    // Migrate old bag keys (`pokeballs` / `potions`) seamlessly into Phase 3 keys
+    const rawBag = parsed.bag || {};
+    gameState.bag = {
+      pokeball: rawBag.pokeball ?? rawBag.pokeballs ?? 0,
+      potion: rawBag.potion ?? rawBag.potions ?? 0,
+      antidote: rawBag.antidote ?? 0,
+    };
+
+    gameState.pickedItems = Array.isArray(parsed.pickedItems) ? parsed.pickedItems : [];
+    gameState.pokedex = {
+      seen: Array.isArray(parsed.pokedex?.seen) ? parsed.pokedex.seen : [],
+      caught: Array.isArray(parsed.pokedex?.caught) ? parsed.pokedex.caught : [],
+    };
+    gameState.party = Array.isArray(parsed.party)
+      ? parsed.party.map((m) => ensureFullPokemon(m)).filter(Boolean)
+      : [];
+    gameState.pcBox = Array.isArray(parsed.pcBox)
+      ? parsed.pcBox.map((m) => ensureFullPokemon(m)).filter(Boolean)
+      : [];
+    gameState.encountersEnabled = true;
+
     if (gameState.starter && !gameState.flags.gotStarter) {
       gameState.flags.gotStarter = true;
+    }
+    if (gameState.starter && gameState.starter.id) {
+      markPokedexCaught(gameState.starter.id);
     }
     if (gameState.starter && !gameState.rivalStarter) {
       const counterSp = getSpecies(getCounterStarterId(gameState.starter.id));
@@ -167,7 +284,6 @@ export function clearSave() {
   resetState('RED', CONFIG.DEFAULT_RIVAL_NAME || 'GARY');
 }
 
-/** Replace {PLAYER}, {RIVAL}, {STARTER}, and {RIVAL_STARTER} tokens in dialogue. */
 export function formatText(text) {
   const player = gameState.playerName || 'RED';
   const rival = gameState.rivalName || CONFIG.DEFAULT_RIVAL_NAME || 'GARY';
