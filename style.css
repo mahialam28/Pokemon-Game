@@ -1,0 +1,98 @@
+/* Responsive integer-scaled HD-2D handheld viewport (480x270 native 16:9) */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, #181d2b 0%, #090b10 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+}
+
+:fullscreen .stage {
+  padding: 0;
+  background: #000;
+}
+
+.viewport {
+  position: relative;
+  overflow: hidden;
+  background-color: #090b10;
+  box-shadow:
+    0 0 0 2px #2b3248,
+    0 0 0 5px #11141e,
+    0 24px 64px rgba(0, 0, 0, 0.8);
+  border-radius: 3px;
+}
+
+:fullscreen .viewport {
+  box-shadow: none;
+  border-radius: 0;
+}
+
+#game-canvas,
+#battle-vfx-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+#game-canvas {
+  z-index: 1;
+}
+
+#battle-sprite-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  display: none;
+}
+
+.battle-sprite-clip {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.battle-sprite-img {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  transform-origin: center bottom;
+  will-change: transform, opacity, filter;
+}
+
+#battle-vfx-canvas {
+  z-index: 3;
+  pointer-events: none;
+}

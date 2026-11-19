@@ -1,0 +1,11 @@
+{
+  "tileset": null,
+  "tilesetIndex": null,
+  "characters": {
+    "player": null,
+    "mom": null,
+    "prof": null,
+    "aide": null
+  },
+  "ui": {}
+}
