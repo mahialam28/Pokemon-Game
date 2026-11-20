@@ -86,6 +86,106 @@ export const TILE = {
   SOFA_L: 67,
   SOFA_R: 68,
   MART_SHELF: 69,
+
+  // Pokémon Center exterior (4x4 tiles)
+  PC_ROOF_00: 90,
+  PC_ROOF_10: 91,
+  PC_ROOF_20: 92,
+  PC_ROOF_30: 93,
+  PC_ROOF_01: 94,
+  PC_ROOF_11: 95,
+  PC_ROOF_21: 96,
+  PC_ROOF_31: 97,
+  PC_WALL_02: 98,
+  PC_WALL_12: 99,
+  PC_WALL_22: 100,
+  PC_WALL_32: 101,
+  PC_WALL_03: 102,
+  PC_DOOR_13: 103,
+  PC_DOOR_23: 104,
+  PC_WALL_33: 105,
+
+  // Main Character House Exterior
+  HERO_ROOF_L: 110,
+  HERO_ROOF_M: 111,
+  HERO_ROOF_DORMER: 112,
+  HERO_ROOF_R: 113,
+  HERO_WALL_L: 117,
+  HERO_WALL_WIN: 118,
+  HERO_BALCONY: 119,
+  HERO_WALL_R: 120,
+  HERO_DOOR: 122,
+
+  // Rival House & Training Exterior
+  RIVAL_ROOF_L: 125,
+  RIVAL_ROOF_PEAK: 126,
+  RIVAL_ROOF_R: 127,
+  RIVAL_WALL_BRICK: 131,
+  RIVAL_WALL_WIN: 132,
+  RIVAL_DOOR: 133,
+  TRAIN_BAG: 134,
+  TRAIN_WEIGHTS: 135,
+  TRAIN_SAND: 136,
+
+  // Poké Mart Exterior (4x4)
+  MART_ROOF_00: 140,
+  MART_ROOF_10: 141,
+  MART_ROOF_20: 142,
+  MART_ROOF_30: 143,
+  MART_ROOF_01: 144,
+  MART_ROOF_11: 145,
+  MART_ROOF_21: 146,
+  MART_ROOF_31: 147,
+  MART_WALL_02: 148,
+  MART_WALL_12: 149,
+  MART_WALL_22: 150,
+  MART_WALL_32: 151,
+  MART_WALL_03: 152,
+  MART_DOOR_13: 153,
+  MART_DOOR_23: 154,
+  MART_WALL_33: 155,
+
+  // Cobalt City Gym & Mixed Houses
+  GYM_ROOF_00: 160,
+  GYM_ROOF_10: 161,
+  GYM_ROOF_20: 162,
+  GYM_ROOF_30: 163,
+  GYM_ROOF_01: 164,
+  GYM_ROOF_11: 165,
+  GYM_ROOF_21: 166,
+  GYM_ROOF_31: 167,
+  GYM_WALL_02: 168,
+  GYM_WALL_12: 169,
+  GYM_WALL_22: 170,
+  GYM_WALL_32: 171,
+  GYM_WALL_03: 172,
+  GYM_DOOR_13: 173,
+  GYM_DOOR_23: 174,
+  GYM_WALL_33: 175,
+  ROOF_AMBER: 176,
+  ROOF_AMBER_TRIM: 177,
+  DOME_ROOF: 178,
+
+  // Gen 5 Pokémon Center Interior & Furniture
+  PC_WALL_RED: 180,
+  PC_ELEVATOR: 181,
+  PC_WALL_TV: 182,
+  PC_FLOOR_MOSAIC_TL: 183,
+  PC_FLOOR_MOSAIC_TR: 184,
+  PC_FLOOR_MOSAIC_BL: 185,
+  PC_FLOOR_MOSAIC_BR: 186,
+  PC_FLOOR_BLUE: 187,
+  PC_FLOOR_YELLOW: 188,
+  SOFA_YELLOW_L: 189,
+  SOFA_YELLOW_R: 190,
+  PLANT_PALM: 191,
+
+  // Interiors & Mart 2F
+  RUG_TEAL_PC: 195,
+  TROPHY_CASE: 196,
+  GYM_BENCH: 197,
+  MART_SHOWCASE: 198,
+  VENDING_MACHINE: 199,
 };
 
 /** Tiles that block standard walking (LEDGE is handled specially for downward hops). */
@@ -110,6 +210,20 @@ export const SOLID_TILES = new Set([
   TILE.CENTER_SIGN_P,
   TILE.MART_SIGN_M,
   TILE.FOUNTAIN,
+  TILE.PC_ROOF_00,
+  TILE.PC_ROOF_10,
+  TILE.PC_ROOF_20,
+  TILE.PC_ROOF_30,
+  TILE.PC_ROOF_01,
+  TILE.PC_ROOF_11,
+  TILE.PC_ROOF_21,
+  TILE.PC_ROOF_31,
+  TILE.PC_WALL_02,
+  TILE.PC_WALL_12,
+  TILE.PC_WALL_22,
+  TILE.PC_WALL_32,
+  TILE.PC_WALL_03,
+  TILE.PC_WALL_33,
   TILE.WALL_TOP,
   TILE.WALL_BOT,
   TILE.WALL_WINDOW,
@@ -1711,6 +1825,1665 @@ function buildPathAutoTile(mask) {
 }
 
 /** Compile all pixel-map tiles once at startup. */
+const PAL_POKECENTER = {
+  "0": "#201E2C",
+  "1": "#485058",
+  "2": "#808890",
+  "3": "#B8C0C8",
+  "4": "#E8ECE8",
+  "5": "#D0E8D0",
+  "6": "#F890B8",
+  "7": "#E06890",
+  "8": "#C03858",
+  "9": "#E84038",
+  "r": "#981820",
+  "Y": "#F8E050",
+  "y": "#C8A020",
+  "B": "#98D0F8",
+  "b": "#5890D8",
+  "d": "#285098",
+  "D": "#182858"
+};
+
+const MAP_PC_ROOF_00 = [
+  "..12111112222222",
+  ".135289766666666",
+  "1352897666336663",
+  "2531976663545665",
+  "2531976666553665",
+  "2531976666666666",
+  "2531976666666666",
+  "2531976666666666",
+  "2531976666555665",
+  "2531976666553665",
+  "2531976666666666",
+  "2531976666666666",
+  "2531976666336666",
+  "2531976663555665",
+  "2531976666553665",
+  "2531976666666666",
+];
+
+const MAP_PC_ROOF_10 = [
+  "2222222222222222",
+  "6666666666666666",
+  "3666663366663666",
+  "4566664456644566",
+  "5566665556655366",
+  "6666666666666666",
+  "6666666666666666",
+  "6666666666666666",
+  "5566665556655566",
+  "5566665556655366",
+  "6666666666666666",
+  "6666666666666666",
+  "3666666366663666",
+  "5566665556654566",
+  "5566665556654366",
+  "6666666666666666",
+];
+
+const MAP_PC_ROOF_20 = [
+  "2222222222222222",
+  "6666666666666666",
+  "6633666336666633",
+  "6644563445666644",
+  "6655366553666655",
+  "6666666666666666",
+  "6666666666666666",
+  "6666666666666666",
+  "6655566555666655",
+  "6655366553666655",
+  "6666666666666666",
+  "6666666666666666",
+  "6663666636666633",
+  "6655563555666655",
+  "6655366555666655",
+  "6666666666666666",
+];
+
+const MAP_PC_ROOF_30 = [
+  "2222222111122...",
+  "66666666792332..",
+  "666636666792332.",
+  "5665456666981331",
+  "3665556666981331",
+  "6666666666981331",
+  "6666666666981331",
+  "6666666666981331",
+  "5665556666981331",
+  "3665556666981331",
+  "6666666666981331",
+  "6666666666981331",
+  "6666366666981331",
+  "5665456666981331",
+  "3665456666981331",
+  "6666666666981331",
+];
+
+const MAP_PC_ROOF_01 = [
+  "2531976666666666",
+  "2531976666666666",
+  "2531976666555665",
+  "2531996666553665",
+  "2531999766666666",
+  "2531999776666666",
+  "2532899999999999",
+  "2553289999999999",
+  "2555328888888888",
+  "1355532111111111",
+  "1235555333333333",
+  "1223555555555555",
+  "1222222222222222",
+  ".122222222222222",
+  "..12222222222222",
+  "..11111111111111",
+];
+
+const MAP_PC_ROOF_11 = [
+  "6666666666666666",
+  "6666666666666666",
+  "5566665556655566",
+  "5366665536655366",
+  "6666666666666666",
+  "6666666666666666",
+  "9999999999999988",
+  "9999999999988822",
+  "8888888888811255",
+  "1111111111233554",
+  "3333333212354444",
+  "5555533223354444",
+  "2222221233354533",
+  "2222211233333322",
+  "2222112232222223",
+  "1111112222222222",
+];
+
+const MAP_PC_ROOF_21 = [
+  "6666666666666666",
+  "6666666666666666",
+  "6655566555666655",
+  "6655366553666655",
+  "6666666666666666",
+  "6666666666666666",
+  "8899999999999999",
+  "2288999999999999",
+  "5321888888888888",
+  "4553311111111111",
+  "4444522233333333",
+  "4444532223555555",
+  "3354533321222222",
+  "2233333321122222",
+  "3222222321122222",
+  "2222222221111111",
+];
+
+const MAP_PC_ROOF_31 = [
+  "6666666666981331",
+  "6666666666981331",
+  "5665556666981331",
+  "3665536667981331",
+  "6666666679981331",
+  "6666666799981331",
+  "9999999999982531",
+  "9999999999823531",
+  "8888888888235531",
+  "1111111112355521",
+  "3333333335555321",
+  "5555555555532221",
+  "2222222222222221",
+  "222222222222221.",
+  "22222222222221..",
+  "11111111111111..",
+];
+
+const MAP_PC_WALL_02 = [
+  "..11111111111111",
+  "..1222211yYYYYy1",
+  "..12222225YY55y1",
+  "..123332255Y55y2",
+  "..123553255Y55y2",
+  "..123543255Y55y2",
+  "..112543223y3322",
+  "..11133211111111",
+  "..11111111111111",
+  "..12211111166666",
+  "..12222222166666",
+  "..12333332176666",
+  "..12355552199766",
+  "..12354452118899",
+  "..12354452111188",
+  "..12354452112211",
+];
+
+const MAP_PC_WALL_12 = [
+  "1111112222222111",
+  "2221111222218977",
+  "2222112222187765",
+  "2332112221876555",
+  "3552122218976666",
+  "5443122289976766",
+  "5443132199965566",
+  "2332132199976355",
+  "1221132199999763",
+  "6662122188888888",
+  "6667111111111111",
+  "6666666666666666",
+  "6666666666666666",
+  "9999999999999999",
+  "8888888888888888",
+  "1111111111111111",
+];
+
+const MAP_PC_WALL_22 = [
+  "1112222222111111",
+  "7981123221112221",
+  "3679822321112222",
+  "5536782222112332",
+  "6636798222113553",
+  "6766799122223443",
+  "6353799812223443",
+  "5536999812212332",
+  "3679999812211221",
+  "8888888812217666",
+  "1111111111126666",
+  "6666666666666666",
+  "6666666666666666",
+  "9999999999999999",
+  "8888888888888888",
+  "1111111111111111",
+];
+
+const MAP_PC_WALL_32 = [
+  "11111111111111..",
+  "1YYYYYy1222211..",
+  "2Y55Y531222211..",
+  "2Y55Y531333211..",
+  "2Y55Y532555211..",
+  "2Y55Y532545211..",
+  "1y33y322545211..",
+  "11111111332111..",
+  "11111111111111..",
+  "66667111111211..",
+  "66667122222211..",
+  "66677123333211..",
+  "67798135555211..",
+  "99881134445211..",
+  "88111134445211..",
+  "11221134445211..",
+];
+
+const MAP_PC_WALL_03 = [
+  "..12354452113212",
+  "..12354452113212",
+  "..12354452113212",
+  "..12354452113212",
+  "..12354452113212",
+  "..12354452113212",
+  "..12354452113212",
+  "..12354452113212",
+  "..11254452113212",
+  "..11233332113212",
+  "..11111111112212",
+  "...1122222111112",
+  "....122222111111",
+  ".....11111112111",
+  "............1111",
+  "..............11",
+];
+
+const MAP_PC_DOOR_13 = [
+  "1dbbbbd11dbbbbd1",
+  "1dbbbbd11dbbbbd1",
+  "1dbbbbd11dbbbbd1",
+  "1bbbbbd11bbbbbd1",
+  "1bbbbb211bbbbb21",
+  "12bbbb211bbbbb21",
+  "123333211bb33321",
+  "1233332112333321",
+  "1233332112333321",
+  "1233332112333321",
+  "12b3332112b33321",
+  "12bbb3211bbb3321",
+  "1bbbbb211bbbbb21",
+  "12bbdd111dddbb21",
+  "1111111111111111",
+  "1...............",
+];
+
+const MAP_PC_DOOR_23 = [
+  "1dbbbbd11dbbbbd1",
+  "1dbbbbd11bbbbbd1",
+  "1dbbbbd11bbbbbd1",
+  "1bbbbbd11bbbbbd1",
+  "1bbbbb211bbbbb21",
+  "1bbbbb211bbbbb21",
+  "1b333b211b333321",
+  "1233332112333321",
+  "1333332113333321",
+  "13333b2113333321",
+  "12333b2113333b21",
+  "123bbb2112bbbb21",
+  "12bbbbd11bbbbb21",
+  "12bbddd11dddbb21",
+  "1111111111111111",
+  "...............1",
+];
+
+const MAP_PC_WALL_33 = [
+  "21221134445211..",
+  "21221134445211..",
+  "21221134445211..",
+  "21221134445211..",
+  "21221134445211..",
+  "21221134445211..",
+  "21221134445211..",
+  "21221134445211..",
+  "21221134445211..",
+  "21221123332111..",
+  "21221111111111..",
+  "2111112222211...",
+  "111111222221....",
+  "11121111111.....",
+  "1111............",
+  "11..............",
+];
+
+
+// ---------------------------------------------------------------------------
+// 1. PALETTES
+// ---------------------------------------------------------------------------
+const R = (...rows) => rows;
+const PAL_HERO_HOUSE = {
+  '0': '#162C38', '1': '#225068', '2': '#327494', '3': '#4E9EC2', '4': '#7ED0EC',
+  'w': '#2A2420', 'W': '#FFF8F0', 'e': '#D8CAB8', 'c': '#68A8D8', 'C': '#B0DCF8',
+  'g': '#388838', 'G': '#68C858', 'r': '#E04038', 'y': '#F8D840', 'b': '#64442C',
+  'B': '#946848', 'm': '#E84038', 'M': '#FFFFFF',
+};
+
+const PAL_RIVAL_HOUSE = {
+  '0': '#181A24', '1': '#282C38', '2': '#3E4658', '3': '#5E6A80', '4': '#8898B4',
+  'b': '#581814', 'B': '#882C24', 'r': '#B84034', 'R': '#E05040', 'm': '#F08070',
+  'w': '#3C281C', 'W': '#6C4830', 'c': '#4C7094', 'p': '#B82020', 'P': '#E84038',
+  'i': '#2C3038', 'I': '#4C5464', 's': '#D8BC84', 'S': '#F0D4A0',
+};
+
+const PAL_MART_EXT = {
+  '0': '#121C38', '1': '#1C2E60', '2': '#2A4690', '3': '#3E66CC', '4': '#6C94F0',
+  'y': '#B88414', 'Y': '#F8D434', 'w': '#E4E8EE', 'W': '#FFFFFF', 'c': '#242830',
+  'e': '#68707C', 'm': '#D4D8E0', 'M': '#F4F6F8', 'g': '#284878', 'G': '#4478B8',
+  'b': '#6CA8EC', 'B': '#B0D4FC',
+};
+
+const PAL_GYM_EXT = {
+  '0': '#302008', '1': '#5C3C10', '2': '#94641C', '3': '#C88C28', '4': '#F4BC44',
+  'm': '#282C34', 'M': '#586070', 'l': '#9CA6B8', 'L': '#D8E0EC', 'w': '#F8FAFE',
+  'g': '#B87814', 'G': '#F8D844', 'd': '#341818', 'D': '#5C2828', 'c': '#B83030',
+};
+
+const PAL_INTERIORS_UPGRADE = {
+  '0': '#161824', '1': '#2C3044', '2': '#4C546C', '3': '#7884A0', '4': '#C0C8DC',
+  'w': '#FFFFFF',
+  'r': '#902024', 'R': '#D03438', 'a': '#E85458',
+  'e': '#243454', 'E': '#3C5C90',
+  'f': '#F0E0B8', 'F': '#FAF4DC', 'm': '#D8C490', 'M': '#B8A068',
+  'b': '#386498', 'B': '#5488C8', 'c': '#90C0E8',
+  'y': '#D4A828', 'Y': '#F8D444', 'u': '#785088', 'U': '#B48CC8',
+  'p': '#307838', 'P': '#50A848', 't': '#885834',
+  'k': '#1E5868', 'K': '#34889C', 'h': '#7AD0E0',
+  'g': '#B88410', 'G': '#F8D438', 's': '#804820',
+  'i': '#2C3038', 'I': '#5C6474', 'q': '#B82828',
+  'v': '#2C3448', 'V': '#4C5C78', 'j': '#80D0F8',
+};
+
+// ---------------------------------------------------------------------------
+// 2. PIXEL MAPS: MAIN CHARACTER HOUSE
+// ---------------------------------------------------------------------------
+const MAP_HERO_ROOF_L = R(
+  '.......000000000',
+  '.....00444333222',
+  '....044333322222',
+  '...0433222222111',
+  '..04322222111111',
+  '..03222211111110',
+  '.032221111111000',
+  '.022211111100440',
+  '.022111111004330',
+  '0221111110043220',
+  '0211111100432210',
+  '0211111004322110',
+  '0111110043221110',
+  '0111100432211100',
+  '0000000000000000',
+  '0wwwwwwwwwwwwwww',
+);
+
+const MAP_HERO_ROOF_M = R(
+  '0000000000000000',
+  '2222222222222222',
+  '2222222222222222',
+  '1111111111111111',
+  '1111111111111111',
+  '1111111111111111',
+  '0000000000000000',
+  '4444444444444444',
+  '3333333333333333',
+  '2222222222222222',
+  '2222222222222222',
+  '1111111111111111',
+  '1111111111111111',
+  '1111111111111111',
+  '0000000000000000',
+  'wwwwwwwwwwwwwwww',
+);
+
+const MAP_HERO_ROOF_DORMER = R(
+  '0000000000000000',
+  '2222220000222222',
+  '2222204444022222',
+  '1111043333401111',
+  '1110430000340111',
+  '110430WwwW034011',
+  '00030WccccW03000',
+  '44030wCCccw03044',
+  '33030WccccW03033',
+  '22030WwwwwwW0222',
+  '222030WWWW032222',
+  '1111030000311111',
+  '1111103333011111',
+  '1111110000111111',
+  '0000000000000000',
+  'wwwwwwwwwwwwwwww',
+);
+
+const MAP_HERO_ROOF_R = R(
+  '000000000.......',
+  '22233344400.....',
+  '222223333440....',
+  '1112222223340...',
+  '11111122222340..',
+  '01111111222230..',
+  '000111111122230.',
+  '044001111112220.',
+  '033400111111220.',
+  '0223400111111220',
+  '0122340011111120',
+  '0112234001111120',
+  '0111223400111110',
+  '0011122340011110',
+  '0000000000000000',
+  'wwwwwwwwwwwwwww0',
+);
+
+const MAP_HERO_WALL_L = R(
+  'wWWWWWWWWWWWWWWW',
+  'wWWWWWWWWWWWWWWW',
+  'weeeeeeeeeeeeeee',
+  'wWWWW0000000WWWW',
+  'wWWW0cCCCCcc0WWW',
+  'weee0ccCCCCc0eee',
+  'wWWW0ccccCcc0WWW',
+  'wWWW000000000WWW',
+  'weee0bbbbbbb0eee',
+  'wWWW0grGyrGg0WWW',
+  'wWWW0GGryrGG0WWW',
+  'weee0bbbbbbb0eee',
+  'wWWWWWWWWWWWWWWW',
+  'weeeeeeeeeeeeeee',
+  'wWWWWWWWWWWWWWWW',
+  'w000000000000000',
+);
+
+const MAP_HERO_WALL_WIN = R(
+  'WWWWWWWWWWWWWWWW',
+  'WWWWWWWWWWWWWWWW',
+  'eeeeeeeeeeeeeeee',
+  'WWWW00000000WWWW',
+  'WWW0cCCCCccc0WWW',
+  'eee0ccCCCCcc0eee',
+  'WWW0ccccCccc0WWW',
+  'WWW0000000000WWW',
+  'eee0bbbbbbbb0eee',
+  'WWW0grGyrGyr0WWW',
+  'WWW0GGryrGyG0WWW',
+  'eee0bbbbbbbb0eee',
+  'WWWWWWWWWWWWWWWW',
+  'eeeeeeeeeeeeeeee',
+  'WWWWWWWWWWWWWWWW',
+  '0000000000000000',
+);
+
+const MAP_HERO_BALCONY = R(
+  'WWWWWWWWWWWWWWWW',
+  'WWWWWW0bbbbbb0WW',
+  'eeeeee0bBBBb0eee',
+  'WWWWWW0bB0Bb0WWW',
+  'WWWWWW0bB0Bb0WWW',
+  'eeeeee0bBBBb0eee',
+  'WW0bbbbbbbbbbbb0',
+  'WW0BBBBBBBBBBBB0',
+  'ee0b0b0b0b0b0b0e',
+  'WW0BgGGBGrGyGBG0',
+  'WW0bgGgGbrGyGbG0',
+  'ee0bbbbbbbbbbbb0',
+  'WW0gGg0WWWW0gGg0',
+  'ee0gg0eeeeee0gg0',
+  'WW0g0WWWWWWWW0g0',
+  '0000000000000000',
+);
+
+const MAP_HERO_WALL_R = R(
+  'WWWWWWWWWWWWWWWw',
+  'WWWWWWWWWWWWWWWw',
+  'eeeeeeeeeeeeeeew',
+  'WWWW0000000WWWWw',
+  'WWW0cCCCCcc0WWWw',
+  'eee0ccCCCCc0eeee',
+  'WWW0ccccCcc0WWWw',
+  'WWW000000000WWWw',
+  'eee0bbbbbbb0eeee',
+  'WWW0grGyrGg0WWWw',
+  'WWW0GGryrGG0WWWw',
+  'eee0bbbbbbb0eeee',
+  'WWWWWWWWWWWWWWWw',
+  'eeeeeeeeeeeeeeew',
+  'WWWWWWWWWWWWWWWw',
+  '000000000000000w',
+);
+
+const MAP_HERO_DOOR = R(
+  '0000000000000000',
+  '0333333333333330',
+  '0330000000000330',
+  '030WW0MMMM0WW030',
+  '00Ww0MmmmmM0wW00',
+  '00w0MrmMMMmr0w00',
+  '0w0MrmmMMmmr0M0w',
+  '0w000MM00MM0000w',
+  '0w0Wb000000bW00w',
+  '0w0bBBBBBBBBb00w',
+  '0w0bBwBBBBwBb00w',
+  '0w0bBBBBBBBBb00w',
+  '0w0bBwBBBBwBb00w',
+  '0w0bBBBBBBBBb00w',
+  '000bBBBBBBBBb000',
+  'eeeeeeeeeeeeeeee',
+);
+
+// ---------------------------------------------------------------------------
+// 3. PIXEL MAPS: RIVAL HOUSE & TRAINING AREA
+// ---------------------------------------------------------------------------
+const MAP_RIVAL_ROOF_L = R(
+  '.......000000000',
+  '.....00444333222',
+  '....044333322222',
+  '...0433222222111',
+  '..04322222111111',
+  '..03222211111110',
+  '.032221111111000',
+  '.022211111100440',
+  '.022111111004330',
+  '0221111110043220',
+  '0211111100432210',
+  '0211111004322110',
+  '0111110043221110',
+  '0111100432211100',
+  '0000000000000000',
+  'wWWWWWWWWWWWWWWW',
+);
+
+const MAP_RIVAL_ROOF_PEAK = R(
+  '.......0000.....',
+  '......044440....',
+  '.....04333340...',
+  '....0430000340..',
+  '...0430wwww0340.',
+  '..0430wcCCc0340.',
+  '.0430wcCCCCc0340',
+  '0430wcCCcCCc0340',
+  '030wcCcCCcCCc030',
+  '00wcccCcCcccw00.',
+  '0w0wwwwwwwwww0w0',
+  '0000000000000000',
+  'rBrBrBrBrBrBrBrB',
+  'BrBrBrBrBrBrBrBr',
+  'rBrBrBrBrBrBrBrB',
+  '0000000000000000',
+);
+
+const MAP_RIVAL_ROOF_R = R(
+  '000000000.......',
+  '22233344400.....',
+  '222223333440....',
+  '1112222223340...',
+  '11111122222340..',
+  '01111111222230..',
+  '000111111122230.',
+  '044001111112220.',
+  '033400111111220.',
+  '0223400111111220',
+  '0122340011111120',
+  '0112234001111120',
+  '0111223400111110',
+  '0011122340011110',
+  '0000000000000000',
+  'WWWWWWWWWWWWWWWw',
+);
+
+const MAP_RIVAL_WALL_BRICK = R(
+  'rBrBrBrBrBrBrBrB',
+  'BrBrBrBrBrBrBrBr',
+  'rBrBrBrBrBrBrBrB',
+  'BrBr00000000rBrB',
+  'rBr0cCCCCccc0BrB',
+  'BrB0ccCCCCcc0rBr',
+  'rBr0ccccCccc0BrB',
+  'BrB0000000000rBr',
+  'rBrBrBrBrBrBrBrB',
+  'BrBrBrBrBrBrBrBr',
+  'rBrBrBrBrBrBrBrB',
+  'BrBrBrBrBrBrBrBr',
+  'rBrBrBrBrBrBrBrB',
+  'BrBrBrBrBrBrBrBr',
+  'rBrBrBrBrBrBrBrB',
+  '0000000000000000',
+);
+
+const MAP_RIVAL_DOOR = R(
+  'rBrBrBrBrBrBrBrB',
+  'BrBr00000000rBrB',
+  'rBr0WWWWWWWW0BrB',
+  'Br0WwwwwwwwwW0rB',
+  'r0Ww0wwwwww0wW0B',
+  '0Ww0wWWWWWWw0wW0',
+  '0w0wWWwWWwWWw0w0',
+  '0w0wWWwWWwWWw0w0',
+  '0w0wWWWWWWWWw0w0',
+  '0w0wWWwWWwWWw0w0',
+  '0w0wWWwWWwWWw0w0',
+  '0w0wWWWWWWWWw0w0',
+  '0w0wWWwWWwWWw0w0',
+  '0w0wWWWWWWWWw0w0',
+  '000wWWWWWWWWw000',
+  'ssssssssssssssss',
+);
+
+const MAP_TRAIN_BAG = R(
+  '..0wwwwwwwwww0..',
+  '..0wWWWWWWWWw0..',
+  '..0w0000000000..',
+  '..0w0..0ii0.....',
+  '..0w0..0ii0.....',
+  '..0w0.0pPPp0....',
+  '..0w00pPPPPp0...',
+  '..0w00pPPPPp0...',
+  '..0w00pPPPPp0...',
+  '..0w00pPPPPp0...',
+  '..0w00pPPPPp0...',
+  '..0w0.0pPPp0....',
+  '..0w0..0pp0.....',
+  '..0w0...00......',
+  '..0w0...........',
+  'ssssssssssssssss',
+);
+
+const MAP_TRAIN_WEIGHTS = R(
+  'ssssssssssssssss',
+  'ssssssssssssssss',
+  'ssssssssssssssss',
+  'ssssssssssssssss',
+  'ssssssssssssssss',
+  'ssssssssssssssss',
+  'ssss0i0ssss0i0ss',
+  'ssss0I0ssss0I0ss',
+  'sss00I000000I00s',
+  'ss0i0IIIIII0i0s.',
+  's0iI0IIIIII0Ii0s',
+  's0ii0IIIIII0ii0s',
+  'ss000000000000ss',
+  'ssss0I0ssss0I0ss',
+  'ssss0i0ssss0i0ss',
+  'ssssssssssssssss',
+);
+
+const MAP_TRAIN_SAND = R(
+  'ssssssssssssssss',
+  'sssssSssssssssss',
+  'ssssssSsssssssss',
+  'ssssssssssssssss',
+  'ssssssssssSsssss',
+  'ssssssssssssssss',
+  'sssSssssssssssss',
+  'ssssssssssssssss',
+  'ssssssssssssssSs',
+  'ssssssssssssssss',
+  'ssssssSsssssssss',
+  'ssssssssssssssss',
+  'ssssssssssssssss',
+  'sssssSssssssssss',
+  'ssssssssssssssss',
+  'ssssssssssssssss',
+);
+
+// ---------------------------------------------------------------------------
+// 4. PIXEL MAPS: POKÉ MART EXTERIOR (4x4, Blue Octagonal Dome + White Pokéball)
+// ---------------------------------------------------------------------------
+const MAP_MART_ROOF_00 = R(
+  '.......000000000',
+  '.....00444333222',
+  '....044333322222',
+  '...0433222222111',
+  '..04322222111111',
+  '..03222211111110',
+  '.032221111111000',
+  '.022211111100yy0',
+  '.02211111100YYY0',
+  '02211111100yyyy0',
+  '0211111100WWWWWW',
+  '021111100wwwwwww',
+  '0111110033333330',
+  '0111100222222200',
+  '0000000000000000',
+  '0cccccccccccccc0',
+);
+
+const MAP_MART_ROOF_10 = R(
+  '0000000000000000',
+  '2222222222222222',
+  '2222222222222222',
+  '1111111111111111',
+  '1111111111111111',
+  '1111111111111111',
+  '0000000000000000',
+  'yyyyyyyyyyyyyyyy',
+  'YYYYYYYYYYYYYYYY',
+  'yyyyyyyyyyyyyyyy',
+  'WWWWWWWW00WWWWWW',
+  'wwwwwww0WW0wwwww',
+  '3333330WwwW03333',
+  '2222220WwwW02222',
+  '0000000000000000',
+  'cccccccccccccccc',
+);
+
+const MAP_MART_ROOF_20 = R(
+  '0000000000000000',
+  '2222222222222222',
+  '2222222222222222',
+  '1111111111111111',
+  '1111111111111111',
+  '1111111111111111',
+  '0000000000000000',
+  'yyyyyyyyyyyyyyyy',
+  'YYYYYYYYYYYYYYYY',
+  'yyyyyyyyyyyyyyyy',
+  'WWWWWW00WWWWWWWW',
+  'wwwww0WW0wwwwwww',
+  '33330WwwW0333333',
+  '22220WwwW0222222',
+  '0000000000000000',
+  'cccccccccccccccc',
+);
+
+const MAP_MART_ROOF_30 = R(
+  '000000000.......',
+  '22233344400.....',
+  '222223333440....',
+  '1112222223340...',
+  '11111122222340..',
+  '01111111222230..',
+  '000111111122230.',
+  '0yy001111112220.',
+  '0YYY00111111220.',
+  '0yyyy00111111220',
+  'WWWWWW0011111120',
+  'wwwwwww001111120',
+  '0333333300111110',
+  '0022222220011110',
+  '0000000000000000',
+  '0cccccccccccccc0',
+);
+
+const MAP_MART_ROOF_01 = R(
+  '0cccccccccccccc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0000000000000000',
+  '0yyyyyyyyyyyyyy0',
+  '0YYYYYYYYYYYYYY0',
+  '0000000000000000',
+);
+
+const MAP_MART_ROOF_11 = R(
+  'cccccccccccccccc',
+  'cMMMMMMMMMMMMMMc',
+  'cm000000000000mc',
+  'c0WWWWWWWWWWWW0c',
+  'c0W0000000000W0c',
+  'c0W0MM0000MM0W0c',
+  'c0W0M0wwww0M0W0c',
+  'c0W000wwww000W0c',
+  'c0W0M0wwww0M0W0c',
+  'c0W0MM0000MM0W0c',
+  'c0W0000000000W0c',
+  'c0WWWWWWWWWWWW0c',
+  '0000000000000000',
+  'yyyyyyyyyyyyyyyy',
+  'YYYYYYYYYYYYYYYY',
+  '0000000000000000',
+);
+
+const MAP_MART_ROOF_21 = R(
+  'cccccccccccccccc',
+  'cMMMMMMMMMMMMMMc',
+  'cm000000000000mc',
+  'c0WWWWWWWWWWWW0c',
+  'c0W0000000000W0c',
+  'c0W0MM0000MM0W0c',
+  'c0W0M0wwww0M0W0c',
+  'c0W000wwww000W0c',
+  'c0W0M0wwww0M0W0c',
+  'c0W0MM0000MM0W0c',
+  'c0W0000000000W0c',
+  'c0WWWWWWWWWWWW0c',
+  '0000000000000000',
+  'yyyyyyyyyyyyyyyy',
+  'YYYYYYYYYYYYYYYY',
+  '0000000000000000',
+);
+
+const MAP_MART_ROOF_31 = R(
+  '0cccccccccccccc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0000000000000000',
+  '0yyyyyyyyyyyyyy0',
+  '0YYYYYYYYYYYYYY0',
+  '0000000000000000',
+);
+
+const MAP_MART_WALL_02 = R(
+  '0cccccccccccccc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cccccccccccccc0',
+);
+
+const MAP_MART_WALL_12 = R(
+  '0000000000000000',
+  '0bbbbbbbbbbbbbb0',
+  '0bBBBBBBBBBBBBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBBBBBBBBBBBBb0',
+  '0000000000000000',
+);
+
+const MAP_MART_WALL_22 = R(
+  '0000000000000000',
+  '0bbbbbbbbbbbbbb0',
+  '0bBBBBBBBBBBBBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBggggbbbbgGBb0',
+  '0bBBBBBBBBBBBBb0',
+  '0000000000000000',
+);
+
+const MAP_MART_WALL_32 = R(
+  '0cccccccccccccc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cccccccccccccc0',
+);
+
+const MAP_MART_WALL_03 = R(
+  '0cccccccccccccc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cccccccccccccc0',
+  '0eeeeeeeeeeeeee0',
+  '0cccccccccccccc0',
+  '0000000000000000',
+);
+
+const MAP_MART_DOOR_13 = R(
+  '0000000000000000',
+  '0GGGGGGGG00GGGG0',
+  '0GbbbbbbG00GbbG0',
+  '0GbBBBBbG00GbBG0',
+  '0GbBBBBbG00GbBG0',
+  '0GbbbbbbG00GbbG0',
+  '0GbbbbbbG00GbbG0',
+  '0GbBBBBbG00GbBG0',
+  '0GbBBBBbG00GbBG0',
+  '0GbbbbbbG00GbbG0',
+  '0GbbbbbbG00GbbG0',
+  '0GbBBBBbG00GbBG0',
+  '0GbBBBBbG00GbBG0',
+  '0GbbbbbbG00GbbG0',
+  '0GGGGGGGG00GGGG0',
+  '0000000000000000',
+);
+
+const MAP_MART_DOOR_23 = R(
+  '0000000000000000',
+  '0GGGG00GGGGGGGG0',
+  '0GbbG00GbbbbbbG0',
+  '0GbBG00GbBBBBbG0',
+  '0GbBG00GbBBBBbG0',
+  '0GbbG00GbbbbbbG0',
+  '0GbbG00GbbbbbbG0',
+  '0GbBG00GbBBBBbG0',
+  '0GbBG00GbBBBBbG0',
+  '0GbbG00GbbbbbbG0',
+  '0GbbG00GbbbbbbG0',
+  '0GbBG00GbBBBBbG0',
+  '0GbBG00GbBBBBbG0',
+  '0GbbG00GbbbbbbG0',
+  '0GGGG00GGGGGGGG0',
+  '0000000000000000',
+);
+
+const MAP_MART_WALL_33 = R(
+  '0cccccccccccccc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cmmmmmmmmmmmmc0',
+  '0cMMMMMMMMMMMMc0',
+  '0cccccccccccccc0',
+  '0eeeeeeeeeeeeee0',
+  '0cccccccccccccc0',
+  '0000000000000000',
+);
+
+// ---------------------------------------------------------------------------
+// 5. PIXEL MAPS: POKÉMON GYM & COBALT CITY BUILDINGS
+// ---------------------------------------------------------------------------
+const MAP_GYM_ROOF_00 = R(
+  '.......000000000',
+  '.....00444333222',
+  '....044333322222',
+  '...0433222222111',
+  '..04322222111111',
+  '..03222211111110',
+  '.032221111111000',
+  '.022211111100GG0',
+  '.02211111100GGg0',
+  '02211111100GGgg0',
+  '0211111100wwwwww',
+  '021111100LLLLLLL',
+  '01111100llllllll',
+  '0111100MMMMMMMM0',
+  '0000000000000000',
+  '0mmmmmmmmmmmmmm0',
+);
+
+const MAP_GYM_ROOF_10 = R(
+  '0000000000000000',
+  '4444444444444444',
+  '3333333333333333',
+  '2222222222222222',
+  '1111111111111111',
+  '1111111111111111',
+  '0000000000000000',
+  'GGGGGGGGGGGGGGGG',
+  'gGGGGGGGGGGGGGGg',
+  'ggGGGGGGGGGGGGgg',
+  'wwwwwwwwwwwwwwww',
+  'LLLLLLLLLLLLLLLL',
+  'llllllllllllllll',
+  'MMMMMMMMMMMMMMMM',
+  '0000000000000000',
+  'mmmmmmmmmmmmmmmm',
+);
+
+const MAP_GYM_ROOF_20 = R(
+  '0000000000000000',
+  '4444444444444444',
+  '3333333333333333',
+  '2222222222222222',
+  '1111111111111111',
+  '1111111111111111',
+  '0000000000000000',
+  'GGGGGGGGGGGGGGGG',
+  'gGGGGGGGGGGGGGGg',
+  'ggGGGGGGGGGGGGgg',
+  'wwwwwwwwwwwwwwww',
+  'LLLLLLLLLLLLLLLL',
+  'llllllllllllllll',
+  'MMMMMMMMMMMMMMMM',
+  '0000000000000000',
+  'mmmmmmmmmmmmmmmm',
+);
+
+const MAP_GYM_ROOF_30 = R(
+  '000000000.......',
+  '22233344400.....',
+  '222223333440....',
+  '1112222223340...',
+  '11111122222340..',
+  '01111111222230..',
+  '000111111122230.',
+  '0GG001111112220.',
+  '0gGG00111111220.',
+  '0ggGG00111111220',
+  'wwwwww0011111120',
+  'LLLLLLL001111120',
+  'llllllll00111110',
+  '0MMMMMMMM0011110',
+  '0000000000000000',
+  '0mmmmmmmmmmmmmm0',
+);
+
+const MAP_GYM_ROOF_01 = R(
+  '0mmmmmmmmmmmmmm0',
+  '0mLLLLLLLLLLLLm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0000000000000000',
+  '0GGGGGGGGGGGGGG0',
+  '0gGGGGGGGGGGGGg0',
+  '0000000000000000',
+);
+
+const MAP_GYM_ROOF_11 = R(
+  'mmmmmmmmmmmmmmmm',
+  'mLLLLLLLLLLLLLLm',
+  'ml000000000000lm',
+  'm0GGGGGGGGGGGG0m',
+  'm0G0000000000G0m',
+  'm0G0gg0000gg0G0m',
+  'm0G0g0GGGG0g0G0m',
+  'm0G000GGGG000G0m',
+  'm0G0g0GGGG0g0G0m',
+  'm0G0gg0000gg0G0m',
+  'm0G0000000000G0m',
+  'm0GGGGGGGGGGGG0m',
+  '0000000000000000',
+  'GGGGGGGGGGGGGGGG',
+  'gGGGGGGGGGGGGGGg',
+  '0000000000000000',
+);
+
+const MAP_GYM_ROOF_21 = R(
+  'mmmmmmmmmmmmmmmm',
+  'mLLLLLLLLLLLLLLm',
+  'ml000000000000lm',
+  'm0GGGGGGGGGGGG0m',
+  'm0G0000000000G0m',
+  'm0G0gg0000gg0G0m',
+  'm0G0g0GGGG0g0G0m',
+  'm0G000GGGG000G0m',
+  'm0G0g0GGGG0g0G0m',
+  'm0G0gg0000gg0G0m',
+  'm0G0000000000G0m',
+  'm0GGGGGGGGGGGG0m',
+  '0000000000000000',
+  'GGGGGGGGGGGGGGGG',
+  'gGGGGGGGGGGGGGGg',
+  '0000000000000000',
+);
+
+const MAP_GYM_ROOF_31 = R(
+  '0mmmmmmmmmmmmmm0',
+  '0mLLLLLLLLLLLLm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0000000000000000',
+  '0GGGGGGGGGGGGGG0',
+  '0gGGGGGGGGGGGGg0',
+  '0000000000000000',
+);
+
+const MAP_GYM_WALL_02 = R(
+  '0mmmmmmmmmmmmmm0',
+  '0mLLLLLLLLLLLLm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mLLLLLLLLLLLLm0',
+  '0mmmmmmmmmmmmmm0',
+);
+
+const MAP_GYM_WALL_12 = R(
+  '0000000000000000',
+  '0DDDDDDDDDDDDDD0',
+  '0DddddddddddddD0',
+  '0DddddddddddddD0',
+  '0DddccddddccddD0',
+  '0DddccddddccddD0',
+  '0DddddddddddddD0',
+  '0DddddddddddddD0',
+  '0DddccddddccddD0',
+  '0DddccddddccddD0',
+  '0DddddddddddddD0',
+  '0DddddddddddddD0',
+  '0DddddddddddddD0',
+  '0DddddddddddddD0',
+  '0DddddddddddddD0',
+  '0000000000000000',
+);
+
+const MAP_GYM_WALL_22 = R(
+  '0000000000000000',
+  '0DDDDDDDDDDDDDD0',
+  '0DddddddddddddD0',
+  '0DddddddddddddD0',
+  '0DddccddddccddD0',
+  '0DddccddddccddD0',
+  '0DddddddddddddD0',
+  '0DddddddddddddD0',
+  '0DddccddddccddD0',
+  '0DddccddddccddD0',
+  '0DddddddddddddD0',
+  '0DddddddddddddD0',
+  '0DddddddddddddD0',
+  '0DddddddddddddD0',
+  '0DddddddddddddD0',
+  '0000000000000000',
+);
+
+const MAP_GYM_WALL_32 = R(
+  '0mmmmmmmmmmmmmm0',
+  '0mLLLLLLLLLLLLm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mLLLLLLLLLLLLm0',
+  '0mmmmmmmmmmmmmm0',
+);
+
+const MAP_GYM_WALL_03 = R(
+  '0mmmmmmmmmmmmmm0',
+  '0mLLLLLLLLLLLLm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mmmmmmmmmmmmmm0',
+  '0MMMMMMMMMMMMMM0',
+  '0mmmmmmmmmmmmmm0',
+  '0000000000000000',
+);
+
+const MAP_GYM_DOOR_13 = R(
+  '0000000000000000',
+  '0DDDDDDDD00DDDD0',
+  '0DddddddD00DddD0',
+  '0DddccddD00DdcD0',
+  '0DddccddD00DdcD0',
+  '0DddddddD00DddD0',
+  '0DddddddD00DddD0',
+  '0DddccddD00DdcD0',
+  '0DddccddD00DdcD0',
+  '0DddddddD00DddD0',
+  '0DddddddD00DddD0',
+  '0DddccddD00DdcD0',
+  '0DddccddD00DdcD0',
+  '0DddddddD00DddD0',
+  '0DDDDDDDD00DDDD0',
+  '0000000000000000',
+);
+
+const MAP_GYM_DOOR_23 = R(
+  '0000000000000000',
+  '0DDDD00DDDDDDDD0',
+  '0DddD00DddddddD0',
+  '0DdcD00DddccddD0',
+  '0DdcD00DddccddD0',
+  '0DddD00DddddddD0',
+  '0DddD00DddddddD0',
+  '0DdcD00DddccddD0',
+  '0DdcD00DddccddD0',
+  '0DddD00DddddddD0',
+  '0DddD00DddddddD0',
+  '0DdcD00DddccddD0',
+  '0DdcD00DddccddD0',
+  '0DddD00DddddddD0',
+  '0DDDD00DDDDDDDD0',
+  '0000000000000000',
+);
+
+const MAP_GYM_WALL_33 = R(
+  '0mmmmmmmmmmmmmm0',
+  '0mLLLLLLLLLLLLm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mlLLLLLLLLLLlm0',
+  '0mmmmmmmmmmmmmm0',
+  '0MMMMMMMMMMMMMM0',
+  '0mmmmmmmmmmmmmm0',
+  '0000000000000000',
+);
+
+const MAP_DOME_ROOF = R(
+  '......000000....',
+  '....0044444400..',
+  '...044333333440.',
+  '..04332222223340',
+  '.043221100112234',
+  '.032211000011223',
+  '0322110044001122',
+  '0321100433400112',
+  '0221100433400112',
+  '0211100433400111',
+  '0211110044001111',
+  '.011111000011111',
+  '.011111100111111',
+  '..01111111111110',
+  '...000000000000.',
+  '0000000000000000',
+);
+
+// ---------------------------------------------------------------------------
+// 6. PIXEL MAPS: INTERIOR FURNITURE & GEN 5 POKÉMON CENTER
+// ---------------------------------------------------------------------------
+const MAP_PC_WALL_RED = R(
+  'rrrrrrrrrrrrrrrr',
+  'RRRRRRRRRRRRRRRR',
+  'aaaaaaaaaaaaaaaa',
+  'RRRRRRRRRRRRRRRR',
+  'rrrrrrrrrrrrrrrr',
+  '0000000000000000',
+  '4444444444444444',
+  '3333333333333333',
+  '2222222222222222',
+  '1111111111111111',
+  '0000000000000000',
+  'eeeeeeeeeeeeeeee',
+  'EEEEEEEEEEEEEEEE',
+  'eeeeeeeeeeeeeeee',
+  '0000000000000000',
+  'ffffffffffffffff',
+);
+
+const MAP_PC_ELEVATOR = R(
+  '0000000000000000',
+  '0EEEEEEEEEEEEEE0',
+  '0E000000000000E0',
+  '0E0ffffffffff0E0',
+  '0E0f00000000f0E0',
+  '0E0f0eeeeee0f0E0',
+  '0E0f0eEEEEe0f0E0',
+  '0E0f0eEeeEe0f0E0',
+  '0E0f0eEeeEe0f0E0',
+  '0E0f0eEeeEe0f0E0',
+  '0E0f0eEEEEe0f0E0',
+  '0E0f0eeeeee0f0E0',
+  '0E0f00000000f0E0',
+  '0E0ffffffffff0E0',
+  '0E000000000000E0',
+  '0000000000000000',
+);
+
+const MAP_PC_WALL_TV = R(
+  'rrrrrrrrrrrrrrrr',
+  'RR000000000000RR',
+  'aa0eeeeeeeeee0aa',
+  'RR0e00000000e0RR',
+  'rr0e0cCCCCce0rr.',
+  '000e0c0ww0ce0000',
+  '440e0cwwwwce0444',
+  '330e0cwwwwce0333',
+  '220e0c0ww0ce0222',
+  '110e0ccccccce011',
+  '000e00000000e000',
+  'ee0eeeeeeeeee0ee',
+  'EE000000000000EE',
+  'eeeeeeeeeeeeeeee',
+  '0000000000000000',
+  'ffffffffffffffff',
+);
+
+const MAP_PC_FLOOR_MOSAIC_TL = R(
+  'ffffffffffffffff',
+  'ffffffffffffffff',
+  'ffffffffffffffff',
+  'ffffffffffffffff',
+  'ffffffffffff0000',
+  'fffffffff000FFFF',
+  'fffffff00FFFFFFF',
+  'ffffff0FFFFFFFFF',
+  'fffff0FFFFFFFFFF',
+  'ffff0FFFFFFFFFFF',
+  'ffff0FFFFFFFFFFF',
+  'fff0FFFFF0000000',
+  'fff0FFFF0mmmmmmm',
+  'ff0FFFF0mmmmmmmm',
+  'ff0FFFF0mmmmmmmm',
+  'ff0FFFF0mmmmmmmm',
+);
+
+const MAP_PC_FLOOR_MOSAIC_TR = R(
+  'ffffffffffffffff',
+  'ffffffffffffffff',
+  'ffffffffffffffff',
+  'ffffffffffffffff',
+  '0000ffffffffffff',
+  'FFFF000fffffffff',
+  'FFFFFFF00fffffff',
+  'FFFFFFFFF0ffffff',
+  'FFFFFFFFFF0fffff',
+  'FFFFFFFFFFF0ffff',
+  'FFFFFFFFFFF0ffff',
+  '0000000FFFFF0fff',
+  'mmmmmmm0FFFF0fff',
+  'mmmmmmmm0FFFF0ff',
+  'mmmmmmmm0FFFF0ff',
+  'mmmmmmmm0FFFF0ff',
+);
+
+const MAP_PC_FLOOR_MOSAIC_BL = R(
+  'ff0FFFF0mmmmmmmm',
+  'ff0FFFF0mmmmmmmm',
+  'ff0FFFF0mmmmmmmm',
+  'fff0FFFF0mmmmmmm',
+  'fff0FFFFF0000000',
+  'ffff0FFFFFFFFFFF',
+  'ffff0FFFFFFFFFFF',
+  'fffff0FFFFFFFFFF',
+  'ffffff0FFFFFFFFF',
+  'fffffff00FFFFFFF',
+  'fffffffff000FFFF',
+  'ffffffffffff0000',
+  'ffffffffffffffff',
+  'ffffffffffffffff',
+  'ffffffffffffffff',
+  'ffffffffffffffff',
+);
+
+const MAP_PC_FLOOR_MOSAIC_BR = R(
+  'mmmmmmmm0FFFF0ff',
+  'mmmmmmmm0FFFF0ff',
+  'mmmmmmmm0FFFF0ff',
+  'mmmmmmm0FFFF0fff',
+  '0000000FFFFF0fff',
+  'FFFFFFFFFFF0ffff',
+  'FFFFFFFFFFF0ffff',
+  'FFFFFFFFFF0fffff',
+  'FFFFFFFFF0ffffff',
+  'FFFFFFF00fffffff',
+  'FFFF000fffffffff',
+  '0000ffffffffffff',
+  'ffffffffffffffff',
+  'ffffffffffffffff',
+  'ffffffffffffffff',
+  'ffffffffffffffff',
+);
+
+const MAP_PC_FLOOR_BLUE = R(
+  'bbbbbbbbbbbbbbbb',
+  'bBBBBBBBBBBBBBBb',
+  'bBcCcCcCcCcCcCcB',
+  'bBBBBBBBBBBBBBBb',
+  'bBcCcCcCcCcCcCcB',
+  'bBBBBBBBBBBBBBBb',
+  'bBcCcCcCcCcCcCcB',
+  'bBBBBBBBBBBBBBBb',
+  'bBcCcCcCcCcCcCcB',
+  'bBBBBBBBBBBBBBBb',
+  'bBcCcCcCcCcCcCcB',
+  'bBBBBBBBBBBBBBBb',
+  'bBcCcCcCcCcCcCcB',
+  'bBBBBBBBBBBBBBBb',
+  'bBBBBBBBBBBBBBBb',
+  'bbbbbbbbbbbbbbbb',
+);
+
+const MAP_PC_FLOOR_YELLOW = R(
+  'uuuuuuuuuuuuuuuu',
+  'uUUUUUUUUUUUUUUu',
+  'uUyYyYyYyYyYyYyU',
+  'uUUUUUUUUUUUUUUu',
+  'uUyYyYyYyYyYyYyU',
+  'uUUUUUUUUUUUUUUu',
+  'uUyYyYyYyYyYyYyU',
+  'uUUUUUUUUUUUUUUu',
+  'uUyYyYyYyYyYyYyU',
+  'uUUUUUUUUUUUUUUu',
+  'uUyYyYyYyYyYyYyU',
+  'uUUUUUUUUUUUUUUu',
+  'uUyYyYyYyYyYyYyU',
+  'uUUUUUUUUUUUUUUu',
+  'uUUUUUUUUUUUUUUu',
+  'uuuuuuuuuuuuuuuu',
+);
+
+const MAP_SOFA_YELLOW_L = R(
+  '................',
+  '................',
+  '..00000000000000',
+  '..0YYYYYYYYYYYYY',
+  '..0YYyYYyYYyYYyY',
+  '..0YYYYYYYYYYYYY',
+  '..0YY00000000000',
+  '..0YY0yyyyyyyyyy',
+  '..0YY0YYYYYYYYYY',
+  '..0YY0YYYYYYYYYY',
+  '..0YY0yyyyyyyyyy',
+  '..0YY00000000000',
+  '..0YY0ssssssssss',
+  '..0000ssssssssss',
+  '................',
+  '................',
+);
+
+const MAP_SOFA_YELLOW_R = R(
+  '................',
+  '................',
+  '00000000000000..',
+  'YYYYYYYYYYYYY0..',
+  'YyYYyYYyYYyYY0..',
+  'YYYYYYYYYYYYY0..',
+  '00000000000YY0..',
+  'yyyyyyyyyy0YY0..',
+  'YYYYYYYYYY0YY0..',
+  'YYYYYYYYYY0YY0..',
+  'yyyyyyyyyy0YY0..',
+  '00000000000YY0..',
+  'ssssssssss0YY0..',
+  'ssssssssss0000..',
+  '................',
+  '................',
+);
+
+const MAP_PLANT_PALM = R(
+  '.....0PPPPP0....',
+  '...00PPPPPPP00..',
+  '..0PP0pPPPp0PP0.',
+  '.0PPPp0ppp0pPPP0',
+  '.0PPpPP000PPpPP0',
+  '..000PPptpPP000.',
+  '....0PPptpPP0...',
+  '.....000t000....',
+  '.......0t0......',
+  '.......0t0......',
+  '.....0000000....',
+  '....0bbbbbbb0...',
+  '....0bBBBBBb0...',
+  '....0bBBBBBb0...',
+  '....0bbbbbbb0...',
+  '.....0000000....',
+);
+
+const MAP_RUG_TEAL_PC = R(
+  '..000000000000..',
+  '.0kKKKhhhhKKKk0.',
+  '0kKhhhhhhhhhhKk0',
+  '0KhhhKK00KKhhhK0',
+  '0KhhK0FFFF0KhhK0',
+  '0KhK0FFFFFF0KhK0',
+  '0Kh0FFFFFFFF0hK0',
+  '0Kh0000mm0000hK0',
+  '0Kh0000mm0000hK0',
+  '0Kh0FFFFFFFF0hK0',
+  '0KhK0FFFFFF0KhK0',
+  '0KhhK0FFFF0KhhK0',
+  '0KhhhKK00KKhhhK0',
+  '0kKhhhhhhhhhhKk0',
+  '.0kKKKhhhhKKKk0.',
+  '..000000000000..',
+);
+
+const MAP_TROPHY_CASE = R(
+  '0000000000000000',
+  '0ssssssssssssss0',
+  '0s00s00ss00s00s0',
+  '0s0G00G0s0G00G0s',
+  '0s0G00G0s0G00G0s',
+  '0s000000s000000s',
+  '0ssssssssssssss0',
+  '0s..0GGGGGG0..s0',
+  '0s.0GGGGGGGG0.s0',
+  '0s.0G0GggG0G0.s0',
+  '0s..0GGGGGG0..s0',
+  '0s...0gGGg0...s0',
+  '0s....0gg0....s0',
+  '0s...0GGGG0...s0',
+  '0ssssssssssssss0',
+  '0000000000000000',
+);
+
+const MAP_GYM_BENCH = R(
+  '................',
+  '................',
+  '..000000000000..',
+  '.0qqqqqqqqqqqq0.',
+  '.0qQQQQQQQQQQq0.',
+  '.0qqqqqqqqqqqq0.',
+  '.00000000000000.',
+  '..0I0ssssss0I0..',
+  '..0I0ssssss0I0..',
+  '.00I00000000I00.',
+  '0i0IIIIIIII0i0..',
+  '0iI0IIIIIIII0Ii0',
+  '0ii0IIIIIIII0ii0',
+  '.00000000000000.',
+  '..0I0ssssss0I0..',
+  '..0i0ssssss0i0..',
+);
+
+const MAP_MART_SHOWCASE = R(
+  '0000000000000000',
+  '0vvvvvvvvvvvvvv0',
+  '0vVVVVVVVVVVVVv0',
+  '0vV0000000000Vv0',
+  '0v0jjjjjjjjjj0v0',
+  '0v0jJJJJJJJJj0v0',
+  '0v0jJJjJJjJJj0v0',
+  '0v0jJJJJJJJJj0v0',
+  '0v0jjjjjjjjjj0v0',
+  '0vV0000000000Vv0',
+  '0vVVVVVVVVVVVVv0',
+  '0vVVVVVVVVVVVVv0',
+  '0vvvvvvvvvvvvvv0',
+  '0VVVVVVVVVVVVVV0',
+  '0vvvvvvvvvvvvvv0',
+  '0000000000000000',
+);
+
+const MAP_VENDING_MACHINE = R(
+  '0000000000000000',
+  '0eeeeeeeeeeeeee0',
+  '0eEEEEEEEEEEEEe0',
+  '0eE0000000000Ee0',
+  '0e0cCcCcCcCcC0e0',
+  '0e0cCcCcCcCcC0e0',
+  '0e0cCcCcCcCcC0e0',
+  '0eE0000000000Ee0',
+  '0eE0rrrr00yy0Ee0',
+  '0eE0rrrr00yy0Ee0',
+  '0eE0000000000Ee0',
+  '0eE0000000000Ee0',
+  '0e0bbbbbbbbbb0e0',
+  '0eEEEEEEEEEEEEe0',
+  '0eeeeeeeeeeeeee0',
+  '0000000000000000',
+);
+
 export function initTiles() {
   if (tileCache.size > 0) return;
 
@@ -1868,6 +3641,111 @@ export function initTiles() {
   tileCache.set(TILE.MART_SHELF, [
     compilePixelMap(MAP_MART_SHELF, PAL_INTERIOR, { underlay: labFloor }),
   ]);
+
+  // Pokémon Center Exterior (4x4 tiles)
+  const pcUnderlay = grassVariants[0];
+  tileCache.set(TILE.PC_ROOF_00, [compilePixelMap(MAP_PC_ROOF_00, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_ROOF_10, [compilePixelMap(MAP_PC_ROOF_10, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_ROOF_20, [compilePixelMap(MAP_PC_ROOF_20, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_ROOF_30, [compilePixelMap(MAP_PC_ROOF_30, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_ROOF_01, [compilePixelMap(MAP_PC_ROOF_01, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_ROOF_11, [compilePixelMap(MAP_PC_ROOF_11, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_ROOF_21, [compilePixelMap(MAP_PC_ROOF_21, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_ROOF_31, [compilePixelMap(MAP_PC_ROOF_31, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_WALL_02, [compilePixelMap(MAP_PC_WALL_02, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_WALL_12, [compilePixelMap(MAP_PC_WALL_12, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_WALL_22, [compilePixelMap(MAP_PC_WALL_22, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_WALL_32, [compilePixelMap(MAP_PC_WALL_32, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_WALL_03, [compilePixelMap(MAP_PC_WALL_03, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_DOOR_13, [compilePixelMap(MAP_PC_DOOR_13, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_DOOR_23, [compilePixelMap(MAP_PC_DOOR_23, PAL_POKECENTER, { underlay: pcUnderlay })]);
+  tileCache.set(TILE.PC_WALL_33, [compilePixelMap(MAP_PC_WALL_33, PAL_POKECENTER, { underlay: pcUnderlay })]);
+
+  // Main Character House
+  const heroUnderlay = grassVariants[0];
+  tileCache.set(TILE.HERO_ROOF_L, [compilePixelMap(MAP_HERO_ROOF_L, PAL_HERO_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.HERO_ROOF_M, [compilePixelMap(MAP_HERO_ROOF_M, PAL_HERO_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.HERO_ROOF_DORMER, [compilePixelMap(MAP_HERO_ROOF_DORMER, PAL_HERO_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.HERO_ROOF_R, [compilePixelMap(MAP_HERO_ROOF_R, PAL_HERO_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.HERO_WALL_L, [compilePixelMap(MAP_HERO_WALL_L, PAL_HERO_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.HERO_WALL_WIN, [compilePixelMap(MAP_HERO_WALL_WIN, PAL_HERO_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.HERO_BALCONY, [compilePixelMap(MAP_HERO_BALCONY, PAL_HERO_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.HERO_WALL_R, [compilePixelMap(MAP_HERO_WALL_R, PAL_HERO_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.HERO_DOOR, [compilePixelMap(MAP_HERO_DOOR, PAL_HERO_HOUSE, { underlay: heroUnderlay })]);
+
+  // Rival House & Training
+  tileCache.set(TILE.RIVAL_ROOF_L, [compilePixelMap(MAP_RIVAL_ROOF_L, PAL_RIVAL_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.RIVAL_ROOF_PEAK, [compilePixelMap(MAP_RIVAL_ROOF_PEAK, PAL_RIVAL_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.RIVAL_ROOF_R, [compilePixelMap(MAP_RIVAL_ROOF_R, PAL_RIVAL_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.RIVAL_WALL_BRICK, [compilePixelMap(MAP_RIVAL_WALL_BRICK, PAL_RIVAL_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.RIVAL_WALL_WIN, [compilePixelMap(MAP_RIVAL_WALL_BRICK, PAL_RIVAL_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.RIVAL_DOOR, [compilePixelMap(MAP_RIVAL_DOOR, PAL_RIVAL_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.TRAIN_BAG, [compilePixelMap(MAP_TRAIN_BAG, PAL_RIVAL_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.TRAIN_WEIGHTS, [compilePixelMap(MAP_TRAIN_WEIGHTS, PAL_RIVAL_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.TRAIN_SAND, [compilePixelMap(MAP_TRAIN_SAND, PAL_RIVAL_HOUSE, { underlay: heroUnderlay })]);
+
+  // Poké Mart Exterior (4x4)
+  tileCache.set(TILE.MART_ROOF_00, [compilePixelMap(MAP_MART_ROOF_00, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_ROOF_10, [compilePixelMap(MAP_MART_ROOF_10, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_ROOF_20, [compilePixelMap(MAP_MART_ROOF_20, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_ROOF_30, [compilePixelMap(MAP_MART_ROOF_30, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_ROOF_01, [compilePixelMap(MAP_MART_ROOF_01, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_ROOF_11, [compilePixelMap(MAP_MART_ROOF_11, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_ROOF_21, [compilePixelMap(MAP_MART_ROOF_21, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_ROOF_31, [compilePixelMap(MAP_MART_ROOF_31, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_WALL_02, [compilePixelMap(MAP_MART_WALL_02, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_WALL_12, [compilePixelMap(MAP_MART_WALL_12, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_WALL_22, [compilePixelMap(MAP_MART_WALL_22, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_WALL_32, [compilePixelMap(MAP_MART_WALL_32, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_WALL_03, [compilePixelMap(MAP_MART_WALL_03, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_DOOR_13, [compilePixelMap(MAP_MART_DOOR_13, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_DOOR_23, [compilePixelMap(MAP_MART_DOOR_23, PAL_MART_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.MART_WALL_33, [compilePixelMap(MAP_MART_WALL_33, PAL_MART_EXT, { underlay: heroUnderlay })]);
+
+  // Pokémon Gym & Cobalt City
+  tileCache.set(TILE.GYM_ROOF_00, [compilePixelMap(MAP_GYM_ROOF_00, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_ROOF_10, [compilePixelMap(MAP_GYM_ROOF_10, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_ROOF_20, [compilePixelMap(MAP_GYM_ROOF_20, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_ROOF_30, [compilePixelMap(MAP_GYM_ROOF_30, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_ROOF_01, [compilePixelMap(MAP_GYM_ROOF_01, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_ROOF_11, [compilePixelMap(MAP_GYM_ROOF_11, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_ROOF_21, [compilePixelMap(MAP_GYM_ROOF_21, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_ROOF_31, [compilePixelMap(MAP_GYM_ROOF_31, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_WALL_02, [compilePixelMap(MAP_GYM_WALL_02, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_WALL_12, [compilePixelMap(MAP_GYM_WALL_12, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_WALL_22, [compilePixelMap(MAP_GYM_WALL_22, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_WALL_32, [compilePixelMap(MAP_GYM_WALL_32, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_WALL_03, [compilePixelMap(MAP_GYM_WALL_03, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_DOOR_13, [compilePixelMap(MAP_GYM_DOOR_13, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_DOOR_23, [compilePixelMap(MAP_GYM_DOOR_23, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.GYM_WALL_33, [compilePixelMap(MAP_GYM_WALL_33, PAL_GYM_EXT, { underlay: heroUnderlay })]);
+
+  const amberPal = { '0': '#3C2808', '1': '#684410', '2': '#A06C18', '3': '#D89828', '4': '#F8D050' };
+  tileCache.set(TILE.ROOF_AMBER, [compilePixelMap(MAP_ROOF, amberPal)]);
+  tileCache.set(TILE.ROOF_AMBER_TRIM, [compilePixelMap(MAP_ROOF_TRIM, amberPal)]);
+  tileCache.set(TILE.DOME_ROOF, [compilePixelMap(MAP_DOME_ROOF, PAL_MART_EXT, { underlay: heroUnderlay })]);
+
+  // Gen 5 Pokémon Center Interior & Furniture
+  tileCache.set(TILE.PC_WALL_RED, [compilePixelMap(MAP_PC_WALL_RED, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.PC_ELEVATOR, [compilePixelMap(MAP_PC_ELEVATOR, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.PC_WALL_TV, [compilePixelMap(MAP_PC_WALL_TV, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.PC_FLOOR_MOSAIC_TL, [compilePixelMap(MAP_PC_FLOOR_MOSAIC_TL, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.PC_FLOOR_MOSAIC_TR, [compilePixelMap(MAP_PC_FLOOR_MOSAIC_TR, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.PC_FLOOR_MOSAIC_BL, [compilePixelMap(MAP_PC_FLOOR_MOSAIC_BL, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.PC_FLOOR_MOSAIC_BR, [compilePixelMap(MAP_PC_FLOOR_MOSAIC_BR, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.PC_FLOOR_BLUE, [compilePixelMap(MAP_PC_FLOOR_BLUE, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.PC_FLOOR_YELLOW, [compilePixelMap(MAP_PC_FLOOR_YELLOW, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.SOFA_YELLOW_L, [compilePixelMap(MAP_SOFA_YELLOW_L, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.SOFA_YELLOW_R, [compilePixelMap(MAP_SOFA_YELLOW_R, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.PLANT_PALM, [compilePixelMap(MAP_PLANT_PALM, PAL_INTERIORS_UPGRADE)]);
+
+  // Interiors & Mart 2F
+  tileCache.set(TILE.RUG_TEAL_PC, [compilePixelMap(MAP_RUG_TEAL_PC, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.TROPHY_CASE, [compilePixelMap(MAP_TROPHY_CASE, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.GYM_BENCH, [compilePixelMap(MAP_GYM_BENCH, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.MART_SHOWCASE, [compilePixelMap(MAP_MART_SHOWCASE, PAL_INTERIORS_UPGRADE)]);
+  tileCache.set(TILE.VENDING_MACHINE, [compilePixelMap(MAP_VENDING_MACHINE, PAL_INTERIORS_UPGRADE)]);
+
 }
 
 /** External PNG tileset override support (falls back to pixel-map tiles for omitted entries). */

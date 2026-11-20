@@ -65,6 +65,40 @@ const OVERHEAD_ROOF_TILES = new Set([
   TILE.ROOF_RED,
   TILE.ROOF_BLUE,
   TILE.ROOF_LAB,
+  TILE.PC_ROOF_00,
+  TILE.PC_ROOF_10,
+  TILE.PC_ROOF_20,
+  TILE.PC_ROOF_30,
+  TILE.PC_ROOF_01,
+  TILE.PC_ROOF_11,
+  TILE.PC_ROOF_21,
+  TILE.PC_ROOF_31,
+  TILE.HERO_ROOF_L,
+  TILE.HERO_ROOF_M,
+  TILE.HERO_ROOF_DORMER,
+  TILE.HERO_ROOF_R,
+  TILE.RIVAL_ROOF_L,
+  TILE.RIVAL_ROOF_PEAK,
+  TILE.RIVAL_ROOF_R,
+  TILE.MART_ROOF_00,
+  TILE.MART_ROOF_10,
+  TILE.MART_ROOF_20,
+  TILE.MART_ROOF_30,
+  TILE.MART_ROOF_01,
+  TILE.MART_ROOF_11,
+  TILE.MART_ROOF_21,
+  TILE.MART_ROOF_31,
+  TILE.GYM_ROOF_00,
+  TILE.GYM_ROOF_10,
+  TILE.GYM_ROOF_20,
+  TILE.GYM_ROOF_30,
+  TILE.GYM_ROOF_01,
+  TILE.GYM_ROOF_11,
+  TILE.GYM_ROOF_21,
+  TILE.GYM_ROOF_31,
+  TILE.ROOF_AMBER,
+  TILE.ROOF_AMBER_TRIM,
+  TILE.DOME_ROOF,
 ]);
 
 const TEXT_SPEED_CYCLE = ['normal', 'fast', 'slow'];
@@ -132,9 +166,12 @@ export class OverworldScene {
 
     for (let r = 0; r < map.height; r++) {
       for (let col = 0; col < map.width; col++) {
+        if (!map.isIndoor) {
+          drawTile(gctx, TILE.GRASS, col * TILE_SIZE, r * TILE_SIZE, 0);
+        }
         const tid = map.tiles[r][col];
         if (Y_SORT_TILES.has(tid)) {
-          drawTile(gctx, baseFloorTile, col * TILE_SIZE, r * TILE_SIZE, 0);
+          if (map.isIndoor) drawTile(gctx, baseFloorTile, col * TILE_SIZE, r * TILE_SIZE, 0);
         } else {
           drawMapTile(gctx, map, col, r, col * TILE_SIZE, r * TILE_SIZE, 0);
         }
@@ -151,7 +188,23 @@ export class OverworldScene {
             above === TILE.HOUSE_WALL ||
             above === TILE.LAB_WALL ||
             above === TILE.DOOR ||
-            above === TILE.LAB_DOOR;
+            above === TILE.LAB_DOOR ||
+            above === TILE.PC_WALL_03 ||
+            above === TILE.PC_DOOR_13 ||
+            above === TILE.PC_DOOR_23 ||
+            above === TILE.PC_WALL_33 ||
+            above === TILE.HERO_DOOR ||
+            above === TILE.HERO_WALL_R ||
+            above === TILE.RIVAL_WALL_BRICK ||
+            above === TILE.RIVAL_DOOR ||
+            above === TILE.MART_WALL_03 ||
+            above === TILE.MART_DOOR_13 ||
+            above === TILE.MART_DOOR_23 ||
+            above === TILE.MART_WALL_33 ||
+            above === TILE.GYM_WALL_03 ||
+            above === TILE.GYM_DOOR_13 ||
+            above === TILE.GYM_DOOR_23 ||
+            above === TILE.GYM_WALL_33;
           if (isBuildingWall && !SOLID_TILES.has(curr)) {
             gctx.fillRect(col * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, 3);
           }
@@ -699,11 +752,19 @@ export class OverworldScene {
                 this._waitFrames(8, () => {
                   this.centerHealGlow = true;
                   audio.heal();
-                  this.particles.spawnHealSparkles(3 * TILE_SIZE, 1 * TILE_SIZE);
+                  let hx = 5, hy = 1;
+                  for (let r = 0; r < this.map.height; r++) {
+                    for (let c = 0; c < this.map.width; c++) {
+                      if (this.map.tiles[r][c] === TILE.HEAL_MACHINE) {
+                        hx = c; hy = r; break;
+                      }
+                    }
+                  }
+                  this.particles.spawnHealSparkles(hx * TILE_SIZE, hy * TILE_SIZE);
                   healParty(gameState.party);
                   gameState.respawn = {
                     mapId: 'pokecenter',
-                    x: 5,
+                    x: 6,
                     y: 4,
                     facing: 'up',
                   };
@@ -1189,6 +1250,19 @@ export class OverworldScene {
         });
         return;
       }
+
+      if (trigger.type === 'gymClosed') {
+        this.cutsceneActive = true;
+        audio.blip();
+        this.textBox.show(trigger.text || 'The Gym is currently closed. Please come back later!', {
+          onComplete: () => {
+            this.player.forceStep('down', () => {
+              this.cutsceneActive = false;
+            });
+          },
+        });
+        return;
+      }
     }
 
     // PHASE 3 PART 3: Tall Grass Wild Encounters!
@@ -1562,15 +1636,23 @@ export class OverworldScene {
       }
     }
 
-    // Poké Balls placed on the Pokémon Center healing machine at (3, 1)
+    // Poké Balls placed on the Pokémon Center healing machine
     if (this.map.id === 'pokecenter' && this.centerHealBalls > 0) {
+      let hx = 5, hy = 1;
+      for (let r = 0; r < this.map.height; r++) {
+        for (let c = 0; c < this.map.width; c++) {
+          if (this.map.tiles[r][c] === TILE.HEAL_MACHINE) {
+            hx = c; hy = r; break;
+          }
+        }
+      }
       const slots = [
-        [3 * TILE_SIZE + 3, 1 * TILE_SIZE + 5],
-        [3 * TILE_SIZE + 9, 1 * TILE_SIZE + 5],
-        [3 * TILE_SIZE + 3, 1 * TILE_SIZE + 9],
-        [3 * TILE_SIZE + 9, 1 * TILE_SIZE + 9],
-        [3 * TILE_SIZE + 6, 1 * TILE_SIZE + 3],
-        [3 * TILE_SIZE + 6, 1 * TILE_SIZE + 11],
+        [hx * TILE_SIZE + 3, hy * TILE_SIZE + 5],
+        [hx * TILE_SIZE + 9, hy * TILE_SIZE + 5],
+        [hx * TILE_SIZE + 3, hy * TILE_SIZE + 9],
+        [hx * TILE_SIZE + 9, hy * TILE_SIZE + 9],
+        [hx * TILE_SIZE + 6, hy * TILE_SIZE + 3],
+        [hx * TILE_SIZE + 6, hy * TILE_SIZE + 11],
       ];
       for (let i = 0; i < Math.min(this.centerHealBalls, slots.length); i++) {
         const [bx, by] = slots[i];

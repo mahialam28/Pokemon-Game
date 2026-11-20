@@ -192,6 +192,7 @@ const CHAR_LEFT_STEP2 = [
   '................',
 ];
 
+
 // --- SPIKY RIVAL VARIANT (SLIM + SPIKY HAIR + GOLD NECKLACE) ---
 const RIVAL_DOWN_STAND = [
   '....00000000....',
@@ -218,7 +219,57 @@ const RIVAL_DOWN_STAND = [
   '................',
 ];
 
-// --- FRIENDLY TECH FAN NPC (SLIGHTLY ROUNDER THAN TRAINER, STILL COMPACT ~12px) ---
+const RIVAL_UP_STAND = [
+  '....00000000....',
+  '...0aaHaHHhh0...',
+  '..0aHaHHHhHhh0..',
+  '..00hHHHHHh000..',
+  '...0hHHHHHHh0...',
+  '...0hHHHHHHh0...',
+  '...0hhHHHHhh0...',
+  '...0hhhHHhhh0...',
+  '....0hhhhhh0....',
+  '.....000000.....',
+  '....0iTBBTt0....',
+  '...0iTBBBBTt0...',
+  '...0iT0bb0Tt0...',
+  '...0s0bbbb0s0...',
+  '...000tttt000...',
+  '.....0P00P0.....',
+  '.....0P00p0.....',
+  '.....0p00p0.....',
+  '.....0f00f0.....',
+  '.....000000.....',
+  '................',
+  '................',
+];
+
+const RIVAL_LEFT_STAND = [
+  '....000000......',
+  '...0aaHaHhh0....',
+  '..0aHaHHHhHh0...',
+  '..00hHHHHhh0....',
+  '....0kHHHHhh0...',
+  '....0SSHHHhh0...',
+  '....0w0SHHhh0...',
+  '....000SHHh0....',
+  '....0ssHHh0.....',
+  '.....00kk0......',
+  '.....0cTTB0.....',
+  '.....0cTiB0.....',
+  '.....0cTiB0.....',
+  '.....0tTsb0.....',
+  '......0tt0......',
+  '......0PP0......',
+  '......0Pp0......',
+  '......0pp0......',
+  '.....0fff0......',
+  '.....00000......',
+  '................',
+  '................',
+];
+
+// --- FRIENDLY TECH FAN NPC (SLIGHTLY ROUNDER THAN TRAINER, STILL COMPACT ~12px)
 const FATMAN_DOWN_STAND = [
   '.....000000.....',
   '....0aaHHhh0....',
@@ -547,6 +598,11 @@ export function initSprites() {
     if (key === 'rival') {
       down0 = RIVAL_DOWN_STAND;
       down1 = makeStepBobRows(RIVAL_DOWN_STAND);
+      up0 = RIVAL_UP_STAND;
+      up1 = makeStepBobRows(RIVAL_UP_STAND);
+      left0 = RIVAL_LEFT_STAND;
+      left1 = makeStepBobRows(RIVAL_LEFT_STAND);
+      left2 = RIVAL_LEFT_STAND;
     } else if (key === 'fatMan') {
       down0 = FATMAN_DOWN_STAND;
       down1 = makeStepBobRows(FATMAN_DOWN_STAND);

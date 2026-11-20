@@ -55,6 +55,85 @@ const OUTDOOR_LEGEND = {
   'P': T.CENTER_SIGN_P,
   'U': T.MART_SIGN_M,
   'O': T.FOUNTAIN,
+  '1': T.PC_ROOF_00,
+  '2': T.PC_ROOF_10,
+  '3': T.PC_ROOF_20,
+  '4': T.PC_ROOF_30,
+  '5': T.PC_ROOF_01,
+  '6': T.PC_ROOF_11,
+  '7': T.PC_ROOF_21,
+  '8': T.PC_ROOF_31,
+  '9': T.PC_WALL_02,
+  '0': T.PC_WALL_12,
+  'z': T.PC_WALL_22,
+  'x': T.PC_WALL_32,
+  'a': T.PC_WALL_03,
+  'c': T.PC_DOOR_13,
+  'C': T.PC_DOOR_23,
+  'e': T.PC_WALL_33,
+
+  // Main Character House
+  'h': T.HERO_ROOF_L,
+  'j': T.HERO_ROOF_M,
+  'k': T.HERO_ROOF_DORMER,
+  'l': T.HERO_ROOF_R,
+  'm': T.HERO_WALL_L,
+  'n': T.HERO_WALL_WIN,
+  'o': T.HERO_BALCONY,
+  'p': T.HERO_WALL_R,
+  'q': T.HERO_DOOR,
+
+  // Rival House & Training
+  '3': T.RIVAL_ROOF_L,
+  '4': T.RIVAL_ROOF_PEAK,
+  '5': T.RIVAL_ROOF_R,
+  'u': T.RIVAL_WALL_BRICK,
+  'i': T.RIVAL_WALL_WIN,
+  'd': T.RIVAL_DOOR,
+  'x': T.TRAIN_BAG,
+  'X': T.TRAIN_WEIGHTS,
+  's': T.TRAIN_SAND,
+
+  // Poké Mart Exterior (4x4)
+  '!': T.MART_ROOF_00,
+  '@': T.MART_ROOF_10,
+  '#': T.MART_ROOF_20,
+  '$': T.MART_ROOF_30,
+  '%': T.MART_ROOF_01,
+  '^': T.MART_ROOF_11,
+  '&': T.MART_ROOF_21,
+  '*': T.MART_ROOF_31,
+  '[': T.MART_WALL_02,
+  '{': T.MART_WALL_12,
+  '}': T.MART_WALL_22,
+  ']': T.MART_WALL_32,
+  '(': T.MART_WALL_03,
+  '<': T.MART_DOOR_13,
+  '>': T.MART_DOOR_23,
+  ')': T.MART_WALL_33,
+
+  // Gym Exterior (4x4)
+  'A': T.GYM_ROOF_00,
+  'B': T.GYM_ROOF_10,
+  'C': T.GYM_ROOF_20,
+  'D': T.GYM_ROOF_30,
+  'E': T.GYM_ROOF_01,
+  'F': T.GYM_ROOF_11,
+  'G': T.GYM_ROOF_21,
+  'H': T.GYM_ROOF_31,
+  'I': T.GYM_WALL_02,
+  'J': T.GYM_WALL_12,
+  'K': T.GYM_WALL_22,
+  'N': T.GYM_WALL_32,
+  'Q': T.GYM_WALL_03,
+  'Y': T.GYM_DOOR_13,
+  'Z': T.GYM_DOOR_23,
+  'w': T.GYM_WALL_33,
+
+  // Mixed City Houses
+  'v': T.ROOF_AMBER,
+  'V': T.ROOF_AMBER_TRIM,
+  'O': T.DOME_ROOF,
 };
 
 const INDOOR_LEGEND = {
@@ -84,6 +163,28 @@ const INDOOR_LEGEND = {
   'h': T.CHAIR,
   'r': T.RUG_RED,
   'u': T.RUG_BLUE,
+  'm': T.RUG_TEAL_PC,
+  'g': T.TROPHY_CASE,
+  'b': T.GYM_BENCH,
+  'x': T.TRAIN_BAG,
+  's': T.MART_SHOWCASE,
+  'v': T.VENDING_MACHINE,
+  'R': T.PC_WALL_RED,
+  'E': T.PC_ELEVATOR,
+  't': T.PC_WALL_TV,
+  '1': T.PC_FLOOR_MOSAIC_TL,
+  '2': T.PC_FLOOR_MOSAIC_TR,
+  '3': T.PC_FLOOR_MOSAIC_BL,
+  '4': T.PC_FLOOR_MOSAIC_BR,
+  '5': T.PC_FLOOR_BLUE,
+  '6': T.PC_FLOOR_YELLOW,
+  '7': T.SOFA_YELLOW_L,
+  '8': T.SOFA_YELLOW_R,
+  'k': T.PLANT_PALM,
+  'U': T.STAIRS_UP,
+  'V': T.STAIRS_DOWN,
+  '^': T.BED_TOP,
+  '_': T.BED_BOT,
 };
 
 export const MAPS = {
@@ -144,24 +245,27 @@ export const MAPS = {
   // =========================================================================
   downstairs: {
     id: 'downstairs',
-    name: 'HOME 1F',
+    name: 'HERO HOUSE 1F',
     isIndoor: true,
     width: 10,
     height: 8,
     bgColor: '#0E1018',
-    tiles: [
-      [T.WALL_TOP, T.WALL_TOP, T.WALL_TOP, T.WALL_WINDOW, T.WALL_TOP, T.WALL_TOP, T.WALL_WINDOW, T.WALL_TOP, T.WALL_TOP, T.WALL_TOP],
-      [T.KITCHEN_FRIDGE, T.KITCHEN_STOVE, T.KITCHEN_COUNTER, T.WALL_BOT, T.TV, T.BOOKSHELF, T.WALL_BOT, T.WALL_BOT, T.STAIRS_UP, T.PLANT],
-      [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
-      [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.CHAIR, T.TABLE_LEFT, T.TABLE_RIGHT, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
-      [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
-      [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
-      [T.PLANT,      T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.PLANT],
-      [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.DOORMAT,    T.DOORMAT,    T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
-    ],
+    tiles: parseGrid(
+      [
+        'WWWWWWWWWW', // 0
+        'WU.B.P..^W', // 1  (Stairs U, Bookshelf B with Pikachu doll, Study desk with PC P, Bed ^)
+        'W[..mmmm_W', // 2  (Blue sofa [, Teal Pokéball rug m, Bed bot _)
+        'W[(.mmmm.W', // 3  (Sofa, Coffee table ( with flowers, Teal Pokéball rug m)
+        'WT..mmmm.W', // 4  (Television T, Teal Pokéball rug m)
+        'W...mmmm.W', // 5  (Teal Pokéball rug m)
+        'W.K....K.W', // 6  (Potted plants K)
+        'WWWWDDWWWW', // 7  (Exit doormats at 4..5, 7)
+      ],
+      INDOOR_LEGEND
+    ),
     warps: [
       {
-        x: 8,
+        x: 1,
         y: 1,
         targetMap: 'bedroom',
         targetX: 6,
@@ -211,23 +315,27 @@ export const MAPS = {
     pokeballs: [],
     triggers: [],
     interactables: {
-      [keyOf(0, 1)]: ['The fridge is stocked with cold lemonade and snacks.'],
-      [keyOf(1, 1)]: ['Breakfast was cooked here just a little while ago.'],
-      [keyOf(4, 1)]: ["The morning news is showing a story on the PROFESSOR's research."],
-      [keyOf(5, 1)]: ['Family photo albums and recipe books fill the shelf.'],
-      [keyOf(4, 3)]: ['A warm cup of tea sits on the kitchen table.'],
-      [keyOf(5, 3)]: ['Fresh fruit from Dawnleaf Town sits in a bowl.'],
+      [keyOf(1, 4)]: ['A POKéMON battle championship broadcast is playing on TV!'],
+      [keyOf(3, 1)]: ['A cute Pikachu doll sits atop a shelf full of POKéMON adventure books!'],
+      [keyOf(5, 1)]: ['Booted up the study PC! An open POKéMON map and journey notes are on screen.'],
+      [keyOf(8, 1)]: ['Your cozy bed. Feels soft, clean, and warm!'],
+      [keyOf(8, 2)]: ['Your cozy bed. Feels soft, clean, and warm!'],
+      [keyOf(3, 3)]: ['A vase of fresh town flowers sits on the coffee table beside a trainer magazine.'],
+      [keyOf(6, 4)]: ['A soft teal rug with a beautifully embroidered POKé BALL emblem.'],
+      [keyOf(2, 6)]: ['A lush indoor potted plant.'],
+      [keyOf(9, 6)]: ['A lush indoor potted plant.'],
     },
     lights: [
       { x: 3.5, y: 0.7, radius: 48, color: [255, 232, 168], intensity: 0.42, type: 'windowBeam' },
       { x: 6.5, y: 0.7, radius: 48, color: [255, 232, 168], intensity: 0.42, type: 'windowBeam' },
-      { x: 4.5, y: 1.4, radius: 30, color: [130, 210, 255], intensity: 0.28, type: 'tv' },
+      { x: 1.5, y: 4.2, radius: 36, color: [130, 210, 255], intensity: 0.32, type: 'tv' },
+      { x: 5.5, y: 1.4, radius: 32, color: [140, 220, 255], intensity: 0.30, type: 'pc' },
       { x: 5.0, y: 4.2, radius: 64, color: [255, 216, 148], intensity: 0.28, type: 'lamp' },
     ],
     encounters: [],
   },
 
-  // =========================================================================
+
   // 3. DAWNLEAF TOWN (20 x 18)
   // =========================================================================
   town: {
@@ -243,13 +351,13 @@ export const MAPS = {
       [T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TALL_GRASS, T.TALL_GRASS, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE],
       // y = 2: North approach
       [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.TREE],
-      // y = 3..6: Player's House (cols 3..6) & Neighbour's House (cols 13..16)
-      [T.TREE, T.GRASS, T.GRASS, T.ROOF_RED, T.ROOF_RED, T.ROOF_RED, T.ROOF_RED, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.ROOF_BLUE, T.ROOF_BLUE, T.ROOF_BLUE, T.ROOF_BLUE, T.GRASS, T.GRASS, T.TREE],
-      [T.TREE, T.GRASS, T.GRASS, T.ROOF_RED_TRIM, T.ROOF_RED_TRIM, T.ROOF_RED_TRIM, T.ROOF_RED_TRIM, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.ROOF_BLUE_TRIM, T.ROOF_BLUE_TRIM, T.ROOF_BLUE_TRIM, T.ROOF_BLUE_TRIM, T.GRASS, T.GRASS, T.TREE],
-      [T.TREE, T.GRASS, T.GRASS, T.HOUSE_WALL, T.HOUSE_WINDOW, T.HOUSE_WALL, T.HOUSE_WINDOW, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.HOUSE_WALL, T.HOUSE_WINDOW, T.HOUSE_WALL, T.HOUSE_WINDOW, T.GRASS, T.GRASS, T.TREE],
-      [T.TREE, T.GRASS, T.GRASS, T.HOUSE_WALL, T.DOOR, T.HOUSE_WALL, T.HOUSE_WALL, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.HOUSE_WALL, T.DOOR, T.HOUSE_WALL, T.HOUSE_WALL, T.GRASS, T.GRASS, T.TREE],
+      // y = 3..6: Hero's House (cols 3..6) & Rival's House with Training Ring (cols 13..17)
+      [T.TREE, T.GRASS, T.GRASS, T.HERO_ROOF_L, T.HERO_ROOF_DORMER, T.HERO_ROOF_M, T.HERO_ROOF_R, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.RIVAL_ROOF_L, T.RIVAL_ROOF_PEAK, T.RIVAL_ROOF_R, T.GRASS, T.GRASS, T.GRASS, T.TREE],
+      [T.TREE, T.GRASS, T.FENCE, T.HERO_ROOF_L, T.HERO_ROOF_M, T.HERO_ROOF_M, T.HERO_ROOF_R, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.RIVAL_ROOF_L, T.RIVAL_ROOF_PEAK, T.RIVAL_ROOF_R, T.TRAIN_BAG, T.GRASS, T.GRASS, T.TREE],
+      [T.TREE, T.GRASS, T.FLOWER, T.HERO_WALL_L, T.HERO_WALL_WIN, T.HERO_BALCONY, T.HERO_WALL_R, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.RIVAL_WALL_BRICK, T.RIVAL_WALL_WIN, T.RIVAL_WALL_BRICK, T.TRAIN_WEIGHTS, T.GRASS, T.GRASS, T.TREE],
+      [T.TREE, T.GRASS, T.MAILBOX, T.HERO_WALL_L, T.HERO_DOOR, T.HERO_WALL_WIN, T.HERO_WALL_R, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.RIVAL_WALL_BRICK, T.RIVAL_DOOR, T.RIVAL_WALL_BRICK, T.TRAIN_SAND, T.FENCE, T.GRASS, T.TREE],
       // y = 7: Main town boulevard connecting houses
-      [T.TREE, T.GRASS, T.FLOWER, T.MAILBOX, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.GRASS, T.MAILBOX, T.FLOWER, T.GRASS, T.TREE],
+      [T.TREE, T.GRASS, T.FLOWER, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.FENCE, T.GRASS, T.TREE],
       // y = 8: Town sign & side paths around lab
       [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.GRASS, T.SIGN, T.PATH, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.TREE],
       // y = 9: Fences & central approach
@@ -271,6 +379,14 @@ export const MAPS = {
         x: 4,
         y: 6,
         targetMap: 'downstairs',
+        targetX: 4,
+        targetY: 6,
+        targetFacing: 'up',
+      },
+      {
+        x: 14,
+        y: 6,
+        targetMap: 'rivalHouse',
         targetX: 4,
         targetY: 6,
         targetFacing: 'up',
@@ -384,15 +500,12 @@ export const MAPS = {
       // North exit tall-grass guard
       { x: 9, y: 1, type: 'northExit' },
       { x: 10, y: 1, type: 'northExit' },
-      // Neighbour house locked door feedback when stepped onto
-      { x: 14, y: 6, type: 'neighbourDoor' },
     ],
     interactables: {
       [keyOf(3, 7)]: ["{PLAYER}'s HOUSE"],
-      [keyOf(16, 7)]: ["NEIGHBOUR's HOUSE"],
+      [keyOf(16, 7)]: ["{RIVAL}'s HOUSE"],
       [keyOf(8, 8)]: ['DAWNLEAF TOWN: A quiet little start.'],
       [keyOf(15, 14)]: ["PROFESSOR's POKéMON LAB"],
-      [keyOf(14, 6)]: ["It's your neighbour's house. Nobody seems to be home right now."],
     },
     chimneys: [
       { x: 5, y: 3 },
@@ -672,10 +785,10 @@ export const MAPS = {
         'TTTTTTTTTTTTTT,,TTTTTTTTTTTTTT', // 0  (north exit blocked by resting Old Man)
         'TTTTTTTTTTTTTT,,TTTTTTTTTTTTTT', // 1
         'T..ff........,,,,........ff..T', // 2
-        'T..rrrrr.....,,,,.....bbbbb..T', // 3  (NW House & NE Poké Mart roof)
-        'T..RRRRR.....,,,,.....BBBBB..T', // 4
-        'T..HWHWH.....,,,,.....EUWVE..T', // 5  (Poké Mart "M" sign at 23,5!)
-        'T..HHDHH.....,,,,.....EEAEE..T', // 6  (House door 5,6 | Mart door 24,6)
+        'T..rrrrr.....,,,,....!@#$....T', // 3  (NW House & NE Poké Mart roof)
+        'T..RRRRR.....,,,,....%^&*....T', // 4
+        'T..HWHWH.....,,,,....[{}]....T', // 5  (Modern Poké Mart)
+        'T..HHDHH.....,,,,....(<>)U...T', // 6  (House door 5,6 | Mart doors 23..24,6)
         'T..M.,,S.....,,,,.....,,S....T', // 7  (Signs & mailboxes)
         'T....,,,,,,,,,,,,,,,,,,,.....T', // 8  (Upper boulevard)
         'T....,,,,,,,,,,,,,,,,,,,.....T', // 9
@@ -690,10 +803,10 @@ export const MAPS = {
         'T....,,,,,,,,,,,,,,,,,,,.....T', // 18 (Lower boulevard)
         'T....,,,,,,,,,,,,,,,,,,,.....T', // 19
         'T.ff.,,..............,,..ff..T', // 20
-        'T..rrrrrr....,,,,....bbbbbb..T', // 21 (SW Pokémon Center & SE City House)
-        'T..RRRRRR....,,,,....BBBBBB..T', // 22
-        'T..HPWHWH....,,,,....HWHWHW..T', // 23 (Pokémon Center "P" sign at 4,23!)
-        'T..HHHAHH....,,,,....HHDHHH..T', // 24 (Center door 6,24 | House door 23,24)
+        'T...1234....,,,,....bbbbbb...T', // 21 (SW Pokémon Center & SE City House)
+        'T...5678....,,,,....BBBBBB...T', // 22
+        'T...90zx....,,,,....HWHWHW...T', // 23
+        'T...acCe....,,,,....HHDHHH...T', // 24 (Center doors 5..6,24 | House door 23,24)
         'T...S.,,,,,,,S,,,,,,,,,,M....T', // 25 (Center sign 4,25 | City sign 13,25)
         'T..ff........,,,,........ff..T', // 26
         'T..FFFF......,,,,......FFFF..T', // 27
@@ -703,12 +816,15 @@ export const MAPS = {
       OUTDOOR_LEGEND
     ),
     connections: {
+      north: { targetMap: 'cobaltCity', targetXOffset: 0, targetY: 24 },
       south: { targetMap: 'route1', targetXOffset: -5, targetY: 0 },
     },
     warps: [
-      // Pokémon Center sliding door
+      // Pokémon Center sliding doors
+      { x: 5, y: 24, targetMap: 'pokecenter', targetX: 6, targetY: 8, targetFacing: 'up' },
       { x: 6, y: 24, targetMap: 'pokecenter', targetX: 6, targetY: 8, targetFacing: 'up' },
-      // Poké Mart door
+      // Poké Mart doors
+      { x: 23, y: 6, targetMap: 'pokemart', targetX: 4, targetY: 7, targetFacing: 'up' },
       { x: 24, y: 6, targetMap: 'pokemart', targetX: 4, targetY: 7, targetFacing: 'up' },
       // Enterable NW City House door
       { x: 5, y: 6, targetMap: 'cityHouse', targetX: 4, targetY: 6, targetFacing: 'up' },
@@ -723,8 +839,8 @@ export const MAPS = {
         facing: 'down',
         idleLook: false,
         getDialogue: () => [
-          "OLD MAN: Sorry, I'm resting here after my morning walk. Come back later!",
-          '(You have reached the end of Phase 3 content — explore Verdant City & catch them all!)',
+          "OLD MAN: The road north to COBALT CITY is now open!",
+          "Their grand POKéMON GYM is truly a spectacle, though it's currently undergoing maintenance!",
         ],
       },
       {
@@ -768,9 +884,6 @@ export const MAPS = {
     ],
     pokeballs: [],
     triggers: [
-      // Old man politely blocks north exit (cols 14..15, y=1)
-      { x: 14, y: 1, type: 'oldManBlock' },
-      { x: 15, y: 1, type: 'oldManBlock' },
       // SE decorative house locked door
       { x: 23, y: 24, type: 'cityHouseLocked' },
     ],
@@ -797,34 +910,34 @@ export const MAPS = {
     id: 'pokecenter',
     name: 'POKéMON CENTER',
     isIndoor: true,
-    width: 12,
+    width: 14,
     height: 10,
     bgColor: '#161218',
     tiles: parseGrid(
       [
-        'CCCCCCCCCCCC', // 0
-        'cccHccccKcPc', // 1  (Heal machine at 3,1 | Plant at 8,1 | PC at 10,1)
-        'ppXXpppppppp', // 2  (Nurse stands at 5,2 behind counter row 3!)
-        'ppXXXXXXpppp', // 3  (Service counter across cols 2..7; talk at 5,4!)
-        'pppppppppppp', // 4
-        'p[]pppppp[]p', // 5  (Waiting sofas on left & right)
-        'pppppppppppp', // 6
-        'pppppppppppp', // 7
-        'KppppppppppK', // 8
-        'pppppDDppppp', // 9  (Exit mats 5..6, 9)
+        'RRRRRRRRRRRRRR', // 0  (Red luxury accent wall)
+        'REEEtHXHEEE.KP', // 1  (Elevators E, TV t, Heal Machine H, Nurse Counter X, Plant K, PC P)
+        'R...t...X....p', // 2  (Nurse stands at 6,2 behind counter row 3)
+        'R555XXXXX6666p', // 3  (Counter across cols 4..8; talk at 6,3!)
+        '5[[5112266886p', // 4  (West blue lounge with sofa [[ | Golden mosaic 1122 | East yellow lounge 88)
+        '5()5334466()6p', // 5  (Flower table () in blue lounge | Golden mosaic 3344 | Flower table in yellow)
+        '5555pppp66776p', // 6  (Yellow sofa 77)
+        'pppppppppppppp', // 7
+        'kppppppppppppk', // 8  (Lush indoor palm trees k)
+        'ppppppDDpppppp', // 9  (Exit mats at 6..7, 9)
       ],
       INDOOR_LEGEND
     ),
     warps: [
-      { x: 5, y: 9, targetMap: 'city', targetX: 6, targetY: 25, targetFacing: 'down' },
       { x: 6, y: 9, targetMap: 'city', targetX: 6, targetY: 25, targetFacing: 'down' },
+      { x: 7, y: 9, targetMap: 'city', targetX: 6, targetY: 25, targetFacing: 'down' },
     ],
     npcs: [
       {
         id: 'nurse',
         name: 'NURSE',
         sprite: 'nurse',
-        x: 5,
+        x: 6,
         y: 2,
         facing: 'down',
         idleLook: false,
@@ -834,7 +947,7 @@ export const MAPS = {
         id: 'centerVisitor',
         name: 'TRAINER',
         sprite: 'neighbour',
-        x: 9,
+        x: 10,
         y: 6,
         facing: 'left',
         idleLook: true,
@@ -843,28 +956,44 @@ export const MAPS = {
           'TRAINER: Whenever you heal here, this POKéMON CENTER becomes your safe return spot!',
         ],
       },
+      {
+        id: 'centerLass',
+        name: 'LASS',
+        sprite: 'girl',
+        x: 2,
+        y: 6,
+        facing: 'right',
+        idleLook: true,
+        idleDirs: ['right', 'up'],
+        getDialogue: () => [
+          'LASS: I love resting in the blue lounge! The soothing music relaxes my POKéMON.',
+        ],
+      },
     ],
     pokeballs: [],
     triggers: [],
     interactables: {
-      // Talking across the counter at (5,3) triggers Nurse healing in OverworldScene!
-      [keyOf(5, 3)]: ['__NURSE_COUNTER__'],
-      [keyOf(10, 1)]: ['__CENTER_PC__'],
-      [keyOf(3, 1)]: ['A gleaming POKéMON healing machine.'],
+      [keyOf(6, 3)]: ['__NURSE_COUNTER__'],
+      [keyOf(12, 1)]: ['__CENTER_PC__'],
+      [keyOf(5, 1)]: ['A state-of-the-art POKéMON healing machine with six glowing particle slots.'],
+      [keyOf(4, 1)]: ['High-definition wall monitor displaying global trainer news!'],
+      [keyOf(1, 1)]: ['High-speed express elevator to the Union Room and Wi-Fi Colosseum.'],
+      [keyOf(8, 1)]: ['High-speed express elevator to the Trainer Lounge.'],
+      [keyOf(2, 5)]: ['A glass table with a fresh bouquet of radiant lilies.'],
+      [keyOf(10, 5)]: ['A glass table decorated with cheerful yellow marigolds.'],
     },
     lights: [
-      { x: 5.5, y: 2.5, radius: 70, color: [255, 224, 232], intensity: 0.3, type: 'lamp' },
-      { x: 10.5, y: 1.4, radius: 28, color: [110, 210, 255], intensity: 0.32, type: 'pc' },
+      { x: 6.5, y: 2.5, radius: 75, color: [255, 230, 236], intensity: 0.35, type: 'lamp' },
+      { x: 12.5, y: 1.4, radius: 28, color: [110, 210, 255], intensity: 0.32, type: 'pc' },
+      { x: 4.5, y: 1.2, radius: 36, color: [130, 220, 255], intensity: 0.30, type: 'tv' },
+      { x: 6.5, y: 5.0, radius: 65, color: [255, 245, 210], intensity: 0.25, type: 'lamp' },
     ],
     encounters: [],
   },
 
-  // =========================================================================
-  // 8. POKé MART INTERIOR (10 x 9)
-  // =========================================================================
   pokemart: {
     id: 'pokemart',
-    name: 'POKé MART',
+    name: 'POKé MART 1F',
     isIndoor: true,
     width: 10,
     height: 9,
@@ -872,11 +1001,11 @@ export const MAPS = {
     tiles: parseGrid(
       [
         'LLLLLLLLLL', // 0
-        'llSSSSSSll', // 1  (Stocked colorful item shelves)
-        'ffffffffff', // 2  (Clerk stands at 2,3 behind counter!)
-        'fXfXffSSff', // 3
-        'fXXXffSSff', // 4  (Talk to clerk across counter at 2,4 or 3,3!)
-        'ffffffffff', // 5
+        'llSSSSSS.D', // 1  (Stocked item shelves, Stairs D at 9,1 leading to 2F!)
+        'ffffffffff', // 2
+        'fXfXffSSff', // 3  (Clerk at 2,3 behind counter)
+        'fXXXffSSff', // 4
+        'fvffffffff', // 5  (Vending machine v)
         'ffffffSSff', // 6
         'KffffffffK', // 7
         'ffffddffff', // 8  (Exit mats 4..5, 8)
@@ -884,8 +1013,11 @@ export const MAPS = {
       INDOOR_LEGEND
     ),
     warps: [
+      // Exit to Verdant City
       { x: 4, y: 8, targetMap: 'city', targetX: 24, targetY: 7, targetFacing: 'down' },
       { x: 5, y: 8, targetMap: 'city', targetX: 24, targetY: 7, targetFacing: 'down' },
+      // Stairs UP to 2F
+      { x: 9, y: 1, targetMap: 'pokemart2f', targetX: 8, targetY: 2, targetFacing: 'down' },
     ],
     npcs: [
       {
@@ -917,15 +1049,144 @@ export const MAPS = {
     interactables: {
       [keyOf(2, 4)]: ['__MART_SHOP__'],
       [keyOf(3, 3)]: ['__MART_SHOP__'],
-      [keyOf(2, 1)]: ['Shelves lined neatly with POKé BALLS and POTIONS!'],
-      [keyOf(3, 1)]: ['Shelves lined neatly with POKé BALLS and POTIONS!'],
-      [keyOf(4, 1)]: ['Shelves lined neatly with ANTIDOTES and supplies!'],
-      [keyOf(5, 1)]: ['Shelves lined neatly with ANTIDOTES and supplies!'],
-      [keyOf(6, 1)]: ['Shelves lined neatly with traveler gear!'],
-      [keyOf(7, 1)]: ['Shelves lined neatly with traveler gear!'],
+      [keyOf(2, 1)]: ['Fresh POKé BALLS, POTIONS, and REVIVES neatly organized on the shelf.'],
+      [keyOf(5, 1)]: ['Shiny trainer accessory catalogs on display.'],
+      [keyOf(1, 5)]: ['A beverage vending machine. Fresh Lemonade and Soda Pop!'],
     },
     lights: [
-      { x: 5, y: 4, radius: 75, color: [230, 245, 255], intensity: 0.28, type: 'lamp' },
+      { x: 2.5, y: 3.5, radius: 60, color: [220, 240, 255], intensity: 0.3, type: 'lamp' },
+      { x: 6.5, y: 4.5, radius: 55, color: [255, 235, 190], intensity: 0.25, type: 'lamp' },
+    ],
+    encounters: [],
+  },
+
+  // =========================================================================
+  // POKé MART 2F (10 x 8) - Luxury Item Showcase
+  // =========================================================================
+  pokemart2f: {
+    id: 'pokemart2f',
+    name: 'POKé MART 2F',
+    isIndoor: true,
+    width: 10,
+    height: 8,
+    bgColor: '#101620',
+    tiles: parseGrid(
+      [
+        'LLLLLLLLLL', // 0
+        'llssssssll', // 1  (Luxury glass display showcases)
+        'ffffffff.D', // 2  (Stairs DOWN at 9,2)
+        'fXfXffssff', // 3  (Counter with Clerk at 2,3)
+        'fXXXffssff', // 4
+        'ffffffssff', // 5  (Evolution stone & TM pedestals)
+        'KffffffffK', // 6
+        'ffffffffff', // 7
+      ],
+      INDOOR_LEGEND
+    ),
+    warps: [
+      // Stairs DOWN to 1F
+      { x: 9, y: 2, targetMap: 'pokemart', targetX: 9, targetY: 2, targetFacing: 'down' },
+    ],
+    npcs: [
+      {
+        id: 'martClerk2F',
+        name: 'CLERK',
+        sprite: 'clerk',
+        x: 2,
+        y: 3,
+        facing: 'right',
+        idleLook: false,
+        getDialogue: () => [
+          "Sorry, the cashier is not available right now. Please come again later!",
+        ],
+      },
+      {
+        id: 'collector2F',
+        name: 'GENTLEMAN',
+        sprite: 'oldMan',
+        x: 6,
+        y: 5,
+        facing: 'up',
+        idleLook: true,
+        idleDirs: ['up', 'left'],
+        getDialogue: () => [
+          "GENTLEMAN: The second floor stocks rare TMs and Evolution Stones. I check back every day to see if the specialist clerk has arrived!",
+        ],
+      },
+    ],
+    pokeballs: [],
+    triggers: [],
+    interactables: {
+      [keyOf(2, 4)]: ["Sorry, the cashier is not available right now. Please come again later!"],
+      [keyOf(3, 3)]: ["Sorry, the cashier is not available right now. Please come again later!"],
+      [keyOf(2, 1)]: ["A locked glass cabinet holding glowing Fire and Water Stones."],
+      [keyOf(5, 1)]: ["A display case with rare Technical Machines (TMs)."],
+    },
+    lights: [
+      { x: 2.5, y: 3.5, radius: 55, color: [220, 240, 255], intensity: 0.3, type: 'lamp' },
+      { x: 6.5, y: 4.5, radius: 55, color: [255, 215, 140], intensity: 0.28, type: 'lamp' },
+    ],
+    encounters: [],
+  },
+
+  // =========================================================================
+  // RIVAL'S HOUSE INTERIOR (10 x 8)
+  // =========================================================================
+  rivalHouse: {
+    id: 'rivalHouse',
+    name: "RIVAL's HOUSE",
+    isIndoor: true,
+    width: 10,
+    height: 8,
+    bgColor: '#181214',
+    tiles: parseGrid(
+      [
+        'WWWWWWWWWW', // 0
+        'WU.g.P..^W', // 1  (Stairs U, Trophy case g, Desk with laptop P, Bed ^)
+        'W[..rrrr_W', // 2  (Red sofa, Red Pokéball center rug, Bed bot _)
+        'W[(.rrrr.W', // 3  (Coffee table with battle magazine, Red rug)
+        'W...rrrr.W', // 4
+        'Wbx.rrrr.W', // 5  (Gym bench b, punching bag x, plant K)
+        'Wb..K....W', // 6
+        'WWWWDDWWWW', // 7  (Exit mats at 4..5, 7)
+      ],
+      INDOOR_LEGEND
+    ),
+    warps: [
+      { x: 4, y: 7, targetMap: 'town', targetX: 14, targetY: 7, targetFacing: 'down' },
+      { x: 5, y: 7, targetMap: 'town', targetX: 14, targetY: 7, targetFacing: 'down' },
+    ],
+    npcs: [
+      {
+        id: 'rivalSister',
+        name: 'SISTER',
+        sprite: 'girl',
+        x: 6,
+        y: 2,
+        facing: 'down',
+        idleLook: true,
+        idleDirs: ['down', 'left', 'right'],
+        getDialogue: () => [
+          "SISTER: Hi! My brother {RIVAL} has been training hard every single day!",
+          "He sets up barbells and workout equipment everywhere... He's determined to become the champion!",
+        ],
+      },
+    ],
+    pokeballs: [],
+    triggers: [],
+    interactables: {
+      [keyOf(3, 1)]: ["A gleaming trophy collection! First-place trophies and victory ribbons."],
+      [keyOf(5, 1)]: ["The laptop is open to a battle simulation tracking type matchups and stats."],
+      [keyOf(8, 1)]: ["RIVAL's bed. Tucked in tightly with military discipline."],
+      [keyOf(8, 2)]: ["RIVAL's bed. Tucked in tightly with military discipline."],
+      [keyOf(3, 5)]: ["A heavy punching bag. It shows signs of intense daily training."],
+      [keyOf(2, 5)]: ["A heavy steel barbell and bench press setup for strength workouts."],
+      [keyOf(3, 3)]: ["A battle tactics handbook open to elite trainer strategies."],
+    },
+    lights: [
+      { x: 3.5, y: 0.7, radius: 48, color: [255, 220, 200], intensity: 0.4, type: 'windowBeam' },
+      { x: 5.5, y: 1.4, radius: 30, color: [140, 220, 255], intensity: 0.32, type: 'pc' },
+      { x: 5.0, y: 4.0, radius: 60, color: [255, 200, 150], intensity: 0.28, type: 'lamp' },
     ],
     encounters: [],
   },
@@ -935,27 +1196,27 @@ export const MAPS = {
   // =========================================================================
   cityHouse: {
     id: 'cityHouse',
-    name: "COLLECTOR's HOUSE",
+    name: "COLLECTOR'S HOUSE",
     isIndoor: true,
     width: 9,
     height: 8,
-    bgColor: '#101218',
+    bgColor: '#0E121A',
     tiles: parseGrid(
       [
-        'WWWNWWWWW', // 0
-        'wBBwTwwKw', // 1
-        '.........', // 2
-        '..h()....', // 3
-        '...rr....', // 4
-        '...rr....', // 5
-        'K.......K', // 6
-        '....DD...', // 7
+        'WWWWWWWWW', // 0
+        'WBB(T..BW', // 1
+        'W.......W', // 2
+        'W..[[...W', // 3
+        'W.......W', // 4
+        'W.uu.uu.W', // 5
+        'W.......W', // 6
+        'WWWDDWWWW', // 7
       ],
       INDOOR_LEGEND
     ),
     warps: [
-      { x: 4, y: 7, targetMap: 'city', targetX: 5, targetY: 7, targetFacing: 'down' },
-      { x: 5, y: 7, targetMap: 'city', targetX: 5, targetY: 7, targetFacing: 'down' },
+      { x: 3, y: 7, targetMap: 'city', targetX: 23, targetY: 17, targetFacing: 'down' },
+      { x: 4, y: 7, targetMap: 'city', targetX: 23, targetY: 17, targetFacing: 'down' },
     ],
     npcs: [
       {
@@ -983,6 +1244,130 @@ export const MAPS = {
     },
     lights: [
       { x: 3.5, y: 0.7, radius: 48, color: [255, 232, 168], intensity: 0.4, type: 'windowBeam' },
+    ],
+    encounters: [],
+  },
+
+  // =========================================================================
+  // 10. COBALT CITY (30 x 26) - Grand Metropol & Cobalt Gym
+  // =========================================================================
+  cobaltCity: {
+    id: 'cobaltCity',
+    name: 'COBALT CITY',
+    isOutdoor: true,
+    width: 30,
+    height: 26,
+    bgColor: '#2E7D32',
+    tiles: parseGrid(
+      [
+        'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', // 0
+        'T............................T', // 1
+        'T...yyyy....YYYYYYYY....yyyy.T', // 2  North Boulevard
+        'T...qqee....12341234....aAss.T', // 3  House A (3..6) | POKéMON GYM (12..19, 3..6) | House B (24..27)
+        'T...1234....56785678....bBde.T', // 4
+        'T...5678....9$*k9$*k....fGhe.T', // 5
+        'T...vvOv....vvDDDDvv....oouo.T', // 6  Gym doors at 15..16, 6
+        'T...pppp....pppppppp....pppp.T', // 7
+        'T............................T', // 8
+        'T..qqee.....pppppppp.....aa..T', // 9  Mid-City District: Timber Cottage & Observatory Dome
+        'T..1234.....ppffhhpp.....bb..T', // 10 (ffhh = Central Fountain)
+        'T..5678.....ppffhhpp.....cc..T', // 11
+        'T..vvOv.....pppppppp.....dd..T', // 12
+        'T............................T', // 13
+        'T.pppppppppppppppppppppppppp.T', // 14 Grand Crossway
+        'T............................T', // 15
+        'T..aAss................qqee..T', // 16 Southern Residential Quarter
+        'T..bBde................1234..T', // 17
+        'T..fGhe................5678..T', // 18
+        'T..oouo................vvOv..T', // 19
+        'T...pp..................pp...T', // 20
+        'T...pp......pppppp......pp...T', // 21
+        'T...........pppppp...........T', // 22
+        'T...........pppppp...........T', // 23
+        'T...........pppppp...........T', // 24 Entrance from Verdant City
+        'TTTTTTTTTTTT.DDDD.TTTTTTTTTTTT', // 25 South connection to city
+      ],
+      OUTDOOR_LEGEND
+    ),
+    warps: [
+      // South boundary to Verdant City
+      { x: 13, y: 25, targetMap: 'city', targetX: 14, targetY: 1, targetFacing: 'down' },
+      { x: 14, y: 25, targetMap: 'city', targetX: 14, targetY: 1, targetFacing: 'down' },
+      { x: 15, y: 25, targetMap: 'city', targetX: 15, targetY: 1, targetFacing: 'down' },
+      { x: 16, y: 25, targetMap: 'city', targetX: 15, targetY: 1, targetFacing: 'down' },
+    ],
+    connections: {
+      south: { targetMap: 'city', targetXOffset: 0, targetY: 1 },
+    },
+    npcs: [
+      {
+        id: 'gymGreeter',
+        name: 'OFFICIAL',
+        sprite: 'clerk',
+        x: 14,
+        y: 7,
+        facing: 'down',
+        idleLook: true,
+        idleDirs: ['down', 'left', 'right'],
+        getDialogue: () => [
+          'OFFICIAL: Welcome to COBALT CITY! The Gym Leader is currently away inspecting the mountain pass.',
+          'OFFICIAL: The Gym is temporarily closed. Please come back later!',
+        ],
+      },
+      {
+        id: 'cobaltCitizen',
+        name: 'CAMPER',
+        sprite: 'kid',
+        x: 10,
+        y: 14,
+        facing: 'right',
+        idleLook: true,
+        idleDirs: ['left', 'right'],
+        getDialogue: () => [
+          'CAMPER: Cobalt City has the most diverse architecture in the region!',
+          'CAMPER: Look at the astronomical dome to the east. The professor there studies star charts!',
+        ],
+      },
+      {
+        id: 'cobaltLady',
+        name: 'LADY',
+        sprite: 'girl',
+        x: 21,
+        y: 11,
+        facing: 'left',
+        idleLook: true,
+        idleDirs: ['up', 'left', 'down'],
+        getDialogue: () => [
+          'LADY: The central fountain was built over fifty years ago by the city founders.',
+        ],
+      },
+    ],
+    pokeballs: [],
+    triggers: [
+      {
+        x: 15,
+        y: 6,
+        type: 'gymClosed',
+        text: 'The Gym is currently closed. Please come back later!',
+      },
+      {
+        x: 16,
+        y: 6,
+        type: 'gymClosed',
+        text: 'The Gym is currently closed. Please come back later!',
+      },
+    ],
+    interactables: {
+      [keyOf(15, 6)]: ['The Gym is currently closed. Please come back later!'],
+      [keyOf(16, 6)]: ['The Gym is currently closed. Please come back later!'],
+      [keyOf(13, 7)]: ['COBALT CITY POKéMON GYM - LEADER: VACANT\n"The Steely Bastion of Strategy"'],
+      [keyOf(14, 11)]: ['A sparkling freshwater fountain. Wild water Pokémon occasionally visit!'],
+      [keyOf(15, 11)]: ['A sparkling freshwater fountain. Wild water Pokémon occasionally visit!'],
+    },
+    lights: [
+      { x: 15.0, y: 7.0, radius: 70, color: [255, 230, 160], intensity: 0.35, type: 'lamp' },
+      { x: 8.0, y: 14.0, radius: 60, color: [255, 230, 160], intensity: 0.30, type: 'lamp' },
+      { x: 22.0, y: 14.0, radius: 60, color: [255, 230, 160], intensity: 0.30, type: 'lamp' },
     ],
     encounters: [],
   },

@@ -1,6 +1,6 @@
 {
-  "tileset": null,
-  "tilesetIndex": null,
+  "tileset": "tiles/tileset.png",
+  "tilesetIndex": "tiles/tileset.json",
   "characters": {
     "player": null,
     "mom": null,
