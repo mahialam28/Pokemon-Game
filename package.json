@@ -1,0 +1,21 @@
+{
+  "name": "monster-quest-dawn-version",
+  "version": "2.0.0",
+  "description": "Monster Quest: Dawn Version — Clean HD Pixel-Art RPG Engine (32x32 Tiles, Tiled Maps)",
+  "type": "module",
+  "scripts": {
+    "dev": "python3 -m http.server 3000",
+    "start": "python3 -m http.server 3000"
+  },
+  "keywords": [
+    "pokemon",
+    "rpg",
+    "pixel-art",
+    "tiled",
+    "canvas",
+    "javascript"
+  ],
+  "author": "Monster Quest Team",
+  "license": "MIT"
+}
+

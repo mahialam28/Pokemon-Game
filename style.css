@@ -19,6 +19,7 @@ body {
   justify-content: center;
   user-select: none;
   -webkit-user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
 }
 
 .stage {
@@ -42,8 +43,8 @@ body {
   box-shadow:
     0 0 0 2px #2b3248,
     0 0 0 5px #11141e,
-    0 24px 64px rgba(0, 0, 0, 0.8);
-  border-radius: 3px;
+    0 24px 64px rgba(0, 0, 0, 0.85);
+  border-radius: 4px;
 }
 
 :fullscreen .viewport {
@@ -51,48 +52,14 @@ body {
   border-radius: 0;
 }
 
-#game-canvas,
-#battle-vfx-canvas {
+#game-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   display: block;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-}
-
-#game-canvas {
-  z-index: 1;
-}
-
-#battle-sprite-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  overflow: hidden;
-  display: none;
-}
-
-.battle-sprite-clip {
-  position: absolute;
-  overflow: hidden;
-  pointer-events: none;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.battle-sprite-img {
-  display: block;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  transform-origin: center bottom;
-  will-change: transform, opacity, filter;
-}
-
-#battle-vfx-canvas {
-  z-index: 3;
-  pointer-events: none;
 }

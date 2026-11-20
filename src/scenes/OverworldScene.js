@@ -47,6 +47,9 @@ import {
   TILE_SIZE,
   Y_SORT_TILES,
 } from '../world/tiles.js';
+import { HERO_OVERHEAD_TILES } from '../world/heroHouseTiles.js';
+import { RIVAL_OVERHEAD_TILES } from '../world/rivalHouseTiles.js';
+import { FRIEND_OVERHEAD_TILES } from '../world/friendHouseTiles.js';
 
 const SCREEN_W = 480;
 const SCREEN_H = 270;
@@ -102,6 +105,9 @@ const OVERHEAD_ROOF_TILES = new Set([
   TILE.ROOF_AMBER,
   TILE.ROOF_AMBER_TRIM,
   TILE.DOME_ROOF,
+  ...HERO_OVERHEAD_TILES,
+  ...RIVAL_OVERHEAD_TILES,
+  ...FRIEND_OVERHEAD_TILES,
 ]);
 
 const TEXT_SPEED_CYCLE = ['normal', 'fast', 'slow'];
@@ -198,6 +204,20 @@ export class OverworldScene {
             above === TILE.PC_WALL_33 ||
             above === TILE.HERO_DOOR ||
             above === TILE.HERO_WALL_R ||
+            above === TILE.HERO_EXT_PORCH_DOOR ||
+            above === TILE.HERO_EXT_WALL_WIN_L ||
+            above === TILE.HERO_EXT_WALL_GABLE_L ||
+            above === TILE.HERO_EXT_WALL_WIN_R ||
+            above === TILE.HERO_EXT_WALL_R_BASE ||
+            above === TILE.RIVAL_EXT_PORCH_DOOR ||
+            above === TILE.RIVAL_EXT_WALL_L_BASE ||
+            above === TILE.RIVAL_EXT_AWNING_WIN_BOT ||
+            above === TILE.RIVAL_EXT_WALL_WIN_R ||
+            above === TILE.RIVAL_EXT_WALL_R_BASE ||
+            above === TILE.FRIEND_EXT_DOOR_PORCH ||
+            above === TILE.FRIEND_EXT_WALL_WIN_L ||
+            above === TILE.FRIEND_EXT_WALL_GABLE_B ||
+            above === TILE.FRIEND_EXT_WALL_R_BASE ||
             above === TILE.RIVAL_WALL_BRICK ||
             above === TILE.RIVAL_DOOR ||
             above === TILE.MART_WALL_03 ||

@@ -195,36 +195,36 @@ const INDOOR_LEGEND = {
 
 export const MAPS = {
   // =========================================================================
-  // 1. PLAYER'S BEDROOM (8 x 8)
+  // 1. PLAYER'S BEDROOM (12 x 8) — Stage 1 Gen 1 Rebuild (Panel 5)
   // =========================================================================
   bedroom: {
     id: 'bedroom',
     name: 'BEDROOM',
     isIndoor: true,
-    width: 8,
+    width: 12,
     height: 8,
     bgColor: '#0E1018',
     tiles: [
-      // 0: North wall with molding and slate blue stripe
-      [T.BEDROOM_WALL_L, T.BEDROOM_WALL_M, T.BEDROOM_WALL_M, T.BEDROOM_WALL_M, T.BEDROOM_WALL_M, T.BEDROOM_WALL_M, T.BEDROOM_WALL_M, T.BEDROOM_WALL_R],
-      // 1: Wall, PC Desk, Dresser, Bookshelf, Stairs with orange mat, bonsai
-      [T.BEDROOM_WALL_M, T.PC_DESK, T.DRESSER, T.BOOKSHELF, T.STAIRS_DOWN, T.STAIRS_DOWN_MAT, T.BEDROOM_WALL_M, T.PLANT],
-      // 2: Free open walking floor (Landing from downstairs is at 5, 2)
-      [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
-      // 3: Bed head on left (1, 3), Green dot rug top (cols 3..6)
-      [T.WOOD_FLOOR, T.BED_TOP, T.WOOD_FLOOR, T.RUG_GREEN_TL, T.RUG_GREEN_T, T.RUG_GREEN_T, T.RUG_GREEN_TR, T.WOOD_FLOOR],
-      // 4: Bed foot on left (1, 4), Player spawn (2, 4), TV Console on rug (4, 4)
-      [T.WOOD_FLOOR, T.BED_BOT, T.WOOD_FLOOR, T.RUG_GREEN_L, T.TV_CONSOLE, T.RUG_GREEN_C, T.RUG_GREEN_R, T.WOOD_FLOOR],
-      // 5: NES console on rug at (4, 5) with controller cord
-      [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.RUG_GREEN_L, T.NES_CONSOLE, T.RUG_GREEN_C, T.RUG_GREEN_R, T.WOOD_FLOOR],
-      // 6: Plants in corners, bottom of green dot rug
-      [T.PLANT, T.WOOD_FLOOR, T.WOOD_FLOOR, T.RUG_GREEN_BL, T.RUG_GREEN_B, T.RUG_GREEN_B, T.RUG_GREEN_BR, T.PLANT],
+      // 0: North wall with double window above bed
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_BED_WIN_L, T.HERO_BED_WIN_R, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_CORNER_R],
+      // 1: Wall items: Nightstand+Lamp, Bed head, Bookshelf, PC Tower, PC Monitor, Wardrobe Top, Painting, Stairs Down
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_INT_WALL_B, T.HERO_BED_NIGHTSTAND, T.HERO_BED_HEAD_L, T.HERO_BED_HEAD_R, T.HERO_INT_BOOKCASE, T.HERO_PC_TOWER, T.HERO_PC_MONITOR, T.HERO_WARDROBE_TOP, T.HERO_INT_PAINTING, T.HERO_INT_STAIRS_DOWN, T.HERO_INT_WALL_CORNER_R],
+      // 2: Open walking floor, Bed runner rug, Bed foot, Wardrobe Bottom, Stairs landing at (10, 2)
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_INT_FLOOR, T.HERO_BED_RUNNER, T.HERO_BED_FOOT_L, T.HERO_BED_FOOT_R, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_WARDROBE_BOT, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_WALL_CORNER_R],
+      // 3: Royal blue diamond rug top (cols 4..8)
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_RUG_BLU_TL, T.HERO_RUG_BLU_T, T.HERO_RUG_BLU_T, T.HERO_RUG_BLU_T, T.HERO_RUG_BLU_TR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_WALL_CORNER_R],
+      // 4: Royal blue diamond rug center (cols 4..8) — Player spawn at (5, 4)
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_RUG_BLU_L, T.HERO_RUG_BLU_C, T.HERO_RUG_BLU_C, T.HERO_RUG_BLU_C, T.HERO_RUG_BLU_R, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_WALL_CORNER_R],
+      // 5: Royal blue diamond rug bottom (cols 4..8)
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_RUG_BLU_BL, T.HERO_RUG_BLU_B, T.HERO_RUG_BLU_B, T.HERO_RUG_BLU_B, T.HERO_RUG_BLU_BR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_WALL_CORNER_R],
+      // 6: Decorative corner palms & open walking floor
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_CORNER_PALM, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_CORNER_PALM, T.HERO_INT_WALL_CORNER_R],
       // 7: South baseboard
-      [T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT],
+      [T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT],
     ],
     warps: [
       {
-        x: 5,
+        x: 10,
         y: 1,
         targetMap: 'downstairs',
         targetX: 8,
@@ -236,59 +236,70 @@ export const MAPS = {
     pokeballs: [],
     triggers: [],
     interactables: {
-      [keyOf(1, 1)]: ['Booted up the PC! An adventure notebook and item storage are ready.'],
-      [keyOf(2, 1)]: ['A sturdy wooden dresser. Neatly arranged trainer outfits inside!'],
-      [keyOf(3, 1)]: ['A mint-green shelf crammed with POKéMON adventure books and habitat guides!'],
-      [keyOf(1, 3)]: ["It's your cozy bed. The soft quilt feels crisp and inviting!"],
-      [keyOf(1, 4)]: ["It's your cozy bed. The soft quilt feels crisp and inviting!"],
-      [keyOf(4, 4)]: ['A movie is playing on TV! Four kids are walking down railroad tracks... Better get moving!'],
-      [keyOf(4, 5)]: ["It's an 8-bit game console! A tiny character is exploring a vast pixel world."],
-      [keyOf(7, 1)]: ['A vibrant potted bonsai plant. Freshly watered this morning.'],
-      [keyOf(0, 6)]: ['A lush indoor plant adding fresh oxygen to the bedroom.'],
-      [keyOf(7, 6)]: ['A decorative houseplant basking in the morning room light.'],
+      [keyOf(2, 1)]: ['A bedside nightstand with a brass lamp. It casts a comforting, warm glow.'],
+      [keyOf(3, 0)]: ['A bright morning sun shines through the blue curtains! Today is the big day.'],
+      [keyOf(4, 0)]: ['A bright morning sun shines through the blue curtains! Today is the big day.'],
+      [keyOf(3, 1)]: ["It's your cozy bed. The soft navy quilt and fluffy pillow feel crisp and inviting!"],
+      [keyOf(4, 1)]: ["It's your cozy bed. The soft navy quilt and fluffy pillow feel crisp and inviting!"],
+      [keyOf(3, 2)]: ["It's your cozy bed. The soft navy quilt and fluffy pillow feel crisp and inviting!"],
+      [keyOf(4, 2)]: ["It's your cozy bed. The soft navy quilt and fluffy pillow feel crisp and inviting!"],
+      [keyOf(5, 1)]: ['A tall bookshelf packed with POKéMON adventure journals and regional battle guides!'],
+      [keyOf(6, 1)]: ['Booted up the PC! Storage system is online and ready for partner monsters.'],
+      [keyOf(7, 1)]: ['Booted up the PC! Storage system is online and ready for partner monsters.'],
+      [keyOf(8, 1)]: ['A spacious wooden wardrobe. Neatly pressed trainer outfits are ready inside.'],
+      [keyOf(8, 2)]: ['A spacious wooden wardrobe. Neatly pressed trainer outfits are ready inside.'],
+      [keyOf(9, 1)]: ['A charming scenic painting of the rolling hills outside Dawnleaf Town.'],
+      [keyOf(1, 6)]: ['A lush indoor potted plant, basking in the room light.'],
+      [keyOf(10, 6)]: ['A decorative houseplant adding fresh oxygen to the bedroom.'],
     },
     lights: [
-      { x: 2.5, y: 0.7, radius: 52, color: [255, 236, 178], intensity: 0.44, type: 'windowBeam' },
-      { x: 1.5, y: 1.3, radius: 30, color: [96, 215, 255], intensity: 0.36, type: 'pc' },
-      { x: 4.5, y: 4.5, radius: 60, color: [255, 224, 168], intensity: 0.26, type: 'lamp' },
+      { x: 3.5, y: 0.7, radius: 52, color: [255, 236, 178], intensity: 0.44, type: 'windowBeam' },
+      { x: 6.5, y: 1.3, radius: 36, color: [96, 215, 255], intensity: 0.38, type: 'pc' },
+      { x: 2.5, y: 1.5, radius: 46, color: [255, 224, 168], intensity: 0.32, type: 'lamp' },
     ],
     encounters: [],
   },
 
 
-  // 2. HOUSE DOWNSTAIRS (10 x 8)
+  // =========================================================================
+  // 2. HOUSE DOWNSTAIRS (12 x 8) — Stage 1 Gen 1 Rebuild (Panel 4)
   // =========================================================================
   downstairs: {
     id: 'downstairs',
     name: 'HERO HOUSE 1F',
     isIndoor: true,
-    width: 10,
+    width: 12,
     height: 8,
     bgColor: '#0E1018',
-    tiles: parseGrid(
-      [
-        'WWWWWWWWWW', // 0  (North wall)
-        'FOIT.B..UK', // 1  (Fridge F, Stove O, Sink I, TV T, Bookshelf B, Stairs up U at 8,1, Plant K)
-        '..........', // 2  (Stairs landing at 8,2)
-        '.[[.()....', // 3  (Living sofa [[ at 1..2,3 | Dining table () at 4..5,3 | Mom at 6,3)
-        '..........', // 4
-        '..mmmmmm..', // 5  (Warm family center rug m)
-        'K........K', // 6  (Corner decorative plants K)
-        'wwwwDDwwww', // 7  (Exit doormats D at 4..5, 7)
-      ],
-      INDOOR_LEGEND
-    ),
+    tiles: [
+      // 0: North wall
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_T, T.HERO_INT_WALL_CORNER_R],
+      // 1: Fridge Top, Coffee Counter, Sink+Window, Stove+Hood, Bookcase, Ficus, TV Console, Stairs Up, Painting, Wall
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_KIT_FRIDGE_T, T.HERO_KIT_COFFEE, T.HERO_KIT_SINK_WIN, T.HERO_KIT_STOVE, T.HERO_INT_BOOKCASE, T.HERO_INT_PLANT_FICUS, T.HERO_INT_TV_CONSOLE, T.HERO_INT_STAIRS_UP, T.HERO_INT_PAINTING, T.HERO_INT_WALL_B, T.HERO_INT_WALL_CORNER_R],
+      // 2: Fridge Bottom, open floor in front of kitchen, stairs landing at (8, 2)
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_KIT_FRIDGE_B, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_WALL_CORNER_R],
+      // 3: Green rug top (cols 1..3) & Cream rug top w/ Crimson Sofa (cols 6..10)
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_RUG_GRN_TL, T.HERO_RUG_GRN_T, T.HERO_RUG_GRN_TR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_RUG_CRM_TL, T.HERO_SOFA_L, T.HERO_SOFA_M, T.HERO_SOFA_R, T.HERO_RUG_CRM_TR, T.HERO_INT_WALL_CORNER_R],
+      // 4: Dining chairs & table (left) & Crimson armchairs & coffee table (right)
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_DINING_CHAIR_L, T.HERO_DINING_TABLE, T.HERO_DINING_CHAIR_R, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_ARMCHAIR_L, T.HERO_COFFEE_TABLE, T.HERO_COFFEE_TABLE, T.HERO_ARMCHAIR_R, T.HERO_RUG_CRM_R, T.HERO_INT_WALL_CORNER_R],
+      // 5: Green rug bottom (left) & Cream rug bottom (right)
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_RUG_GRN_BL, T.HERO_RUG_GRN_B, T.HERO_RUG_GRN_BR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_RUG_CRM_BL, T.HERO_RUG_CRM_B, T.HERO_RUG_CRM_B, T.HERO_RUG_CRM_B, T.HERO_RUG_CRM_BR, T.HERO_INT_WALL_CORNER_R],
+      // 6: Decorative corner palms & open walking corridor
+      [T.HERO_INT_WALL_CORNER_L, T.HERO_CORNER_PALM, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_INT_FLOOR, T.HERO_CORNER_PALM, T.HERO_INT_WALL_CORNER_R],
+      // 7: South baseboard with centered welcome doormat exit at (5..6, 7)
+      [T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.HERO_DOORMAT_L, T.HERO_DOORMAT_R, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT],
+    ],
     warps: [
       {
         x: 8,
         y: 1,
         targetMap: 'bedroom',
-        targetX: 5,
+        targetX: 10,
         targetY: 2,
         targetFacing: 'down',
       },
       {
-        x: 4,
+        x: 5,
         y: 7,
         targetMap: 'town',
         targetX: 4,
@@ -297,7 +308,7 @@ export const MAPS = {
         guard: 'requireMom',
       },
       {
-        x: 5,
+        x: 6,
         y: 7,
         targetMap: 'town',
         targetX: 4,
@@ -330,23 +341,32 @@ export const MAPS = {
     pokeballs: [],
     triggers: [],
     interactables: {
-      [keyOf(0, 1)]: ["The refrigerator is stocked with cold lemonade and Mom's fresh snacks."],
-      [keyOf(1, 1)]: ['A clean kitchen stove. Breakfast was cooked here a short while ago.'],
-      [keyOf(2, 1)]: ['A sparkling clean sink and polished marble countertop.'],
-      [keyOf(3, 1)]: ['A POKéMON battle championship broadcast is playing on television!'],
+      [keyOf(1, 1)]: ["The refrigerator is stocked with cold lemonade and Mom's fresh snacks."],
+      [keyOf(1, 2)]: ["The refrigerator freezer holds homemade Berry popsicles!"],
+      [keyOf(2, 1)]: ['A modern espresso maker on a polished marble counter. Smells like freshly roasted coffee beans.'],
+      [keyOf(3, 1)]: ['A sparkling clean sink under a sunny kitchen window.'],
+      [keyOf(4, 1)]: ['A clean kitchen stove with ventilation hood. Breakfast was cooked here a short while ago.'],
       [keyOf(5, 1)]: ['Family photo albums, recipe books, and trainer field guides fill the shelf.'],
-      [keyOf(4, 3)]: ['A warm cup of freshly brewed tea sits on the table.'],
-      [keyOf(5, 3)]: ['A wooden bowl brimming with fresh Berries from Dawnleaf Town.'],
-      [keyOf(1, 3)]: ['A plush living room sofa. Extremely soft and comfortable.'],
-      [keyOf(2, 3)]: ['A plush living room sofa. Extremely soft and comfortable.'],
-      [keyOf(0, 6)]: ['A lush indoor potted plant.'],
-      [keyOf(9, 6)]: ['A lush indoor potted plant.'],
+      [keyOf(6, 1)]: ['A vibrant potted ficus plant, thriving in the warm morning light.'],
+      [keyOf(7, 1)]: ['A POKéMON battle championship broadcast is playing on the widescreen TV!'],
+      [keyOf(9, 1)]: ['A beautiful landscape painting of the mountains at dawn.'],
+      [keyOf(2, 4)]: ['A comfortable ladder-back dining chair.'],
+      [keyOf(3, 4)]: ['A cheerful red-and-white checkered tablecloth with a fresh vase of wildflowers.'],
+      [keyOf(4, 4)]: ['A comfortable ladder-back dining chair.'],
+      [keyOf(6, 4)]: ['A plush crimson armchair. Incredibly soft and well-cared for.'],
+      [keyOf(7, 3)]: ['A plush crimson living room sofa. Extremely soft and comfortable.'],
+      [keyOf(8, 3)]: ['A plush crimson living room sofa. Extremely soft and comfortable.'],
+      [keyOf(9, 3)]: ['A plush crimson living room sofa. Extremely soft and comfortable.'],
+      [keyOf(7, 4)]: ['A polished oak coffee table with a glass centerpiece vase.'],
+      [keyOf(8, 4)]: ['A polished oak coffee table with a glass centerpiece vase.'],
+      [keyOf(9, 4)]: ['A plush crimson armchair. Incredibly soft and well-cared for.'],
+      [keyOf(1, 6)]: ['A lush indoor potted palm.'],
+      [keyOf(10, 6)]: ['A lush indoor potted palm.'],
     },
     lights: [
       { x: 3.5, y: 0.7, radius: 48, color: [255, 232, 168], intensity: 0.42, type: 'windowBeam' },
-      { x: 7.5, y: 0.7, radius: 48, color: [255, 232, 168], intensity: 0.42, type: 'windowBeam' },
-      { x: 3.5, y: 1.4, radius: 34, color: [130, 210, 255], intensity: 0.32, type: 'tv' },
-      { x: 5.0, y: 4.2, radius: 64, color: [255, 216, 148], intensity: 0.28, type: 'lamp' },
+      { x: 7.5, y: 1.4, radius: 36, color: [130, 210, 255], intensity: 0.34, type: 'tv' },
+      { x: 8.0, y: 4.0, radius: 64, color: [255, 216, 148], intensity: 0.28, type: 'lamp' },
     ],
     encounters: [],
   },
@@ -369,25 +389,25 @@ export const MAPS = {
       [T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TALL_GRASS, T.TALL_GRASS, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE],
       // y = 2: North approach
       [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.TREE],
-      // y = 3..6: Hero's House (cols 3..6) & Rival's House with Training Ring (cols 13..17)
-      [T.TREE, T.GRASS, T.GRASS, T.HERO_ROOF_L, T.HERO_ROOF_DORMER, T.HERO_ROOF_M, T.HERO_ROOF_R, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.RIVAL_ROOF_L, T.RIVAL_ROOF_PEAK, T.RIVAL_ROOF_R, T.GRASS, T.GRASS, T.GRASS, T.TREE],
-      [T.TREE, T.GRASS, T.FENCE, T.HERO_ROOF_L, T.HERO_ROOF_M, T.HERO_ROOF_M, T.HERO_ROOF_R, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.RIVAL_ROOF_L, T.RIVAL_ROOF_PEAK, T.RIVAL_ROOF_R, T.TRAIN_BAG, T.GRASS, T.GRASS, T.TREE],
-      [T.TREE, T.GRASS, T.FLOWER, T.HERO_WALL_L, T.HERO_WALL_WIN, T.HERO_BALCONY, T.HERO_WALL_R, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.RIVAL_WALL_BRICK, T.RIVAL_WALL_WIN, T.RIVAL_WALL_BRICK, T.TRAIN_WEIGHTS, T.GRASS, T.GRASS, T.TREE],
-      [T.TREE, T.GRASS, T.MAILBOX, T.HERO_WALL_L, T.HERO_DOOR, T.HERO_WALL_WIN, T.HERO_WALL_R, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.GRASS, T.RIVAL_WALL_BRICK, T.RIVAL_DOOR, T.RIVAL_WALL_BRICK, T.TRAIN_SAND, T.FENCE, T.GRASS, T.TREE],
-      // y = 7: Main town boulevard connecting houses
-      [T.TREE, T.GRASS, T.FLOWER, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.FENCE, T.GRASS, T.TREE],
-      // y = 8: Town sign & side paths around lab
-      [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.GRASS, T.SIGN, T.PATH, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.TREE],
-      // y = 9: Fences & central approach
-      [T.TREE, T.GRASS, T.FENCE, T.FENCE, T.FENCE, T.FENCE, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.FENCE, T.FENCE, T.FENCE, T.GRASS, T.TREE],
+      // y = 3..6: Hero's House (cols 3..7) & Rival's House (cols 12..16)
+      [T.TREE, T.GRASS, T.GRASS, T.HERO_EXT_ROOF_L_TOP, T.HERO_EXT_ROOF_DORMER_T, T.HERO_EXT_GABLE_PEAK_L, T.HERO_EXT_GABLE_PEAK_R, T.HERO_EXT_ROOF_CHIMNEY_T, T.GRASS, T.PATH, T.PATH, T.GRASS, T.RIVAL_EXT_ROOF_L_TOP, T.RIVAL_EXT_ROOF_M_TOP, T.RIVAL_EXT_GABLE_PEAK, T.RIVAL_EXT_ROOF_R_TOP, T.RIVAL_EXT_CHIMNEY_TOP, T.GRASS, T.GRASS, T.TREE],
+      [T.TREE, T.GRASS, T.GRASS, T.HERO_EXT_ROOF_L_MID, T.HERO_EXT_DORMER_WIN, T.HERO_EXT_GABLE_WIN_L, T.HERO_EXT_GABLE_WIN_R, T.HERO_EXT_ROOF_CHIMNEY_B, T.GRASS, T.PATH, T.PATH, T.GRASS, T.RIVAL_EXT_ROOF_L_BOT, T.RIVAL_EXT_ROOF_M_BOT, T.RIVAL_EXT_GABLE_WIN, T.RIVAL_EXT_ROOF_R_BOT, T.RIVAL_EXT_CHIMNEY_BOT, T.GRASS, T.GRASS, T.TREE],
+      [T.TREE, T.GRASS, T.HERO_EXT_BUSH_PINK, T.HERO_EXT_WALL_L_TOP, T.HERO_EXT_PORCH_ROOF, T.HERO_EXT_WALL_GABLE_BL, T.HERO_EXT_WALL_GABLE_BR, T.HERO_EXT_WALL_R_TOP, T.HERO_EXT_BUSH_WHITE, T.PATH, T.PATH, T.GRASS, T.RIVAL_EXT_WALL_L_TOP, T.RIVAL_EXT_AWNING_WIN_TOP, T.RIVAL_EXT_PORCH_CANOPY, T.RIVAL_EXT_WALL_R_TOP, T.RIVAL_EXT_WALL_FAR_R, T.GRASS, T.GRASS, T.TREE],
+      [T.TREE, T.GRASS, T.GRASS, T.HERO_EXT_WALL_WIN_L, T.HERO_EXT_PORCH_DOOR, T.HERO_EXT_WALL_GABLE_L, T.HERO_EXT_WALL_WIN_R, T.HERO_EXT_WALL_R_BASE, T.HERO_EXT_TOPIARY, T.PATH, T.PATH, T.GRASS, T.RIVAL_EXT_WALL_L_BASE, T.RIVAL_EXT_AWNING_WIN_BOT, T.RIVAL_EXT_PORCH_DOOR, T.RIVAL_EXT_WALL_WIN_R, T.RIVAL_EXT_WALL_R_BASE, T.GRASS, T.GRASS, T.TREE],
+      // y = 7: Hero front garden & Rival front garden
+      [T.TREE, T.GRASS, T.GRASS, T.HERO_EXT_MAILBOX, T.HERO_EXT_STONE_PATH, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.PATH, T.GRASS, T.RIVAL_EXT_BUSH_PURPLE, T.GRASS, T.RIVAL_EXT_STONE_PATH, T.GRASS, T.RIVAL_EXT_HEDGE_ROUND, T.RIVAL_EXT_BUSH_PURPLE, T.GRASS, T.TREE],
+      // y = 8: Enclosing white picket fence (Hero) & Ashlar stone perimeter wall (Rival)
+      [T.TREE, T.GRASS, T.HERO_EXT_FENCE_POST_L, T.FENCE, T.HERO_EXT_STONE_PATH, T.FENCE, T.FENCE, T.HERO_EXT_FENCE_POST_R, T.SIGN, T.PATH, T.PATH, T.GRASS, T.RIVAL_EXT_WALL_STONE_CORNER_L, T.RIVAL_EXT_WALL_STONE_H, T.RIVAL_EXT_STONE_PATH, T.RIVAL_EXT_WALL_STONE_H, T.RIVAL_EXT_WALL_STONE_POST, T.RIVAL_EXT_WALL_STONE_CORNER_R, T.GRASS, T.TREE],
+      // y = 9: Main town boulevard connecting houses
+      [T.TREE, T.GRASS, T.PATH, T.PATH, T.HERO_EXT_STONE_PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.GRASS, T.GRASS, T.PATH, T.RIVAL_EXT_STONE_PATH, T.PATH, T.PATH, T.PATH, T.GRASS, T.TREE],
       // y = 10..14: Professor's Lab (cols 7..13), Friend's House (cols 15..18), flower beds & pond
-      [T.TREE, T.GRASS, T.FLOWER, T.FLOWER, T.FLOWER, T.GRASS, T.PATH, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.PATH, T.FRIEND_ROOF_L, T.FRIEND_ROOF_M, T.FRIEND_ROOF_M, T.FRIEND_ROOF_R, T.TREE],
-      [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.PATH, T.FRIEND_ROOF_L, T.FRIEND_ROOF_M, T.FRIEND_ROOF_M, T.FRIEND_ROOF_R, T.TREE],
-      [T.TREE, T.GRASS, T.WATER, T.WATER, T.WATER, T.GRASS, T.PATH, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.PATH, T.FRIEND_WALL_L, T.FRIEND_WALL_WIN, T.FRIEND_WALL_WIN, T.FRIEND_WALL_R, T.TREE],
-      [T.TREE, T.GRASS, T.WATER, T.WATER, T.WATER, T.GRASS, T.PATH, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.PATH, T.FRIEND_WALL_L, T.FRIEND_DOOR, T.FRIEND_WALL_WIN, T.FRIEND_WALL_R, T.TREE],
-      [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.LAB_DOOR, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.PATH, T.PATH, T.PATH, T.SIGN, T.GRASS, T.TREE],
-      // y = 15: Lab front plaza
-      [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.TREE],
+      [T.TREE, T.GRASS, T.FLOWER, T.FLOWER, T.FLOWER, T.GRASS, T.PATH, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.PATH, T.FRIEND_EXT_ROOF_L_TOP, T.FRIEND_EXT_ROOF_M_TOP, T.FRIEND_EXT_GABLE_PEAK, T.FRIEND_EXT_ROOF_R_TOP, T.TREE],
+      [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.PATH, T.FRIEND_EXT_ROOF_L_BOT, T.FRIEND_EXT_ROOF_M_BOT, T.FRIEND_EXT_GABLE_WIN, T.FRIEND_EXT_ROOF_R_BOT, T.TREE],
+      [T.TREE, T.GRASS, T.WATER, T.WATER, T.WATER, T.GRASS, T.PATH, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.PATH, T.FRIEND_EXT_WALL_L_TOP, T.FRIEND_EXT_PORCH_CANOPY, T.FRIEND_EXT_WALL_GABLE_TOP, T.FRIEND_EXT_WALL_R_TOP, T.TREE],
+      [T.TREE, T.GRASS, T.WATER, T.WATER, T.WATER, T.GRASS, T.PATH, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.PATH, T.FRIEND_EXT_WALL_WIN_L, T.FRIEND_EXT_DOOR_PORCH, T.FRIEND_EXT_WALL_GABLE_B, T.FRIEND_EXT_WALL_R_BASE, T.TREE],
+      [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.LAB_DOOR, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.PATH, T.FRIEND_EXT_BUSH_ROSE, T.FRIEND_EXT_STONE_PATH, T.FRIEND_EXT_BUSH_ROSE, T.SIGN, T.TREE],
+      // y = 15: Lab front plaza & Friend's front yard wooden fence
+      [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.FRIEND_EXT_FENCE_CORNER_L, T.FRIEND_EXT_STONE_PATH, T.FRIEND_EXT_FENCE_WOOD_H, T.FRIEND_EXT_FENCE_LANTERN_POST, T.TREE],
       // y = 16..17: Southern flowers & tree border
       [T.TREE, T.TREE, T.GRASS, T.FLOWER, T.FLOWER, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.FLOWER, T.GRASS, T.GRASS, T.TREE, T.TREE],
       [T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE, T.TREE],
@@ -397,7 +417,7 @@ export const MAPS = {
         x: 4,
         y: 6,
         targetMap: 'downstairs',
-        targetX: 4,
+        targetX: 5,
         targetY: 6,
         targetFacing: 'up',
       },
@@ -528,14 +548,21 @@ export const MAPS = {
       { x: 10, y: 1, type: 'northExit' },
     ],
     interactables: {
+      [keyOf(2, 6)]: ["{PLAYER}'s House Mailbox! No new letters today, but the red flag is raised."],
+      [keyOf(3, 6)]: ['A blooming window flowerbox overflowing with pink hydrangeas and white blossoms.'],
+      [keyOf(6, 6)]: ['A blooming window flowerbox overflowing with pink hydrangeas and white blossoms.'],
+      [keyOf(8, 6)]: ['A neatly trimmed round topiary hedge in a chiseled stone base.'],
       [keyOf(3, 7)]: ["{PLAYER}'s HOUSE"],
       [keyOf(16, 7)]: ["{RIVAL}'s HOUSE"],
-      [keyOf(17, 14)]: ["{FRIEND}'s HOUSE"],
+      [keyOf(18, 14)]: ["{FRIEND}'s HOUSE"],
+      [keyOf(16, 13)]: ["{FRIEND}'s House. The porch lantern casts a cozy, welcoming light."],
+      [keyOf(18, 15)]: ["A rustic timber lamppost illuminating the garden entrance."],
+      [keyOf(15, 14)]: ["Fragrant blooming rose bushes line the garden pathway."],
+      [keyOf(17, 14)]: ["Fragrant blooming rose bushes line the garden pathway."],
       [keyOf(8, 8)]: ['DAWNLEAF TOWN: A quiet little start.'],
       [keyOf(15, 14)]: ["PROFESSOR's POKéMON LAB"],
     },
     chimneys: [
-      { x: 5, y: 3 },
       { x: 15, y: 3 },
     ],
     birdSpots: [

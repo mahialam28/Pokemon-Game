@@ -10,6 +10,27 @@
  */
 
 import { compilePixelMap, stampPixelMap } from '../gfx/pixelart.js';
+import {
+  HERO_TILES,
+  HERO_SOLID_TILES,
+  HERO_Y_SORT_TILES,
+  HERO_OVERHEAD_TILES,
+  registerHeroHouseTiles,
+} from './heroHouseTiles.js';
+import {
+  RIVAL_TILES,
+  RIVAL_SOLID_TILES,
+  RIVAL_Y_SORT_TILES,
+  RIVAL_OVERHEAD_TILES,
+  registerRivalHouseTiles,
+} from './rivalHouseTiles.js';
+import {
+  FRIEND_TILES,
+  FRIEND_SOLID_TILES,
+  FRIEND_Y_SORT_TILES,
+  FRIEND_OVERHEAD_TILES,
+  registerFriendHouseTiles,
+} from './friendHouseTiles.js';
 
 export const TILE_SIZE = 16;
 
@@ -223,6 +244,8 @@ export const TILE = {
   FRIEND_DOOR: 246,
 };
 
+Object.assign(TILE, HERO_TILES, RIVAL_TILES, FRIEND_TILES);
+
 /** Tiles that block standard walking (LEDGE is handled specially for downward hops). */
 export const SOLID_TILES = new Set([
   TILE.TREE,
@@ -310,6 +333,9 @@ export const SOLID_TILES = new Set([
   TILE.FRIEND_WALL_L,
   TILE.FRIEND_WALL_WIN,
   TILE.FRIEND_WALL_R,
+  ...HERO_SOLID_TILES,
+  ...RIVAL_SOLID_TILES,
+  ...FRIEND_SOLID_TILES,
 ]);
 
 /** Props drawn on the Y-sorted object layer above base ground tiles. */
@@ -327,6 +353,9 @@ export const Y_SORT_TILES = new Set([
   TILE.CHAIR,
   TILE.SOFA_L,
   TILE.SOFA_R,
+  ...HERO_Y_SORT_TILES,
+  ...RIVAL_Y_SORT_TILES,
+  ...FRIEND_Y_SORT_TILES,
 ]);
 
 /** Deterministic hash for subtle 2-variant grass placement. */
@@ -4279,6 +4308,10 @@ export function initTiles() {
   const grassB = compilePixelMap(MAP_GRASS_B, PAL_GRASS);
   grassVariants.push(grassA, grassB);
   tileCache.set(TILE.GRASS, [grassA]);
+
+  registerHeroHouseTiles(tileCache, compilePixelMap, { grass: grassA });
+  registerRivalHouseTiles(tileCache, compilePixelMap, { grass: grassA });
+  registerFriendHouseTiles(tileCache, compilePixelMap, { grass: grassA });
 
   // Compile all 16 path auto-tile variants
   for (let mask = 0; mask < 16; mask++) {

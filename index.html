@@ -3,25 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Monster Quest: Dawn Version — HD-2D</title>
+  <title>Monster Quest: Dawn Version — Classic GBA Visual Test</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23E84840' stroke='%23201E2C' stroke-width='2'/%3E%3Cpath d='M1 8h14a7 7 0 0 1-14 0z' fill='%23F6F8FC'/%3E%3Cline x1='1' y1='8' x2='15' y2='8' stroke='%23201E2C' stroke-width='2'/%3E%3Ccircle cx='8' cy='8' r='2.3' fill='%23FFF' stroke='%23201E2C' stroke-width='1.5'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <main class="stage">
     <div id="game-viewport" class="viewport">
-      <canvas id="game-canvas" width="480" height="270" aria-label="Monster Quest: Dawn Version"></canvas>
-      <!-- Sandwiched DOM layer for animated Gen 5 Pokémon GIFs (crisp pixelated + platform clip masks) -->
-      <div id="battle-sprite-layer" aria-hidden="true">
-        <div id="battle-enemy-clip" class="battle-sprite-clip">
-          <img id="battle-enemy-img" class="battle-sprite-img" alt="" draggable="false" />
-        </div>
-        <div id="battle-player-clip" class="battle-sprite-clip">
-          <img id="battle-player-img" class="battle-sprite-img" alt="" draggable="false" />
-        </div>
-      </div>
-      <!-- Transparent top overlay canvas for Battle VFX, HP boxes, dialogue & menus above the GIFs -->
-      <canvas id="battle-vfx-canvas" width="480" height="270" aria-hidden="true"></canvas>
+      <canvas id="game-canvas" width="240" height="160" aria-label="Monster Quest: Dawn Version (GBA Mode)"></canvas>
     </div>
   </main>
   <script type="module" src="./src/main.js"></script>

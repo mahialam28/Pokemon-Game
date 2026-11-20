@@ -110,7 +110,7 @@ export function getStarterSprite(starter) {
   const attemptChain = async () => {
     if (SPRITE_CONFIG.USE_HD_SPRITES) {
       try {
-        const hdImg = await loadImageWithTimeout(getHdSpriteUrl(starter), 4000);
+        const hdImg = await loadImageWithTimeout(getHdSpriteUrl(starter), 1200);
         entry.img = hdImg;
         entry.isHd = true;
         entry.status = 'loaded';
@@ -121,7 +121,7 @@ export function getStarterSprite(starter) {
     }
 
     try {
-      const pxImg = await loadImageWithTimeout(getPixelSpriteUrl(starter), 3500);
+      const pxImg = await loadImageWithTimeout(getPixelSpriteUrl(starter), 1000);
       entry.img = pxImg;
       entry.isHd = false;
       entry.status = 'loaded';
