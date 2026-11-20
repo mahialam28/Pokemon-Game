@@ -1304,6 +1304,44 @@ const MAP_DRESSER = [
   "................",
 ];
 
+const MAP_WARDROBE_TOP = [
+  "0000000000000000",
+  "0444444444444440",
+  "0433333333333340",
+  "0300000000000030",
+  "0302222222222030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302333333332030",
+  "0300000000000030",
+];
+
+const MAP_WARDROBE_BOT = [
+  "0300000000000030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302333333332030",
+  "030233y22y332030",
+  "030233Y22Y332030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302333333332030",
+  "0302222222222030",
+  "0300000000000030",
+  "0333333333333330",
+  "0110000000000110",
+  "000..........000",
+];
+
 const MAP_BOOKSHELF_FR = [
   "0000000000000000",
   "0KKKKKKKKKKKKKK0",
@@ -4381,6 +4419,7 @@ export function initTiles() {
   tileCache.set(TILE.KITCHEN_SINK, [compilePixelMap(MAP_KITCHEN_SINK_NEW, PAL_INTERIOR, { underlay: woodFloor })]);
 
   // Friend House Exterior
+  const heroUnderlay = grassVariants[0];
   tileCache.set(TILE.FRIEND_ROOF_L, [compilePixelMap(MAP_FRIEND_ROOF_L, PAL_FRIEND_HOUSE, { underlay: heroUnderlay })]);
   tileCache.set(TILE.FRIEND_ROOF_M, [compilePixelMap(MAP_FRIEND_ROOF_M, PAL_FRIEND_HOUSE, { underlay: heroUnderlay })]);
   tileCache.set(TILE.FRIEND_ROOF_R, [compilePixelMap(MAP_FRIEND_ROOF_R, PAL_FRIEND_HOUSE, { underlay: heroUnderlay })]);
@@ -4460,7 +4499,6 @@ export function initTiles() {
   tileCache.set(TILE.PC_WALL_33, [compilePixelMap(MAP_PC_WALL_33, PAL_POKECENTER, { underlay: pcUnderlay })]);
 
   // Main Character House
-  const heroUnderlay = grassVariants[0];
   tileCache.set(TILE.HERO_ROOF_L, [compilePixelMap(MAP_HERO_ROOF_L, PAL_HERO_HOUSE, { underlay: heroUnderlay })]);
   tileCache.set(TILE.HERO_ROOF_M, [compilePixelMap(MAP_HERO_ROOF_M, PAL_HERO_HOUSE, { underlay: heroUnderlay })]);
   tileCache.set(TILE.HERO_ROOF_DORMER, [compilePixelMap(MAP_HERO_ROOF_DORMER, PAL_HERO_HOUSE, { underlay: heroUnderlay })]);

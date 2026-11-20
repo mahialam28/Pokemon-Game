@@ -49,6 +49,8 @@ class LoadingScene {
     }).then(() => {
       this.progress = 1;
       this.done = true;
+    }).catch((err) => {
+      console.error('Failed to load assets:', err);
     });
   }
 
