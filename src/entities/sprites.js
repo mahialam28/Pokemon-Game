@@ -530,6 +530,18 @@ const CHAR_PALETTES = {
     'p': '#2C4470', 'P': '#4468A4',
     'f': '#D84040',
   },
+  friend: {
+    '0': '#1C2428',
+    'h': '#285848', 'H': '#3C8868', 'a': '#64B890', // Emerald/forest-green hair & visor
+    'e': '#F8D848', // Golden badge accent
+    'k': '#D89C74', 's': '#F8CCA4', 'S': '#FFE4C4',
+    'w': '#FFFFFF',
+    't': '#206878', 'T': '#3494A8', 'i': '#68C4D8', // Teal/cyan explorer jacket
+    'c': '#FFF8EE', // Off-white shirt
+    'b': '#206878', 'B': '#3494A8',
+    'p': '#504438', 'P': '#786858', // Khaki researcher trousers
+    'f': '#285038',
+  },
   // Phase 3 new NPCs: Nurse Joy, Mart Clerk, Resting Old Man
   nurse: {
     '0': '#2C1C28',

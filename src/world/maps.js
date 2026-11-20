@@ -185,6 +185,12 @@ const INDOOR_LEGEND = {
   'V': T.STAIRS_DOWN,
   '^': T.BED_TOP,
   '_': T.BED_BOT,
+  'Q': T.WARDROBE_TOP,
+  'q': T.WARDROBE_BOT,
+  'F': T.KITCHEN_FRIDGE,
+  'O': T.KITCHEN_STOVE,
+  'I': T.KITCHEN_SINK,
+  'Z': T.DESK,
 };
 
 export const MAPS = {
@@ -199,18 +205,26 @@ export const MAPS = {
     height: 8,
     bgColor: '#0E1018',
     tiles: [
-      [T.WALL_TOP, T.WALL_TOP, T.WALL_TOP, T.WALL_WINDOW, T.WALL_TOP, T.WALL_TOP, T.WALL_TOP, T.WALL_TOP],
-      [T.WALL_BOT, T.PC_DESK,  T.DESK,     T.WALL_BOT,    T.TV,       T.WALL_BOT, T.STAIRS_DOWN, T.PLANT],
+      // 0: North wall with molding and slate blue stripe
+      [T.BEDROOM_WALL_L, T.BEDROOM_WALL_M, T.BEDROOM_WALL_M, T.BEDROOM_WALL_M, T.BEDROOM_WALL_M, T.BEDROOM_WALL_M, T.BEDROOM_WALL_M, T.BEDROOM_WALL_R],
+      // 1: Wall, PC Desk, Dresser, Bookshelf, Stairs with orange mat, bonsai
+      [T.BEDROOM_WALL_M, T.PC_DESK, T.DRESSER, T.BOOKSHELF, T.STAIRS_DOWN, T.STAIRS_DOWN_MAT, T.BEDROOM_WALL_M, T.PLANT],
+      // 2: Free open walking floor (Landing from downstairs is at 5, 2)
       [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
-      [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
-      [T.WOOD_FLOOR, T.BED_TOP,    T.WOOD_FLOOR, T.RUG_RED,    T.RUG_RED,    T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
-      [T.WOOD_FLOOR, T.BED_BOT,    T.WOOD_FLOOR, T.RUG_RED,    T.RUG_RED,    T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
-      [T.PLANT,      T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
-      [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
+      // 3: Bed head on left (1, 3), Green dot rug top (cols 3..6)
+      [T.WOOD_FLOOR, T.BED_TOP, T.WOOD_FLOOR, T.RUG_GREEN_TL, T.RUG_GREEN_T, T.RUG_GREEN_T, T.RUG_GREEN_TR, T.WOOD_FLOOR],
+      // 4: Bed foot on left (1, 4), Player spawn (2, 4), TV Console on rug (4, 4)
+      [T.WOOD_FLOOR, T.BED_BOT, T.WOOD_FLOOR, T.RUG_GREEN_L, T.TV_CONSOLE, T.RUG_GREEN_C, T.RUG_GREEN_R, T.WOOD_FLOOR],
+      // 5: NES console on rug at (4, 5) with controller cord
+      [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.RUG_GREEN_L, T.NES_CONSOLE, T.RUG_GREEN_C, T.RUG_GREEN_R, T.WOOD_FLOOR],
+      // 6: Plants in corners, bottom of green dot rug
+      [T.PLANT, T.WOOD_FLOOR, T.WOOD_FLOOR, T.RUG_GREEN_BL, T.RUG_GREEN_B, T.RUG_GREEN_B, T.RUG_GREEN_BR, T.PLANT],
+      // 7: South baseboard
+      [T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT],
     ],
     warps: [
       {
-        x: 6,
+        x: 5,
         y: 1,
         targetMap: 'downstairs',
         targetX: 8,
@@ -222,25 +236,26 @@ export const MAPS = {
     pokeballs: [],
     triggers: [],
     interactables: {
-      [keyOf(1, 1)]: ["It's your PC. Nothing to do yet."],
-      [keyOf(2, 1)]: ['Your desk. A fresh adventure notebook sits on top.'],
-      [keyOf(4, 1)]: ['A movie is playing. Four kids are walking on train tracks... Time to go!'],
-      [keyOf(1, 4)]: ["It's your cozy bed. No time to sleep today!"],
-      [keyOf(1, 5)]: ["It's your cozy bed. No time to sleep today!"],
-      [keyOf(7, 1)]: ['A potted plant. It looks freshly watered.'],
-      [keyOf(0, 6)]: ['A potted plant. It looks freshly watered.'],
+      [keyOf(1, 1)]: ['Booted up the PC! An adventure notebook and item storage are ready.'],
+      [keyOf(2, 1)]: ['A sturdy wooden dresser. Neatly arranged trainer outfits inside!'],
+      [keyOf(3, 1)]: ['A mint-green shelf crammed with POKéMON adventure books and habitat guides!'],
+      [keyOf(1, 3)]: ["It's your cozy bed. The soft quilt feels crisp and inviting!"],
+      [keyOf(1, 4)]: ["It's your cozy bed. The soft quilt feels crisp and inviting!"],
+      [keyOf(4, 4)]: ['A movie is playing on TV! Four kids are walking down railroad tracks... Better get moving!'],
+      [keyOf(4, 5)]: ["It's an 8-bit game console! A tiny character is exploring a vast pixel world."],
+      [keyOf(7, 1)]: ['A vibrant potted bonsai plant. Freshly watered this morning.'],
+      [keyOf(0, 6)]: ['A lush indoor plant adding fresh oxygen to the bedroom.'],
+      [keyOf(7, 6)]: ['A decorative houseplant basking in the morning room light.'],
     },
     lights: [
-      { x: 3.5, y: 0.7, radius: 46, color: [255, 232, 168], intensity: 0.42, type: 'windowBeam' },
-      { x: 1.5, y: 1.3, radius: 26, color: [96, 200, 255], intensity: 0.34, type: 'pc' },
-      { x: 2.7, y: 1.4, radius: 28, color: [255, 214, 130], intensity: 0.32, type: 'lamp' },
-      { x: 4.5, y: 1.4, radius: 30, color: [130, 210, 255], intensity: 0.3, type: 'tv' },
-      { x: 4.0, y: 4.5, radius: 56, color: [255, 224, 165], intensity: 0.22, type: 'lamp' },
+      { x: 2.5, y: 0.7, radius: 52, color: [255, 236, 178], intensity: 0.44, type: 'windowBeam' },
+      { x: 1.5, y: 1.3, radius: 30, color: [96, 215, 255], intensity: 0.36, type: 'pc' },
+      { x: 4.5, y: 4.5, radius: 60, color: [255, 224, 168], intensity: 0.26, type: 'lamp' },
     ],
-    encounters: [], // Phase 2+
+    encounters: [],
   },
 
-  // =========================================================================
+
   // 2. HOUSE DOWNSTAIRS (10 x 8)
   // =========================================================================
   downstairs: {
@@ -252,23 +267,23 @@ export const MAPS = {
     bgColor: '#0E1018',
     tiles: parseGrid(
       [
-        'WWWWWWWWWW', // 0
-        'WU.B.P..^W', // 1  (Stairs U, Bookshelf B with Pikachu doll, Study desk with PC P, Bed ^)
-        'W[..mmmm_W', // 2  (Blue sofa [, Teal Pokéball rug m, Bed bot _)
-        'W[(.mmmm.W', // 3  (Sofa, Coffee table ( with flowers, Teal Pokéball rug m)
-        'WT..mmmm.W', // 4  (Television T, Teal Pokéball rug m)
-        'W...mmmm.W', // 5  (Teal Pokéball rug m)
-        'W.K....K.W', // 6  (Potted plants K)
-        'WWWWDDWWWW', // 7  (Exit doormats at 4..5, 7)
+        'WWWWWWWWWW', // 0  (North wall)
+        'FOIT.B..UK', // 1  (Fridge F, Stove O, Sink I, TV T, Bookshelf B, Stairs up U at 8,1, Plant K)
+        '..........', // 2  (Stairs landing at 8,2)
+        '.[[.()....', // 3  (Living sofa [[ at 1..2,3 | Dining table () at 4..5,3 | Mom at 6,3)
+        '..........', // 4
+        '..mmmmmm..', // 5  (Warm family center rug m)
+        'K........K', // 6  (Corner decorative plants K)
+        'wwwwDDwwww', // 7  (Exit doormats D at 4..5, 7)
       ],
       INDOOR_LEGEND
     ),
     warps: [
       {
-        x: 1,
+        x: 8,
         y: 1,
         targetMap: 'bedroom',
-        targetX: 6,
+        targetX: 5,
         targetY: 2,
         targetFacing: 'down',
       },
@@ -315,25 +330,28 @@ export const MAPS = {
     pokeballs: [],
     triggers: [],
     interactables: {
-      [keyOf(1, 4)]: ['A POKéMON battle championship broadcast is playing on TV!'],
-      [keyOf(3, 1)]: ['A cute Pikachu doll sits atop a shelf full of POKéMON adventure books!'],
-      [keyOf(5, 1)]: ['Booted up the study PC! An open POKéMON map and journey notes are on screen.'],
-      [keyOf(8, 1)]: ['Your cozy bed. Feels soft, clean, and warm!'],
-      [keyOf(8, 2)]: ['Your cozy bed. Feels soft, clean, and warm!'],
-      [keyOf(3, 3)]: ['A vase of fresh town flowers sits on the coffee table beside a trainer magazine.'],
-      [keyOf(6, 4)]: ['A soft teal rug with a beautifully embroidered POKé BALL emblem.'],
-      [keyOf(2, 6)]: ['A lush indoor potted plant.'],
+      [keyOf(0, 1)]: ["The refrigerator is stocked with cold lemonade and Mom's fresh snacks."],
+      [keyOf(1, 1)]: ['A clean kitchen stove. Breakfast was cooked here a short while ago.'],
+      [keyOf(2, 1)]: ['A sparkling clean sink and polished marble countertop.'],
+      [keyOf(3, 1)]: ['A POKéMON battle championship broadcast is playing on television!'],
+      [keyOf(5, 1)]: ['Family photo albums, recipe books, and trainer field guides fill the shelf.'],
+      [keyOf(4, 3)]: ['A warm cup of freshly brewed tea sits on the table.'],
+      [keyOf(5, 3)]: ['A wooden bowl brimming with fresh Berries from Dawnleaf Town.'],
+      [keyOf(1, 3)]: ['A plush living room sofa. Extremely soft and comfortable.'],
+      [keyOf(2, 3)]: ['A plush living room sofa. Extremely soft and comfortable.'],
+      [keyOf(0, 6)]: ['A lush indoor potted plant.'],
       [keyOf(9, 6)]: ['A lush indoor potted plant.'],
     },
     lights: [
       { x: 3.5, y: 0.7, radius: 48, color: [255, 232, 168], intensity: 0.42, type: 'windowBeam' },
-      { x: 6.5, y: 0.7, radius: 48, color: [255, 232, 168], intensity: 0.42, type: 'windowBeam' },
-      { x: 1.5, y: 4.2, radius: 36, color: [130, 210, 255], intensity: 0.32, type: 'tv' },
-      { x: 5.5, y: 1.4, radius: 32, color: [140, 220, 255], intensity: 0.30, type: 'pc' },
+      { x: 7.5, y: 0.7, radius: 48, color: [255, 232, 168], intensity: 0.42, type: 'windowBeam' },
+      { x: 3.5, y: 1.4, radius: 34, color: [130, 210, 255], intensity: 0.32, type: 'tv' },
       { x: 5.0, y: 4.2, radius: 64, color: [255, 216, 148], intensity: 0.28, type: 'lamp' },
     ],
     encounters: [],
   },
+
+
 
 
   // 3. DAWNLEAF TOWN (20 x 18)
@@ -362,12 +380,12 @@ export const MAPS = {
       [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.GRASS, T.SIGN, T.PATH, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.TREE],
       // y = 9: Fences & central approach
       [T.TREE, T.GRASS, T.FENCE, T.FENCE, T.FENCE, T.FENCE, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.FENCE, T.FENCE, T.FENCE, T.GRASS, T.TREE],
-      // y = 10..14: Professor's Lab (cols 7..13), flower beds, scenic pond & jumpable ledge terrace
-      [T.TREE, T.GRASS, T.FLOWER, T.FLOWER, T.FLOWER, T.GRASS, T.PATH, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.PATH, T.GRASS, T.GRASS, T.FLOWER, T.GRASS, T.TREE],
-      [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.PATH, T.LEDGE, T.LEDGE, T.LEDGE, T.GRASS, T.TREE],
-      [T.TREE, T.GRASS, T.WATER, T.WATER, T.WATER, T.GRASS, T.PATH, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.TREE],
-      [T.TREE, T.GRASS, T.WATER, T.WATER, T.WATER, T.GRASS, T.PATH, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.PATH, T.GRASS, T.FLOWER, T.GRASS, T.GRASS, T.TREE],
-      [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.LAB_DOOR, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.PATH, T.LAB_SIGN, T.GRASS, T.GRASS, T.GRASS, T.TREE],
+      // y = 10..14: Professor's Lab (cols 7..13), Friend's House (cols 15..18), flower beds & pond
+      [T.TREE, T.GRASS, T.FLOWER, T.FLOWER, T.FLOWER, T.GRASS, T.PATH, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.ROOF_LAB, T.PATH, T.FRIEND_ROOF_L, T.FRIEND_ROOF_M, T.FRIEND_ROOF_M, T.FRIEND_ROOF_R, T.TREE],
+      [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.ROOF_LAB_TRIM, T.PATH, T.FRIEND_ROOF_L, T.FRIEND_ROOF_M, T.FRIEND_ROOF_M, T.FRIEND_ROOF_R, T.TREE],
+      [T.TREE, T.GRASS, T.WATER, T.WATER, T.WATER, T.GRASS, T.PATH, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.PATH, T.FRIEND_WALL_L, T.FRIEND_WALL_WIN, T.FRIEND_WALL_WIN, T.FRIEND_WALL_R, T.TREE],
+      [T.TREE, T.GRASS, T.WATER, T.WATER, T.WATER, T.GRASS, T.PATH, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.LAB_WINDOW, T.LAB_WALL, T.PATH, T.FRIEND_WALL_L, T.FRIEND_DOOR, T.FRIEND_WALL_WIN, T.FRIEND_WALL_R, T.TREE],
+      [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.LAB_DOOR, T.LAB_WALL, T.LAB_WALL, T.LAB_WALL, T.PATH, T.PATH, T.PATH, T.SIGN, T.GRASS, T.TREE],
       // y = 15: Lab front plaza
       [T.TREE, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.PATH, T.GRASS, T.GRASS, T.GRASS, T.GRASS, T.TREE],
       // y = 16..17: Southern flowers & tree border
@@ -397,6 +415,14 @@ export const MAPS = {
         targetMap: 'lab',
         targetX: 5,
         targetY: 10,
+        targetFacing: 'up',
+      },
+      {
+        x: 16,
+        y: 13,
+        targetMap: 'friendHouse',
+        targetX: 3,
+        targetY: 6,
         targetFacing: 'up',
       },
     ],
@@ -479,10 +505,10 @@ export const MAPS = {
         id: 'townKid',
         name: 'KID',
         sprite: 'kid',
-        x: 16,
-        y: 12,
+        x: 15,
+        y: 15,
         facing: 'up',
-        wanderBounds: { minX: 15, maxX: 17, minY: 12, maxY: 13 },
+        wanderBounds: { minX: 14, maxX: 16, minY: 14, maxY: 16 },
         getDialogue: () => {
           if (gameState.flags.rivalBattleDone) {
             return [
@@ -504,6 +530,7 @@ export const MAPS = {
     interactables: {
       [keyOf(3, 7)]: ["{PLAYER}'s HOUSE"],
       [keyOf(16, 7)]: ["{RIVAL}'s HOUSE"],
+      [keyOf(17, 14)]: ["{FRIEND}'s HOUSE"],
       [keyOf(8, 8)]: ['DAWNLEAF TOWN: A quiet little start.'],
       [keyOf(15, 14)]: ["PROFESSOR's POKéMON LAB"],
     },
@@ -1368,6 +1395,98 @@ export const MAPS = {
       { x: 15.0, y: 7.0, radius: 70, color: [255, 230, 160], intensity: 0.35, type: 'lamp' },
       { x: 8.0, y: 14.0, radius: 60, color: [255, 230, 160], intensity: 0.30, type: 'lamp' },
       { x: 22.0, y: 14.0, radius: 60, color: [255, 230, 160], intensity: 0.30, type: 'lamp' },
+    ],
+    encounters: [],
+  },
+
+  // =========================================================================
+  // FRIEND'S HOUSE (8 x 8)
+  // =========================================================================
+  friendHouse: {
+    id: 'friendHouse',
+    name: 'FRIEND HOUSE',
+    isIndoor: true,
+    width: 8,
+    height: 8,
+    bgColor: '#0E1018',
+    tiles: [
+      // 0: North wall
+      [T.WALL_TOP, T.WALL_TOP, T.WALL_WINDOW, T.WALL_TOP, T.WALL_TOP, T.WALL_WINDOW, T.WALL_TOP, T.WALL_TOP],
+      // 1: Bookshelves, study desk with notes, microscope, potted plant
+      [T.WALL_BOT, T.BOOKSHELF, T.BOOKSHELF, T.DESK, T.PC_DESK, T.DESK, T.BOOKSHELF, T.PLANT],
+      // 2: Open walking floor
+      [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
+      // 3: Bed on left, research table & chairs on right
+      [T.WOOD_FLOOR, T.BED_TOP, T.WOOD_FLOOR, T.TABLE_LEFT, T.TABLE_RIGHT, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
+      // 4: Bed foot on left, center teal rug
+      [T.WOOD_FLOOR, T.BED_BOT, T.WOOD_FLOOR, T.RUG_TEAL_PC, T.RUG_TEAL_PC, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
+      // 5: Open walking floor
+      [T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR, T.WOOD_FLOOR],
+      // 6: Corner plants, entrance doormats
+      [T.PLANT, T.WOOD_FLOOR, T.WOOD_FLOOR, T.DOORMAT, T.DOORMAT, T.WOOD_FLOOR, T.WOOD_FLOOR, T.PLANT],
+      // 7: South baseboard
+      [T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT, T.WALL_BOT],
+    ],
+    warps: [
+      {
+        x: 3,
+        y: 6,
+        targetMap: 'town',
+        targetX: 16,
+        targetY: 14,
+        targetFacing: 'down',
+      },
+      {
+        x: 4,
+        y: 6,
+        targetMap: 'town',
+        targetX: 16,
+        targetY: 14,
+        targetFacing: 'down',
+      },
+    ],
+    npcs: [
+      {
+        id: 'friendMom',
+        name: 'FRIEND MOM',
+        sprite: 'girl',
+        x: 2,
+        y: 3,
+        facing: 'right',
+        idleLook: true,
+        idleDirs: ['right', 'down'],
+        getDialogue: () => {
+          if (gameState.flags.goalsDiscussed) {
+            return [
+              "FRIEND'S MOM: {FRIEND} ran off to start researching POKéMON right after getting that partner!",
+              "FRIEND'S MOM: You two take good care of each other!",
+            ];
+          }
+          if (gameState.flags.gotStarter) {
+            return [
+              "FRIEND'S MOM: Oh! Are you looking for {FRIEND}? {FRIEND} headed towards the PROFESSOR's Lab!",
+            ];
+          }
+          return [
+            "FRIEND'S MOM: Good morning, {PLAYER}! {FRIEND} was reading POKéMON encyclopedias all night!",
+          ];
+        },
+      },
+    ],
+    pokeballs: [],
+    triggers: [],
+    interactables: {
+      [keyOf(1, 1)]: ['Bookshelves packed with field notes, magnifying glasses, and regional POKéMON encyclopedias!'],
+      [keyOf(2, 1)]: ['A hefty volume titled: "Habitat Distribution & Behaviors of Wild POKéMON".'],
+      [keyOf(3, 1)]: ['A high-powered digital microscope is set up with sample slides of Berry leaves.'],
+      [keyOf(4, 1)]: ["The PC screen displays active research databases connecting to the Professor's lab."],
+      [keyOf(6, 1)]: ['A botanical research shelf filled with dried herbs and Berry specimens.'],
+      [keyOf(1, 3)]: ['A cozy single bed with a leaf-patterned quilt.'],
+      [keyOf(1, 4)]: ['A cozy single bed with a leaf-patterned quilt.'],
+    },
+    lights: [
+      { x: 3.5, y: 1.0, radius: 48, color: [255, 236, 180], intensity: 0.4, type: 'windowBeam' },
+      { x: 4.5, y: 1.3, radius: 32, color: [100, 215, 255], intensity: 0.35, type: 'pc' },
     ],
     encounters: [],
   },

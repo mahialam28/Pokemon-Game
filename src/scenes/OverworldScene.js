@@ -77,6 +77,9 @@ const OVERHEAD_ROOF_TILES = new Set([
   TILE.HERO_ROOF_M,
   TILE.HERO_ROOF_DORMER,
   TILE.HERO_ROOF_R,
+  TILE.FRIEND_ROOF_L,
+  TILE.FRIEND_ROOF_M,
+  TILE.FRIEND_ROOF_R,
   TILE.RIVAL_ROOF_L,
   TILE.RIVAL_ROOF_PEAK,
   TILE.RIVAL_ROOF_R,
@@ -296,6 +299,38 @@ export class OverworldScene {
     return rival;
   }
 
+  _spawnFriendNpc(x, y, facing = 'up') {
+    let friend = this._findNpcById('friend');
+    if (friend) return friend;
+    friend = new NPC({
+      id: 'friend',
+      name: gameState.friendName || 'FRIEND',
+      sprite: 'friend',
+      x,
+      y,
+      facing,
+      idleLook: false,
+      getDialogue: () => {
+        if (gameState.flags.goalsDiscussed) {
+          return [
+            "{FRIEND}: I want to find and catch every single POKéMON!",
+            "{FRIEND}: Best of luck on your journey to defeat the Champion, {PLAYER}!",
+          ];
+        }
+        if (gameState.flags.friendReceivedStarter) {
+          return [
+            "{FRIEND}: {FRIEND_STARTER} and I are going to be wonderful partners!",
+          ];
+        }
+        return [
+          "{FRIEND}: POKéMON are such amazing creatures, aren't they, {PLAYER}?",
+        ];
+      },
+    });
+    this.npcs.push(friend);
+    return friend;
+  }
+
   _removeNpcById(id) {
     this.npcs = this.npcs.filter((n) => n.id !== id);
   }
@@ -420,6 +455,11 @@ export class OverworldScene {
 
           rival.walkPath(['up', 'up', 'up', 'up'], () => {
             rival.facing = 'up';
+
+            // Friend enters the lab right behind rival
+            audio.door();
+            const friend = this._spawnFriendNpc(5, 11, 'up');
+
             this.textBox.show(
               [
                 "{RIVAL}: Gramps! I'm here! ... Huh? {PLAYER}, you're already here?",
@@ -427,48 +467,90 @@ export class OverworldScene {
               ],
               {
                 onComplete: () => {
-                  const rivalId = gameState.rivalStarter ? gameState.rivalStarter.id : 4;
-                  const ballIdx = STARTERS.findIndex((s) => s.id === rivalId);
-                  const ball = (this.map.pokeballs || [])[Math.max(0, ballIdx)] || { x: 8, y: 4 };
+                  friend.walkPath(['up', 'up', 'up', 'left'], () => {
+                    friend.facing = 'up';
 
-                  const pathToBall = ['up'];
-                  const dx = ball.x - 5;
-                  for (let i = 0; i < Math.abs(dx); i++) {
-                    pathToBall.push(dx > 0 ? 'right' : 'left');
-                  }
-                  const targetStandingFree = !(this.player.x === ball.x && this.player.y === 5);
-                  if (targetStandingFree) {
-                    pathToBall.push('up');
-                  }
+                    const rivalId = gameState.rivalStarter ? gameState.rivalStarter.id : 4;
+                    const ballIdx = STARTERS.findIndex((s) => s.id === rivalId);
+                    const ball = (this.map.pokeballs || [])[Math.max(0, ballIdx)] || { x: 8, y: 4 };
 
-                  rival.walkPath(pathToBall, () => {
-                    rival.facing = 'up';
-                    this.player.facing = rival.x >= this.player.x ? 'right' : 'left';
+                    const pathToBall = ['up'];
+                    const dx = ball.x - 5;
+                    for (let i = 0; i < Math.abs(dx); i++) {
+                      pathToBall.push(dx > 0 ? 'right' : 'left');
+                    }
+                    const targetStandingFree = !(this.player.x === ball.x && this.player.y === 5);
+                    if (targetStandingFree) {
+                      pathToBall.push('up');
+                    }
 
-                    this.textBox.show("{RIVAL}: I'll take this one, then!", {
-                      onComplete: () => {
-                        gameState.flags.rivalPickedStarter = true;
-                        saveGame();
-                        audio.fanfare();
+                    rival.walkPath(pathToBall, () => {
+                      rival.facing = 'up';
+                      this.player.facing = rival.x >= this.player.x ? 'right' : 'left';
 
-                        this.textBox.show('{RIVAL} received {RIVAL_STARTER}!', {
-                          onComplete: () => {
-                            const backPath = [];
-                            if (rival.y === 5) backPath.push('down');
-                            const bx = 5 - rival.x;
-                            for (let i = 0; i < Math.abs(bx); i++) {
-                              backPath.push(bx > 0 ? 'right' : 'left');
-                            }
-                            backPath.push('down');
+                      this.textBox.show("{RIVAL}: I'll take this one, then!", {
+                        onComplete: () => {
+                          gameState.flags.rivalPickedStarter = true;
+                          saveGame();
+                          audio.fanfare();
 
-                            rival.walkPath(backPath, () => {
-                              rival.facing = 'up';
-                              saveGame();
-                              this.cutsceneActive = false;
-                            });
-                          },
-                        });
-                      },
+                          this.textBox.show('{RIVAL} received {RIVAL_STARTER}!', {
+                            onComplete: () => {
+                              const backPath = [];
+                              if (rival.y === 5) backPath.push('down');
+                              const bx = 6 - rival.x;
+                              for (let i = 0; i < Math.abs(bx); i++) {
+                                backPath.push(bx > 0 ? 'right' : 'left');
+                              }
+                              backPath.push('down');
+
+                              rival.walkPath(backPath, () => {
+                                rival.facing = 'up';
+
+                                // Friend steps up to take the remaining starter
+                                const friendId = gameState.friendStarter ? gameState.friendStarter.id : 1;
+                                const fBallIdx = STARTERS.findIndex((s) => s.id === friendId);
+                                const fBall = (this.map.pokeballs || [])[Math.max(0, fBallIdx)] || { x: 6, y: 4 };
+
+                                this.textBox.show(
+                                  [
+                                    "{FRIEND}: Hello Professor! Hello {PLAYER}!",
+                                    "{FRIEND}: Is the last POKéMON for me? I love POKéMON more than anything!",
+                                    "{FRIEND}: I promise to take wonderful care of you!",
+                                  ],
+                                  {
+                                    onComplete: () => {
+                                      const pathToFriendBall = ['right', 'up', 'up'];
+                                      const fdx = fBall.x - 5;
+                                      for (let i = 0; i < Math.abs(fdx); i++) {
+                                        pathToFriendBall.push(fdx > 0 ? 'right' : 'left');
+                                      }
+
+                                      friend.walkPath(pathToFriendBall, () => {
+                                        friend.facing = 'up';
+                                        audio.fanfare();
+                                        gameState.flags.friendReceivedStarter = true;
+                                        saveGame();
+
+                                        this.textBox.show('{FRIEND} received {FRIEND_STARTER}!', {
+                                          onComplete: () => {
+                                            const fBack = ['down', 'left', 'left'];
+                                            friend.walkPath(fBack, () => {
+                                              friend.facing = 'right';
+                                              saveGame();
+                                              this.cutsceneActive = false;
+                                            });
+                                          },
+                                        });
+                                      });
+                                    },
+                                  }
+                                );
+                              });
+                            },
+                          });
+                        },
+                      });
                     });
                   });
                 },
@@ -546,38 +628,95 @@ export class OverworldScene {
     saveGame();
 
     const rival = this._findNpcById('rival');
+    const friend = this._findNpcById('friend');
     const prof = this._findNpcById('prof');
 
     this.textBox.show(
       "{RIVAL}: Okay! I'll make my POKéMON fight to toughen it up! {PLAYER}! Gramps! Smell you later!",
       {
         onComplete: () => {
-          const finishWithProf = () => {
+          const runGoalsSequence = () => {
             if (prof) prof.facing = 'down';
+            if (friend) friend.facing = 'up';
             this.player.facing = 'up';
-            this.textBox.show('PROF: Your POKéMON looks tired. Let me heal it.', {
-              onComplete: () => {
-                audio.heal();
-                healParty(gameState.party);
-                this.particles.spawnHealSparkles(this.player.px, this.player.py);
 
-                this._waitFrames(46, () => {
+            this.textBox.show(
+              'PROF: What an incredible battle! Now, before you both set out into the wider world, tell me: what are your dreams for the future?',
+              {
+                onComplete: () => {
                   this.textBox.show(
-                    'PROF: Battles like that are how you and your POKéMON grow stronger. Go show your MOM!',
+                    '{PLAYER}: I want to become the Champion by defeating the legendary trainer who defeated Leo.',
                     {
                       onComplete: () => {
-                        saveGame();
-                        this.cutsceneActive = false;
+                        this.textBox.show(
+                          '{FRIEND}: I love Pokémon more than anything. I want to find and catch every Pokémon and become the best Pokémon researcher.',
+                          {
+                            onComplete: () => {
+                              this.textBox.show(
+                                'PROF: Magnificent! Those are wonderful goals. Work hard with your partners and you will both accomplish great things! Let me heal your POKéMON.',
+                                {
+                                  onComplete: () => {
+                                    audio.heal();
+                                    healParty(gameState.party);
+                                    this.particles.spawnHealSparkles(this.player.px, this.player.py);
+                                    gameState.flags.goalsDiscussed = true;
+                                    saveGame();
+
+                                    this._waitFrames(46, () => {
+                                      if (friend) {
+                                        friend.facing = 'right';
+                                        this.player.facing = 'left';
+                                        this.textBox.show(
+                                          [
+                                            '{FRIEND}: Let us both give it our all, {PLAYER}!',
+                                            "{FRIEND}: I'll be exploring the routes to see every kind of POKéMON. See you soon!",
+                                          ],
+                                          {
+                                            onComplete: () => {
+                                              friend.walkPath(['down', 'down', 'down', 'down', 'down'], () => {
+                                                audio.door();
+                                                this._removeNpcById('friend');
+                                                this.textBox.show(
+                                                  'PROF: Battles like that are how you and your POKéMON grow stronger. Go show your MOM!',
+                                                  {
+                                                    onComplete: () => {
+                                                      saveGame();
+                                                      this.cutsceneActive = false;
+                                                    },
+                                                  }
+                                                );
+                                              });
+                                            },
+                                          }
+                                        );
+                                      } else {
+                                        this.textBox.show(
+                                          'PROF: Battles like that are how you and your POKéMON grow stronger. Go show your MOM!',
+                                          {
+                                            onComplete: () => {
+                                              saveGame();
+                                              this.cutsceneActive = false;
+                                            },
+                                          }
+                                        );
+                                      }
+                                    });
+                                  },
+                                }
+                              );
+                            },
+                          }
+                        );
                       },
                     }
                   );
-                });
-              },
-            });
+                },
+              }
+            );
           };
 
           if (!rival) {
-            finishWithProf();
+            runGoalsSequence();
             return;
           }
 
@@ -601,7 +740,7 @@ export class OverworldScene {
           rival.walkPath(exitPath, () => {
             audio.door();
             this._removeNpcById('rival');
-            this._waitFrames(12, finishWithProf);
+            this._waitFrames(12, runGoalsSequence);
           });
         },
       }

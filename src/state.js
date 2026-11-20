@@ -27,14 +27,17 @@ function createDefaultState() {
     playTimeFrames: 0,
     starter: null,
     rivalStarter: null,
+    friendStarter: null,
     money: 0,
     flags: {
       talkedToMom: false,
       metProf: false,
       gotStarter: false,
       rivalPickedStarter: false,
+      friendReceivedStarter: false,
       rivalBattleDone: false,
       rivalBattleWon: false,
+      goalsDiscussed: false,
       healedByMom: false,
       receivedStarterKit: false, // 5 Poké Balls + Pokédex from Professor/Aide
       receivedMomPotions: false, // 2 Potions from Mom when leaving home
@@ -167,6 +170,16 @@ export function setStarter(starter) {
     type: counterSp.types[0],
   };
 
+  // The 3rd remaining starter is given to Friend
+  const remainingId = [1, 4, 7].find((id) => id !== starter.id && id !== counterId) || 1;
+  const remainingSp = getSpecies(remainingId);
+  gameState.friendStarter = {
+    id: remainingSp.id,
+    name: remainingSp.name,
+    slug: remainingSp.slug,
+    type: remainingSp.types[0],
+  };
+
   markPokedexCaught(starter.id);
   saveGame();
 }
@@ -287,11 +300,15 @@ export function clearSave() {
 export function formatText(text) {
   const player = gameState.playerName || 'RED';
   const rival = gameState.rivalName || CONFIG.DEFAULT_RIVAL_NAME || 'GARY';
+  const friend = gameState.friendName || 'FRIEND';
   const starter = gameState.starter ? gameState.starter.name : 'POKéMON';
   const rivalStarter = gameState.rivalStarter ? gameState.rivalStarter.name : 'POKéMON';
+  const friendStarter = gameState.friendStarter ? gameState.friendStarter.name : 'POKéMON';
   return String(text)
     .replaceAll('{PLAYER}', player)
     .replaceAll('{RIVAL}', rival)
+    .replaceAll('{FRIEND}', friend)
     .replaceAll('{STARTER}', starter)
-    .replaceAll('{RIVAL_STARTER}', rivalStarter);
+    .replaceAll('{RIVAL_STARTER}', rivalStarter)
+    .replaceAll('{FRIEND_STARTER}', friendStarter);
 }

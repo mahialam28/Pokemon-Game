@@ -186,6 +186,41 @@ export const TILE = {
   GYM_BENCH: 197,
   MART_SHOWCASE: 198,
   VENDING_MACHINE: 199,
+
+  // Player House 2F & 1F Special Tiles
+  WARDROBE_TOP: 210,
+  WARDROBE_BOT: 211,
+  KITCHEN_SINK: 212,
+  KITCHEN_FLOOR: 213,
+  COFFEE_TABLE_L: 215,
+  COFFEE_TABLE_R: 216,
+
+  // FireRed Bedroom 2F Authentic Tiles
+  BEDROOM_WALL_L: 221,
+  BEDROOM_WALL_M: 222,
+  BEDROOM_WALL_R: 223,
+  DRESSER: 224,
+  STAIRS_DOWN_MAT: 225,
+  TV_CONSOLE: 226,
+  NES_CONSOLE: 227,
+  RUG_GREEN_TL: 228,
+  RUG_GREEN_T: 229,
+  RUG_GREEN_TR: 230,
+  RUG_GREEN_L: 231,
+  RUG_GREEN_C: 232,
+  RUG_GREEN_R: 233,
+  RUG_GREEN_BL: 234,
+  RUG_GREEN_B: 235,
+  RUG_GREEN_BR: 236,
+
+  // Friend House Exterior
+  FRIEND_ROOF_L: 240,
+  FRIEND_ROOF_M: 241,
+  FRIEND_ROOF_R: 242,
+  FRIEND_WALL_L: 243,
+  FRIEND_WALL_WIN: 244,
+  FRIEND_WALL_R: 245,
+  FRIEND_DOOR: 246,
 };
 
 /** Tiles that block standard walking (LEDGE is handled specially for downward hops). */
@@ -241,6 +276,11 @@ export const SOLID_TILES = new Set([
   TILE.KITCHEN_FRIDGE,
   TILE.KITCHEN_STOVE,
   TILE.KITCHEN_COUNTER,
+  TILE.WARDROBE_TOP,
+  TILE.WARDROBE_BOT,
+  TILE.KITCHEN_SINK,
+  TILE.COFFEE_TABLE_L,
+  TILE.COFFEE_TABLE_R,
   TILE.TABLE_LEFT,
   TILE.TABLE_RIGHT,
   TILE.BOOKSHELF,
@@ -251,6 +291,25 @@ export const SOLID_TILES = new Set([
   TILE.SOFA_L,
   TILE.SOFA_R,
   TILE.MART_SHELF,
+  TILE.HERO_WALL_L,
+  TILE.HERO_WALL_WIN,
+  TILE.HERO_BALCONY,
+  TILE.HERO_WALL_R,
+  TILE.RIVAL_WALL_BRICK,
+  TILE.RIVAL_WALL_WIN,
+  TILE.TRAIN_BAG,
+  TILE.TRAIN_WEIGHTS,
+  TILE.BEDROOM_WALL_L,
+  TILE.BEDROOM_WALL_M,
+  TILE.BEDROOM_WALL_R,
+  TILE.DRESSER,
+  TILE.TV_CONSOLE,
+  TILE.FRIEND_ROOF_L,
+  TILE.FRIEND_ROOF_M,
+  TILE.FRIEND_ROOF_R,
+  TILE.FRIEND_WALL_L,
+  TILE.FRIEND_WALL_WIN,
+  TILE.FRIEND_WALL_R,
 ]);
 
 /** Props drawn on the Y-sorted object layer above base ground tiles. */
@@ -432,30 +491,36 @@ const PAL_LAB_WALL = {
 };
 
 const PAL_INTERIOR = {
-  '0': '#382418', // Dark wood outline
-  '1': '#7C5030', // Wood dark
-  '2': '#B88050', // Wood mid
-  '3': '#DCA874', // Wood base
-  '4': '#ECC494', // Wood highlight
-  'w': '#F4ECE0', // Wallpaper / sheet white
-  'W': '#E4D8C4', // Wallpaper stripe
-  'b': '#C09868', // Baseboard
-  'r': '#B83434', // Red blanket / rug dark
-  'R': '#E05048', // Red blanket / rug bright
-  'y': '#E0B038', // Gold trim / rug border
-  'Y': '#FFE478', // Bright yellow book spine / highlight
-  'c': '#3878C0', // Blue glass / PC / rug dark
-  'C': '#78C8F8', // Bright cyan screen / sky
-  'g': '#286830', // Plant / book green dark
-  'G': '#50B048', // Plant / book green bright
-  'p': '#C06034', // Terracotta pot
-  's': '#384454', // Dark slate TV/PC bezel
-  'S': '#8898A8', // Mid metal / bezel
-  'l': '#D8E2EC', // Light metal / lab floor
-  'L': '#EEF4F8', // Brightest lab white
-  'k': '#202834', // Screen dark
-  'e': '#F04840', // Red LED
-  'E': '#48E068', // Green LED
+  '0': '#24160E', // Dark wood / outline
+  '1': '#583218', // Wood deep shadow
+  '2': '#8C5228', // Wood midtone
+  '3': '#C47E44', // Wood base
+  '4': '#E8AA68', // Wood highlight
+  // Crisp wallpaper & bedding
+  'w': '#FFFDF8', // Crisp white sheet / pillow
+  'W': '#F2E8D8', // Wallpaper cream
+  'e': '#DFD0BC', // Wallpaper stripe / shadow
+  'b': '#987048', // Baseboard / chair rail
+  // Quilt & rug (royal cobalt & ruby)
+  'r': '#182C58', // Quilt dark navy
+  'R': '#2858A8', // Quilt cobalt mid
+  'k': '#4888E0', // Quilt royal blue highlight
+  'y': '#E0A830', // Gold fringe / rug border
+  'Y': '#FFE070', // Bright gold highlight
+  // PC, TV & electronics
+  'c': '#202C3C', // Tech casing dark
+  'C': '#3C5068', // Tech casing mid
+  'q': '#6C84A0', // Tech casing light
+  'L': '#28B8E8', // Glowing cyan screen
+  'h': '#88E4FC', // Screen glare / highlight
+  // Plants & decorations
+  'g': '#245C24', // Foliage dark
+  'G': '#48A838', // Foliage bright
+  'p': '#B84C28', // Terracotta pot
+  'm': '#D43838', // Book / flower red
+  's': '#483870', // Soft purple
+  't': '#C0B8A8', // Linoleum / steel
+  'T': '#E8E4DC', // Linoleum bright
 };
 
 // =========================================================================
@@ -1076,6 +1141,668 @@ const MAP_LAB_WINDOW_IN = [
   'llllllllllllllll',
   'LLLLLLLllLLLLLLL',
   'LLLLLLLllLLLLLLL',
+];
+
+
+// =========================================================================
+// GBA FIRERED HERO HOUSE INTERIOR (2F Bedroom & 1F Living Room)
+// =========================================================================
+
+export const PAL_BEDROOM_FR = {
+  ".": null,
+  "0": "#1C1C24",
+  "1": "#685818",
+  "2": "#948424",
+  "3": "#B8A838",
+  "4": "#C8B844",
+  "5": "#D8C854",
+  "w": "#FFFFFF",
+  "W": "#D8E0D8",
+  "g": "#307838",
+  "G": "#44A050",
+  "Y": "#F8E050",
+  "t": "#202028",
+  "T": "#586070",
+  "s": "#8898B0",
+  "f": "#E8E8E8",
+  "r": "#D83434",
+  "x": "#202020",
+  "m": "#FFFFFF",
+  "M": "#B0B8C0",
+  "p": "#FFFFFF",
+  "P": "#C8D0D8",
+  "b": "#287868",
+  "B": "#40B494",
+  "o": "#603418",
+  "O": "#9C5824",
+  "d": "#CC7C38",
+  "y": "#F8D040",
+  "c": "#3868B0",
+  "C": "#6098E8",
+  "k": "#306848",
+  "K": "#4C9C6C",
+  "e": "#D85420",
+  "E": "#F07838",
+  "z": "#F8D878",
+  "h": "#385878",
+  "l": "#5498D4",
+  "u": "#FFFDF8",
+  "j": "#F2ECE0",
+};
+
+const MAP_BEDROOM_WALL_M = [
+  "0000000000000000",
+  "hhhhhhhhhhhhhhhh",
+  "llllllllllllllll",
+  "uuuuuuuuuuuuuuuu",
+  "uuuuuuuuuuuuuuuu",
+  "jjjjjjjjjjjjjjjj",
+  "jjjjjjjjjjjjjjjj",
+  "jjjjjjjjjjjjjjjj",
+  "jjjjjjjjjjjjjjjj",
+  "jjjjjjjjjjjjjjjj",
+  "jjjjjjjjjjjjjjjj",
+  "uuuuuuuuuuuuuuuu",
+  "0000000000000000",
+  "................",
+  "................",
+  "................",
+];
+
+const MAP_BEDROOM_WALL_L = [
+  "0000000000000000",
+  "0hhhhhhhhhhhhhhh",
+  "0lllllllllllllll",
+  "0uuuuuuuuuuuuuuu",
+  "0uuuuuuuuuuuuuuu",
+  "0jjjjjjjjjjjjjjj",
+  "0jjjjjjjjjjjjjjj",
+  "0jjjjjjjjjjjjjjj",
+  "0jjjjjjjjjjjjjjj",
+  "0jjjjjjjjjjjjjjj",
+  "0jjjjjjjjjjjjjjj",
+  "0uuuuuuuuuuuuuuu",
+  "0000000000000000",
+  "0...............",
+  "0...............",
+  "0...............",
+];
+
+const MAP_BEDROOM_WALL_R = [
+  "0000000000000000",
+  "hhhhhhhhhhhhhhh0",
+  "lllllllllllllll0",
+  "uuuuuuuuuuuuuuu0",
+  "uuuuuuuuuuuuuuu0",
+  "jjjjjjjjjjjjjjj0",
+  "jjjjjjjjjjjjjjj0",
+  "jjjjjjjjjjjjjjj0",
+  "jjjjjjjjjjjjjjj0",
+  "jjjjjjjjjjjjjjj0",
+  "jjjjjjjjjjjjjjj0",
+  "uuuuuuuuuuuuuuu0",
+  "0000000000000000",
+  "...............0",
+  "...............0",
+  "...............0",
+];
+
+const MAP_WOOD_FLOOR_2F = [
+  "4444333311444433",
+  "4444333322444433",
+  "3333333322333333",
+  "3333333322333333",
+  "1122222211222222",
+  "2244443333333322",
+  "2244443333333322",
+  "2233333333333322",
+  "1111111111111111",
+  "4444333311444433",
+  "4444333322444433",
+  "3333333322333333",
+  "3333333322333333",
+  "1122222211222222",
+  "2244443333333322",
+  "2233333333333322",
+];
+
+const MAP_PC_DESK_FR = [
+  "..000000000000..",
+  ".0ffffffffff0...",
+  ".0f00000000f0...",
+  ".0f0ssssss0f0...",
+  ".0f0ssssss0f0...",
+  ".0f00000000f0...",
+  "0000000000000000",
+  "0dddddddddddddd0",
+  "0dOOOOOOOOOOOOd0",
+  "0dooooo00oooooo0",
+  "0dooo0cccc0oooo0",
+  "0dooo0cCCc0oooo0",
+  "0dooo000000oooo0",
+  "0dooooooooooooo0",
+  "0000000000000000",
+  "................",
+];
+
+const MAP_DRESSER = [
+  "0000000000000000",
+  "0dddddddddddddd0",
+  "0000000000000000",
+  "0dOOOOOOOOOOOOd0",
+  "0dOyyOOOOOOyyOd0",
+  "0dOOOOOOOOOOOOd0",
+  "0000000000000000",
+  "0dddddddddddddd0",
+  "0000000000000000",
+  "0dOOOOOOOOOOOOd0",
+  "0dOyyOOOOOOyyOd0",
+  "0dOOOOOOOOOOOOd0",
+  "0000000000000000",
+  "0doooooooooooood0",
+  "0000000000000000",
+  "................",
+];
+
+const MAP_BOOKSHELF_FR = [
+  "0000000000000000",
+  "0KKKKKKKKKKKKKK0",
+  "0K000000000000K0",
+  "0K0rrrrrrrbb00K0",
+  "0K0rrYYrrrbb00K0",
+  "0K0rrrrrrrbb00K0",
+  "0K000000000000K0",
+  "0KKKKKKKKKKKKKK0",
+  "0K000000000000K0",
+  "0K0bbyybbYYy00K0",
+  "0K0bbyybbYYy00K0",
+  "0K0bbyybbYYy00K0",
+  "0K000000000000K0",
+  "0KkkkkkkkkkkkkK0",
+  "0000000000000000",
+  "................",
+];
+
+const MAP_STAIRS_DOWN_MAT = [
+  "0000000000000000",
+  "0zzzzzzzzzzzzzz0",
+  "0zEEEEEEEEEEEEz0",
+  "0zEeeeeeeeeeeEz0",
+  "0zEeEEEEEEEEeEz0",
+  "0zEeEEEEEEEEeEz0",
+  "0zEeEEEEEEEEeEz0",
+  "0zEeEEEEEEEEeEz0",
+  "0zEeEEEEEEEEeEz0",
+  "0zEeEEEEEEEEeEz0",
+  "0zEeEEEEEEEEeEz0",
+  "0zEeeeeeeeeeeEz0",
+  "0zEEEEEEEEEEEEz0",
+  "0zzzzzzzzzzzzzz0",
+  "0000000000000000",
+  "................",
+];
+
+const MAP_BED_TOP_FR = [
+  "..000000000000..",
+  ".0mmmmmmmmmmmm0.",
+  "0mmmmmmmmmmmmmm0",
+  "0mM0000000000Mm0",
+  "0mM0pppppppp0Mm0",
+  "0mM0pppppppp0Mm0",
+  "0mM0pppppppp0Mm0",
+  "0mM0PPppppPP0Mm0",
+  "0mM0000000000Mm0",
+  "0mM0bbbbbbbb0Mm0",
+  "0mM0BBBBBBBB0Mm0",
+  "0mM0BBBBBBBB0Mm0",
+  "0mM0BBBBBBBB0Mm0",
+  "0mM0bbbbbbbb0Mm0",
+  "0000000000000000",
+  "................",
+];
+
+const MAP_BED_BOT_FR = [
+  "0mM0bbbbbbbb0Mm0",
+  "0mM0BBBBBBBB0Mm0",
+  "0mM0BBBBBBBB0Mm0",
+  "0mM0BBBBBBBB0Mm0",
+  "0mM0BBBBBBBB0Mm0",
+  "0mM0BBBBBBBB0Mm0",
+  "0mM0BBBBBBBB0Mm0",
+  "0mM0bbbbbbbb0Mm0",
+  "0mM0000000000Mm0",
+  "0mmmmmmmmmmmmmm0",
+  ".0mmmmmmmmmmmm0.",
+  "..000000000000..",
+  "..0MM0....0MM0..",
+  "..0000....0000..",
+  "................",
+  "................",
+];
+
+const MAP_TV_CONSOLE = [
+  "..000000000000..",
+  ".0TTTTTTTTTTTT0.",
+  "0TTTTTTTTTTTTTT0",
+  "0Tt0000000000tT0",
+  "0Tt0ssssssss0tT0",
+  "0Tt0ssssssss0tT0",
+  "0Tt0ssssssss0tT0",
+  "0Tt0ssssssss0tT0",
+  "0Tt0000000000tT0",
+  "0TTTTTTTTTTTTTT0",
+  "0tttttttttttttt0",
+  "0000000000000000",
+  ".0tTttttttttTt0.",
+  ".0tTttttttttTt0.",
+  ".00000000000000.",
+  "................",
+];
+
+const MAP_NES_CONSOLE = [
+  "................",
+  ".....000000.....",
+  "....0ffffff0....",
+  "....0fttttf0....",
+  "....0frrrrf0....",
+  "....0ffffff0....",
+  "....00000000....",
+  ".....0ffff0.....",
+  ".....00xx00.....",
+  "......0xx0......",
+  "......0xx0......",
+  ".....0xxxx0.....",
+  ".....000000.....",
+  "................",
+  "................",
+  "................",
+];
+
+const MAP_RUG_GREEN_TL = [
+  "................",
+  "..00000000000000",
+  ".0wwwwwwwwwwwwww",
+  ".0wggggggggggggg",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGYYGGGGGGGG",
+  ".0wgGGYYGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+];
+
+const MAP_RUG_GREEN_T = [
+  "................",
+  "0000000000000000",
+  "wwwwwwwwwwwwwwww",
+  "gggggggggggggggg",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGYYGGGG",
+  "GGGGGGGGGGYYGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+];
+
+const MAP_RUG_GREEN_TR = [
+  "................",
+  "00000000000000..",
+  "wwwwwwwwwwwwww0.",
+  "gggggggggggggw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+];
+
+const MAP_RUG_GREEN_L = [
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGYYGGGGGGGG",
+  ".0wgGGYYGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+];
+
+const MAP_RUG_GREEN_C = [
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGYYGGGG",
+  "GGGGGGGGGGYYGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+];
+
+const MAP_RUG_GREEN_R = [
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+];
+
+const MAP_RUG_GREEN_BL = [
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGYYGGGGGGGG",
+  ".0wgGGYYGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wgGGGGGGGGGGGG",
+  ".0wggggggggggggg",
+  ".0wwwwwwwwwwwwww",
+  "..00000000000000",
+];
+
+const MAP_RUG_GREEN_B = [
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGYYGGGG",
+  "GGGGGGGGGGYYGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGGGG",
+  "gggggggggggggggg",
+  "wwwwwwwwwwwwwwww",
+  "0000000000000000",
+];
+
+const MAP_RUG_GREEN_BR = [
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "GGGGGGGGGGGGgw0.",
+  "gggggggggggggw0.",
+  "wwwwwwwwwwwwww0.",
+  "00000000000000..",
+];
+
+// =========================================================================
+// FRIEND HOUSE EXTERIOR PIXEL MAPS
+// =========================================================================
+
+const PAL_FRIEND_HOUSE = {
+  "0": "#182418",
+  "1": "#204828",
+  "2": "#347844",
+  "3": "#4CA860",
+  "4": "#70C884",
+  "w": "#2A241C",
+  "W": "#FFFDF8",
+  "e": "#F0E6D4",
+  "E": "#D4C4A8",
+  "c": "#204058",
+  "C": "#4490C8",
+  "k": "#80C8F8",
+  "b": "#482414",
+  "B": "#7C4424",
+  "d": "#B06838",
+  "y": "#F8D040",
+};
+
+const MAP_FRIEND_ROOF_L = [
+  ".......000000000",
+  ".....00444333222",
+  "....044333322222",
+  "...0433222222111",
+  "..04322222111111",
+  "..03222211111110",
+  ".032221111111000",
+  ".022211111100440",
+  ".022111111004330",
+  "0221111110043220",
+  "0211111100432210",
+  "0211111004322110",
+  "0111110043221110",
+  "0111100432211100",
+  "0000000000000000",
+  "0WWWWWWWWWWWWWWW",
+];
+
+const MAP_FRIEND_ROOF_M = [
+  "0000000000000000",
+  "2222222222222222",
+  "2222222222222222",
+  "1111111111111111",
+  "1111111111111111",
+  "1111111111111111",
+  "0000000000000000",
+  "4444444444444444",
+  "3333333333333333",
+  "2222222222222222",
+  "2222222222222222",
+  "1111111111111111",
+  "1111111111111111",
+  "1111111111111111",
+  "0000000000000000",
+  "WWWWWWWWWWWWWWWW",
+];
+
+const MAP_FRIEND_ROOF_R = [
+  "000000000.......",
+  "22233344400.....",
+  "222223333440....",
+  "1112222223340...",
+  "11111122222340..",
+  "01111111222230..",
+  "000111111122230.",
+  "044001111112220.",
+  "033400111111220.",
+  "0223400111111220",
+  "0122340011111120",
+  "0112234001111120",
+  "0111223400111110",
+  "0011122340011110",
+  "0000000000000000",
+  "WWWWWWWWWWWWWWW0",
+];
+
+const MAP_FRIEND_WALL_L = [
+  "wWWWWWWWWWWWWWWW",
+  "weeeeeeeeeeeeeee",
+  "wWWWWWWWWWWWWWWW",
+  "weeeee0000000eee",
+  "wWWWW0cCCCCcc0WW",
+  "weeee0ccCCCCc0ee",
+  "wWWWW0ckkkkCc0WW",
+  "weeee000000000ee",
+  "wWWWWWWWWWWWWWWW",
+  "weeeeeeeeeeeeeee",
+  "wWWWWWWWWWWWWWWW",
+  "weeeeeeeeeeeeeee",
+  "wWWWWWWWWWWWWWWW",
+  "weeeeeeeeeeeeeee",
+  "wWWWWWWWWWWWWWWW",
+  "w000000000000000",
+];
+
+const MAP_FRIEND_WALL_WIN = [
+  "WWWWWWWWWWWWWWWW",
+  "eeeeeeeeeeeeeeee",
+  "WWWWWWWWWWWWWWWW",
+  "eeee00000000eeee",
+  "WWWW0cCCCCcc0WWW",
+  "eeee0ccCCCCc0eee",
+  "WWWW0ckkkkCc0WWW",
+  "eeee000000000eee",
+  "WWWWWWWWWWWWWWWW",
+  "eeeeeeeeeeeeeeee",
+  "WWWWWWWWWWWWWWWW",
+  "eeeeeeeeeeeeeeee",
+  "WWWWWWWWWWWWWWWW",
+  "eeeeeeeeeeeeeeee",
+  "WWWWWWWWWWWWWWWW",
+  "0000000000000000",
+];
+
+const MAP_FRIEND_WALL_R = [
+  "WWWWWWWWWWWWWWWw",
+  "eeeeeeeeeeeeeeew",
+  "WWWWWWWWWWWWWWWw",
+  "eee0000000eeeeew",
+  "WW0cCCCCcc0WWWWw",
+  "ee0ccCCCCc0eeeeew",
+  "WW0ckkkkCc0WWWWw",
+  "ee000000000eeeeew",
+  "WWWWWWWWWWWWWWWw",
+  "eeeeeeeeeeeeeeew",
+  "WWWWWWWWWWWWWWWw",
+  "eeeeeeeeeeeeeeew",
+  "WWWWWWWWWWWWWWWw",
+  "eeeeeeeeeeeeeeew",
+  "WWWWWWWWWWWWWWWw",
+  "000000000000000w",
+];
+
+const MAP_FRIEND_DOOR = [
+  "0000000000000000",
+  "0WWWWWWWWWWWWWW0",
+  "0WwwwwwwwwwwwwW0",
+  "0Ww0000000000wW0",
+  "0Ww0bBBBBBBb0wW0",
+  "0Ww0bBddddBb0wW0",
+  "0Ww0bBdyddBb0wW0",
+  "0Ww0bBBBBBBb0wW0",
+  "0Ww0000000000wW0",
+  "0Ww0bBBBBBBb0wW0",
+  "0Ww0bBddddBb0wW0",
+  "0Ww0bBBBBBBb0wW0",
+  "0Ww0bBBBBBBb0wW0",
+  "0Ww0bBBBBBBb0wW0",
+  "0Ww0000000000wW0",
+  "0WWWWWWWWWWWWWW0",
+];
+
+
+const MAP_FRIDGE_NEW = [
+  '0000000000000000',
+  '0TTTTTTTTTTTTTT0',
+  '0TttttttttttttT0',
+  '0TtttttyytttttT0',
+  '0TttttttttttttT0',
+  '0000000000000000',
+  '0TTTTTTTTTTTTTT0',
+  '0TtttttyytttttT0',
+  '0TttttttttttttT0',
+  '0TttttttttttttT0',
+  '0TttttttttttttT0',
+  '0TttttttttttttT0',
+  '0TttttttttttttT0',
+  '0000000000000000',
+  '0cc0........0cc0',
+  '0000........0000',
+];
+
+// Modern Kitchen Range & Stove
+const MAP_STOVE_NEW = [
+  '0000000000000000',
+  '0TTTTTTTTTTTTTT0',
+  '0T00t00tt00t00T0',
+  '0T00t00tt00t00T0',
+  '0TttttttttttttT0',
+  '0000000000000000',
+  '0TTTTTTTTTTTTTT0',
+  '0T000000000000T0',
+  '0T0cccccccccc0T0',
+  '0T0cccccccccc0T0',
+  '0T0cccccccccc0T0',
+  '0T000000000000T0',
+  '0TttttttttttttT0',
+  '0000000000000000',
+  '0cc0........0cc0',
+  '0000........0000',
+];
+
+// Kitchen Counter with Sink
+const MAP_KITCHEN_SINK_NEW = [
+  '0000000000000000',
+  '0TTTTTTTTTTTTTT0',
+  '0Tt000tt000tttT0',
+  '0Tt0q0tt0q0tttT0',
+  '0TttttttttttttT0',
+  '0000000000000000',
+  '0444444444444440',
+  '0333333333333330',
+  '0333300003333330',
+  '033330qq03333330',
+  '0333300003333330',
+  '0333333333333330',
+  '0222222222222220',
+  '0000000000000000',
+  '0210........0210',
+  '0000........0000',
 ];
 
 const MAP_BED_TOP = [
@@ -2155,10 +2882,33 @@ const MAP_PC_WALL_33 = [
 // ---------------------------------------------------------------------------
 const R = (...rows) => rows;
 const PAL_HERO_HOUSE = {
-  '0': '#162C38', '1': '#225068', '2': '#327494', '3': '#4E9EC2', '4': '#7ED0EC',
-  'w': '#2A2420', 'W': '#FFF8F0', 'e': '#D8CAB8', 'c': '#68A8D8', 'C': '#B0DCF8',
-  'g': '#388838', 'G': '#68C858', 'r': '#E04038', 'y': '#F8D840', 'b': '#64442C',
-  'B': '#946848', 'm': '#E84038', 'M': '#FFFFFF',
+  // Vibrant GBA FireRed terracotta shingle roof & brick chimney (5 shades)
+  '0': '#241410', // Dark umber outline
+  '1': '#682018', // Deep shadow / brick dark
+  '2': '#A43020', // Terracotta mid-dark
+  '3': '#D84C34', // Terracotta base
+  '4': '#F0785C', // Terracotta bright highlight
+  '5': '#FFA894', // Glint / ridge highlight
+  // Clapboard wall siding & white architectural trim (5 shades)
+  'w': '#2A2420', // Dark trim outline
+  'W': '#FFFDF8', // Crisp white trim
+  'e': '#F2ECE0', // Cream siding base
+  'E': '#DCD0BC', // Siding shadow
+  // Window glass & sky glare (4 shades)
+  'c': '#2C4C6C', // Dark window sill/frame
+  'C': '#5498D4', // Sky blue glass
+  'k': '#94D0F8', // Bright diagonal glass glare
+  // Front door & warm porch lantern
+  'b': '#582A14', // Dark door frame
+  'B': '#8C4820', // Polished oak door
+  'd': '#C87438', // Oak door panel highlight
+  'y': '#F8D040', // Brass doorknob & warm lantern glow
+  'Y': '#FFF4A0', // Lantern center light
+  // Window planter box flowers & greenery
+  'g': '#286828', // Leaf dark
+  'G': '#54B844', // Leaf bright
+  'r': '#E03434', // Petunia red
+  'p': '#F870A0', // Petunia pink
 };
 
 const PAL_RIVAL_HOUSE = {
@@ -3586,10 +4336,58 @@ export function initTiles() {
   tileCache.set(TILE.LAB_WALL_BOT, [compilePixelMap(MAP_LAB_WALL_BOT, PAL_INTERIOR)]);
   tileCache.set(TILE.LAB_WINDOW_IN, [compilePixelMap(MAP_LAB_WINDOW_IN, PAL_INTERIOR)]);
 
-  tileCache.set(TILE.BED_TOP, [compilePixelMap(MAP_BED_TOP, PAL_INTERIOR)]);
-  tileCache.set(TILE.BED_BOT, [compilePixelMap(MAP_BED_BOT, PAL_INTERIOR)]);
-  tileCache.set(TILE.PC_DESK, [compilePixelMap(MAP_PC_DESK, PAL_INTERIOR, { underlay: woodFloor })]);
-  tileCache.set(TILE.DESK, [compilePixelMap(MAP_DESK, PAL_INTERIOR, { underlay: woodFloor })]);
+  
+  // FireRed Bedroom 2F Authentic Tiles
+  const tatamiFloor = compilePixelMap(MAP_WOOD_FLOOR_2F, PAL_BEDROOM_FR);
+  tileCache.set(TILE.WOOD_FLOOR, [tatamiFloor]);
+  tileCache.set(TILE.BED_TOP, [compilePixelMap(MAP_BED_TOP_FR, PAL_BEDROOM_FR, { underlay: tatamiFloor })]);
+  tileCache.set(TILE.BED_BOT, [compilePixelMap(MAP_BED_BOT_FR, PAL_BEDROOM_FR, { underlay: tatamiFloor })]);
+  tileCache.set(TILE.PC_DESK, [compilePixelMap(MAP_PC_DESK_FR, PAL_BEDROOM_FR, { underlay: tatamiFloor })]);
+  tileCache.set(TILE.DRESSER, [compilePixelMap(MAP_DRESSER, PAL_BEDROOM_FR, { underlay: tatamiFloor })]);
+  tileCache.set(TILE.BOOKSHELF, [compilePixelMap(MAP_BOOKSHELF_FR, PAL_BEDROOM_FR, { underlay: tatamiFloor })]);
+  tileCache.set(TILE.STAIRS_DOWN_MAT, [compilePixelMap(MAP_STAIRS_DOWN_MAT, PAL_BEDROOM_FR, { underlay: tatamiFloor })]);
+  tileCache.set(TILE.BEDROOM_WALL_L, [compilePixelMap(MAP_BEDROOM_WALL_L, PAL_BEDROOM_FR)]);
+  tileCache.set(TILE.BEDROOM_WALL_M, [compilePixelMap(MAP_BEDROOM_WALL_M, PAL_BEDROOM_FR)]);
+  tileCache.set(TILE.BEDROOM_WALL_R, [compilePixelMap(MAP_BEDROOM_WALL_R, PAL_BEDROOM_FR)]);
+
+  // Green Dot Rug
+  const rugTL = compilePixelMap(MAP_RUG_GREEN_TL, PAL_BEDROOM_FR, { underlay: tatamiFloor });
+  const rugT  = compilePixelMap(MAP_RUG_GREEN_T,  PAL_BEDROOM_FR, { underlay: tatamiFloor });
+  const rugTR = compilePixelMap(MAP_RUG_GREEN_TR, PAL_BEDROOM_FR, { underlay: tatamiFloor });
+  const rugL  = compilePixelMap(MAP_RUG_GREEN_L,  PAL_BEDROOM_FR, { underlay: tatamiFloor });
+  const rugC  = compilePixelMap(MAP_RUG_GREEN_C,  PAL_BEDROOM_FR, { underlay: tatamiFloor });
+  const rugR  = compilePixelMap(MAP_RUG_GREEN_R,  PAL_BEDROOM_FR, { underlay: tatamiFloor });
+  const rugBL = compilePixelMap(MAP_RUG_GREEN_BL, PAL_BEDROOM_FR, { underlay: tatamiFloor });
+  const rugB  = compilePixelMap(MAP_RUG_GREEN_B,  PAL_BEDROOM_FR, { underlay: tatamiFloor });
+  const rugBR = compilePixelMap(MAP_RUG_GREEN_BR, PAL_BEDROOM_FR, { underlay: tatamiFloor });
+
+  tileCache.set(TILE.RUG_GREEN_TL, [rugTL]);
+  tileCache.set(TILE.RUG_GREEN_T,  [rugT]);
+  tileCache.set(TILE.RUG_GREEN_TR, [rugTR]);
+  tileCache.set(TILE.RUG_GREEN_L,  [rugL]);
+  tileCache.set(TILE.RUG_GREEN_C,  [rugC]);
+  tileCache.set(TILE.RUG_GREEN_R,  [rugR]);
+  tileCache.set(TILE.RUG_GREEN_BL, [rugBL]);
+  tileCache.set(TILE.RUG_GREEN_B,  [rugB]);
+  tileCache.set(TILE.RUG_GREEN_BR, [rugBR]);
+
+  tileCache.set(TILE.TV_CONSOLE, [compilePixelMap(MAP_TV_CONSOLE, PAL_BEDROOM_FR, { underlay: rugC })]);
+  tileCache.set(TILE.NES_CONSOLE, [compilePixelMap(MAP_NES_CONSOLE, PAL_BEDROOM_FR, { underlay: rugC })]);
+
+  tileCache.set(TILE.WARDROBE_TOP, [compilePixelMap(MAP_WARDROBE_TOP, PAL_INTERIOR, { underlay: woodFloor })]);
+  tileCache.set(TILE.WARDROBE_BOT, [compilePixelMap(MAP_WARDROBE_BOT, PAL_INTERIOR, { underlay: woodFloor })]);
+  tileCache.set(TILE.KITCHEN_FRIDGE, [compilePixelMap(MAP_FRIDGE_NEW, PAL_INTERIOR, { underlay: woodFloor })]);
+  tileCache.set(TILE.KITCHEN_STOVE, [compilePixelMap(MAP_STOVE_NEW, PAL_INTERIOR, { underlay: woodFloor })]);
+  tileCache.set(TILE.KITCHEN_SINK, [compilePixelMap(MAP_KITCHEN_SINK_NEW, PAL_INTERIOR, { underlay: woodFloor })]);
+
+  // Friend House Exterior
+  tileCache.set(TILE.FRIEND_ROOF_L, [compilePixelMap(MAP_FRIEND_ROOF_L, PAL_FRIEND_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.FRIEND_ROOF_M, [compilePixelMap(MAP_FRIEND_ROOF_M, PAL_FRIEND_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.FRIEND_ROOF_R, [compilePixelMap(MAP_FRIEND_ROOF_R, PAL_FRIEND_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.FRIEND_WALL_L, [compilePixelMap(MAP_FRIEND_WALL_L, PAL_FRIEND_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.FRIEND_WALL_WIN, [compilePixelMap(MAP_FRIEND_WALL_WIN, PAL_FRIEND_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.FRIEND_WALL_R, [compilePixelMap(MAP_FRIEND_WALL_R, PAL_FRIEND_HOUSE, { underlay: heroUnderlay })]);
+  tileCache.set(TILE.FRIEND_DOOR, [compilePixelMap(MAP_FRIEND_DOOR, PAL_FRIEND_HOUSE, { underlay: heroUnderlay })]);
   tileCache.set(TILE.TV, [
     compilePixelMap(MAP_TV_0, PAL_INTERIOR, { underlay: woodFloor }),
     compilePixelMap(MAP_TV_1, PAL_INTERIOR, { underlay: woodFloor }),
